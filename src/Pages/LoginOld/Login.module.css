@@ -1,0 +1,152 @@
+/* Login.module.css */
+
+/* Container */
+
+
+.backgroundColor{
+  /* background: linear-gradient(109.6deg, rgb(61, 121, 176) 11.3%, rgb(35, 66, 164) 91.1%); */
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+}
+
+.loginform {
+  max-width: 500px;
+  min-width: 300px;
+  width: 30%;
+  margin: 30px auto;
+}
+
+/* Header */
+.headerTitle {
+  text-align: center;
+  padding: 2rem 0;
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Form */
+.row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  width: 100%;
+}
+
+.rowRadio label {
+  color: rgba(61, 61, 61, 0.9);
+}
+
+.rowRadio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  max-width: 100%;
+}
+
+.row input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  padding-left: 1.5rem;
+  padding-bottom: 1rem;
+  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  transition: box-shadow 0.2s ease-in;
+  font-size: 1.2rem;
+  background: transparent;
+  }
+
+.row input:focus {
+  box-shadow: inset 0px -3px 0px 0px rgba(14, 56, 136, 0.5);
+  outline: none;
+}
+
+.row input::-webkit-input-placeholder {
+  opacity: 1;
+  transition: opacity 0.25s ease-out;
+  font-size: medium;
+}
+
+.row input:hover::-webkit-input-placeholder,
+.row input:focus::-webkit-input-placeholder {
+  opacity: 0;
+}
+
+.row label {
+  align-self: start;
+  padding-left: 4.5rem;
+  padding-bottom: 0.5rem;
+  color: rgba(187, 187, 187, 0.9);
+}
+
+.rowButton {
+  border-radius: 15px;
+  width: 100%;
+  font-size: 1.3rem;
+  color: white;
+  font-weight: 700;
+  background: rgb(255, 255, 255);
+  background: linear-gradient(109.6deg, rgb(61, 121, 176, 0.7) 11.3%, rgb(35, 66, 164, 0.7) 91.1%);
+  border: 0px;
+  cursor: pointer;
+  transition: opacity 0.25s ease-out;
+  height: 50px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)
+}
+
+.rowButton:hover {
+  opacity: 0.8;
+  background: linear-gradient(109.6deg, rgb(61, 121, 176, 0.7) 11.3%, rgb(35, 66, 164, 0.7) 91.1%);
+}
+
+/* Buttons */
+.button {
+  padding-bottom: 1.5rem;
+}
+
+/* Social Icons */
+.facebookIcon {
+  background-image: url("https://upload.wikimedia.org/wikipedia/en/0/04/Facebook_f_logo_%282021%29.svg");
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 3rem;
+}
+
+.twitterIcon {
+  background-image: url("https://image.flaticon.com/icons/svg/145/145812.svg");
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 3rem;
+}
+
+.googleIcon {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Chrome_icon_%28September_2014%29.svg");
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 3rem;
+}
+
+.iconGroup {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  background-color: #ccc;
+}
+
+.iconGroup a {
+  margin: 0 0.6rem;
+}
+
+/* Alternative Login Methods */
+.alternativeLogin {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #ccc;
+  width: 100%
+}

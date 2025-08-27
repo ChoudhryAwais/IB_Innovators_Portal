@@ -1,0 +1,178 @@
+/* FORM */
+  .form{
+    margin-top: 20px !important;
+    flex: 1 !important
+  }
+
+  
+  .fieldsContainer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    width: 90% !important;
+    transition: all 0.3s ease-in-out !important;
+  }
+  
+  .formInputContainer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+  }
+  
+  .formInputContainer input {
+    background: transparent !important;
+    outline: none !important;
+    border: 1px solid;
+    padding: 15px 20px !important;
+    border-radius: 30px !important;
+    color: #1e1e1e !important;
+    transition: all 0.3s ease-in-out !important;
+    height: 15px !important;
+  }
+  
+  .fieldContainer{
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 15px 20px !important;
+    border: 1px solid;
+    background: transparent !important;
+    border-radius: 30px !important;
+    gap: 5px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    cursor: text !important;
+    position: relative !important;
+    z-index: 1 !important;
+    height: 50px !important;
+  }
+
+  
+  label{
+    font-size: 1.1rem;
+  }
+  
+  .fieldContainer input{
+    flex: 1 !important;
+    background: transparent !important;
+    color: #1e1e1e !important;
+    outline: none !important;
+    border: none !important;
+    font-size: 1rem;
+  }
+  
+  .eyeLogo{
+    z-index: 2 !important;
+    cursor: pointer !important;
+  }
+  
+  .error {
+    color: red !important;
+    animation-name: pop-up !important;
+    animation-duration: 0.3s !important;
+    animation-timing-function: ease-out !important;
+    font-weight: normal !important;
+  }
+  
+  @keyframes pop-up {
+    0% {
+        transform: scale(0) !important;
+        opacity: 0 !important;
+    }
+    100% {
+        transform: scale(1) !important;
+        opacity: 1 !important;
+    }
+  }
+  
+  .otpContainer{
+    width: 90% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .actionButton {
+    background: linear-gradient(109.6deg, rgb(61, 121, 176) 11.3%, rgb(35, 66, 164) 91.1%) ;
+    color: #fff !important;
+    padding: 15px 20px !important;
+    width: 90% !important;
+    outline: none !important;
+    border-radius: 30px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease-in-out !important;
+    opacity: 1;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    height: 50px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .actionButton:hover {
+    box-shadow: 3px 8px 10px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  .actionButton:focus {
+    box-shadow: 3px 10px 10px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .forgotPasswordContainer{
+    flex: 1 !important;
+    margin-top: 20px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 90% !important;
+  }
+  
+  .forgotPassword{
+    background: transparent !important;
+    color: #7e7e7e !important;
+    font-weight: bold !important;
+    outline: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: large !important;
+  }
+  
+  .notification{
+    flex: 1 !important;
+    width: 90% !important;
+    text-align: center !important;
+    color: lightgreen !important;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+  }
+  
+  /* RESPONSIVENESS */
+  
+  
+  @media (max-width: 900px) {
+    .fieldsContainer {
+      width: 100% !important;
+    }
+    .actionButton {
+      width: 100% !important;
+    }
+    
+  .otpContainer{
+    width: 100% !important;
+  }
+    .error{
+      flex: 1 !important;
+      text-align: center !important;
+    }
+    .forgotPasswordContainer{
+      width: 100% !important;
+    }
+    .notification{
+      width: 100% !important;
+    }
+  }
+  
+  

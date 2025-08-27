@@ -1,0 +1,70 @@
+.teachersContainer {
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 8px;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .header {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 0.5rem;
+  }
+  
+  .teachersList {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .teacherItem {
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0;
+    border-bottom: 1px dashed #aaa;
+  }
+  
+  .subjects {
+    font-size: 1rem;
+    color: #555;
+    flex: 1;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  /* Responsive for smaller screens */
+  @media (max-width: 600px) {
+    .teachersContainer {
+      padding: 1rem;
+      flex-direction: column;
+      display: flex;
+    }
+  
+    .header {
+      font-size: 1.5rem;
+    }
+  
+    .teacherItem {
+      font-size: 1rem;
+    }
+  }
+  .mainHeader {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  

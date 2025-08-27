@@ -1,0 +1,61 @@
+/* Style the video container */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
+}
+.reviewSection {
+  background-color: #f3f2f2;
+  border-radius: 300px 10px 300px 10px;
+}
+.homePagePara {
+  width: 70%;
+  margin: 15px auto 0px auto;
+}
+.homePageParaFont {
+  font-size: 16px !important;
+}
+.homePageHeadings {
+  font-size: 28px;
+  font-weight: 600;
+}
+.homePageSubHeadings {
+  font-size: 20px;
+  font-weight: 600;
+}
+.homePageParaCardFront {
+  font-size: 13px;
+}
+
+/* Responsive view */
+@media only screen and (max-width: 899px) {
+  .hero-section {
+    height: 50vh;
+  }
+  .hero-heading {
+    width: 100%;
+  }
+  .hero-heading h1 {
+    font-size: 28px;
+    line-height: 46px;
+    width: 100%;
+  }
+}
+@media (max-width: 576px) {
+  .homePageHeadings {
+    font-size: 1.2rem;
+  }
+  .homePageParaFont {
+    font-size: 12px !important;
+  }
+  .homePageSubHeadings {
+    font-size: 1rem;
+  }
+  .homePagePara {
+    width: 100%;
+  }
+  .homePageParaCardFront {
+    font-size: 10px;
+  }
+}

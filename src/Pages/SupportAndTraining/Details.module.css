@@ -1,0 +1,79 @@
+/* Details.module.css */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blog-container {
+  padding: 2rem;
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+.blog-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 0;
+}
+
+.headerContainer {
+
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+
+
+.blog-image {
+  width: 100%;
+  margin-bottom: 20px;
+  
+}
+
+.buttonContainer {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.myButton {
+  background-color: rgb(10, 21, 46);
+  color: white;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.myButton:hover {
+  transform: scale(1.1);
+  background-color: rgb(23, 40, 82);
+}
+
+
+
+.ql-align-center {
+  text-align: center !important;
+}
+
+.ql-align-right {
+  text-align: right !important;
+}
+
+.ql-align-left {
+  text-align: left !important;
+}
+
+.ql-align-justify {
+  text-align: justify !important;
+}

@@ -1,0 +1,79 @@
+/* .navbarbottom {
+  position: fixed !important;
+  width: 100% !important;
+  left: 0px !important;
+  top: 0px !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  z-index: 999;
+} */
+
+.navbarbottom {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  background: #818181;
+  -webkit-backdrop-filter: blur(30px);  /* For Safari and older versions of Chrome and Edge */
+  backdrop-filter: blur(30px);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 110px;
+  padding: 15px;
+  pointer-events: none;
+  position: fixed;
+  max-width: 2200px;
+  margin: 0px auto
+}
+
+
+
+.nav-item {
+  padding: 5px;
+  font-size: 16px;
+}
+
+.LogoImg {
+  margin-top: 20px;
+  width: 150px;
+}
+.LogoLink {
+  margin-left: 2%;
+  display: flex;
+}
+.navElement {
+  margin-right: 5%;
+}
+@media (max-width: 576px) {
+  .LogoImg {
+    width: 177px;
+  }
+  .LogoLink {
+    margin-left: 5px !important;
+  }
+}
+
+.navButtonMain{
+  padding: 10px;
+  background-color: #fff;
+  border: none;
+  color: white;
+  outline: none;
+  border-radius: 0.5rem;
+}
+
+.navButtonMain:hover {
+  background-color: rgb(156, 16, 16);
+  color: white;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.navBarItem{
+  transform: scale(0.9);
+  transition: 0.2s ease-in-out;
+}
+
+
+.navBarItem:hover{
+  transform: scale(1);
+}

@@ -1,0 +1,218 @@
+/* CONTAINERS */
+
+.container {
+  flex: 1 !important;
+  /* background: #fff !important; */
+  background: linear-gradient(109.6deg, rgb(61, 121, 176) 11.3%, rgb(35, 66, 164) 91.1%) !important;
+  height: 100% !important;
+  min-height: calc(100vh) !important;
+  padding: 2rem !important;
+
+  /* PREVENT SELECTION */
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  overflow: hidden !important;
+}
+
+.innerContainer {
+  background: #fff !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  max-width: 1600px !important;
+  margin: 0px auto !important
+}
+
+.formContainer {
+  flex: 1 !important;
+  display: flex !important;
+  color: #1e1e1e !important;
+  padding: 3rem !important;
+  overflow: hidden !important;
+}
+
+.imageContainer {
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+.backgroundLogoImage {
+  flex: 1 !important;
+  background-image: url("../../assets/Login/login.jpg") !important;
+  background-size: cover !important;
+  background-position: center right  !important;
+  height: 100% !important;
+  background-color: #019dde;
+}
+
+
+/* LOGINFORM */
+
+.loginContainer {
+  padding: 2rem !important;
+  flex: 1 !important;
+  margin-top: 10px !important;
+}
+
+.formHeading {
+  font-weight: bolder !important;
+  text-align: left !important;
+  font-size: 40px !important;
+}
+
+.formDescription {
+  margin-top: 5px !important;
+}
+
+.endLine {
+  margin-top: 100px !important;
+}
+
+.error {
+  color: red !important;
+  animation-name: pop-up !important;
+  animation-duration: 0.3s !important;
+  animation-timing-function: ease-out !important;
+}
+
+/* GOOGLE BUTTON */
+
+.signInWithGoogleButton {
+  background: transparent !important;
+  padding: 10px 20px !important;
+  width: 90% !important;
+  outline: none !important;
+  border: 1px solid #ccc !important;
+  color: #1e1e1e !important;
+  border-radius: 30px !important;
+  margin-top: 30px !important;
+  margin-bottom: 5px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 10px !important;
+  height: 50px !important;
+  transition: all 0.3s ease-in-out !important;
+  overflow: hidden !important;
+}
+
+.signInWithGoogleButton div {
+  width: max-content;
+  height: max-content;
+  font-size: 1.1rem;
+}
+
+
+.signInWithGoogleButton:hover {
+  box-shadow: 3px 8px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.signInWithGoogleButton:focus {
+  box-shadow: 3px 8px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+
+.createOrLoginLine{
+  margin-top: 10px !important;
+  flex: 1 !important;
+  text-align: center !important;
+  max-width: 90% !important;
+}
+.createOrLoginLine b{
+  cursor: pointer !important;
+}
+/* ANIMATION */
+
+@keyframes pop-up {
+  0% {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+  }
+  100% {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+  }
+}
+
+/* RESPONSIVENESS */
+
+@media (max-width: 1200px) {
+  .formContainer {
+    min-width: 500px !important;
+  }
+  
+}
+
+@media (max-width: 900px) {
+  .innerContainer {
+    flex-direction: column !important;
+  }
+  .formContainer {
+    min-width: auto !important;
+  }
+  .loginContainer {
+    margin-top: 30px !important;
+    padding: 1rem !important;
+  }
+  .signInWithGoogleButton {
+    width: 100% !important;
+  }
+  .imageContainer {
+    min-height: 20rem !important;
+    width: 100% !important;
+  }
+  .backgroundLogoImage {
+    min-height: 20rem !important;
+    width: 100% !important;
+  }
+  .endLine {
+    margin-top: 80px !important;
+    flex: 1 !important;
+    text-align: center !important;
+  }
+  .error {
+    flex: 1 !important;
+    text-align: center !important;
+  }
+  .createOrLoginLine{
+    max-width: 100% !important;
+    white-space:nowrap !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem !important;
+    min-height: calc(100vh - 3rem) !important;
+  }
+  .formContainer {
+    padding: 2rem !important;
+  }
+  .loginContainer {
+    padding: 0px !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .container {
+    min-height: calc(100vh - 3rem) !important;
+  }
+  .formContainer {
+    padding: 1.5rem 1rem !important;
+  }
+  .loginContainer {
+    padding: 0px !important;
+    margin-top: 10px !important;
+  }
+  .imageContainer {
+    min-height: 10rem !important;
+    width: 100% !important;
+  }
+  
+  .backgroundLogoImage {
+    min-height: 10rem !important;
+    width: 100% !important;
+  }
+}

@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap");
+
+#root {
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: #eee;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 1px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f15f;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  /* background: #4071B6; */
+  background: #191919;
+}

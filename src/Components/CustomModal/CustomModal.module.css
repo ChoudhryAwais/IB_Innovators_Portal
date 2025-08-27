@@ -1,0 +1,19 @@
+.secondDiv{
+    min-Width: 70%;
+    margin: 0px auto
+}
+
+.thirdDiv{
+    flex: 1;
+    overflow: auto;
+    padding: 20px
+}
+
+@media (max-width: 787px){
+    .secondDiv{
+        min-Width: 90%;
+    }
+    .thirdDiv{
+        padding: 10px
+    }
+}

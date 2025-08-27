@@ -1,0 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+  font-family: 'Roboto', sans-serif; /* Use 'Roboto' font, and fall back to a generic sans-serif font if it's not available */
+}
+
+
+.socialMedia-fixed-element {
+  text-align: right;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+}
+
+.mainBodySection {
+  margin-top: 83px;
+}
+.sideSectionMargin {
+  margin: 0 15% 0 15%;
+}
+/* Responsive view */
+@media only screen and (max-width: 1500px) {
+  .sideSectionMargin {
+    margin: 0 10% 0 10%;
+  }
+}
+.textTheme {
+  color: #323e6f;
+}
+
+.webFont {
+  font-family: "Roboto" !important;
+  font-style: normal !important;
+}
+
+.textRed {
+  color: #ff0000;
+}
+
+.textBlack {
+  color: black;
+}
+
+.textGreen {
+  color: #3ab44e !important;
+}
+
+.w100 {
+  width: 100% !important;
+}
+
+.w50 {
+  width: 50% !important;
+}
+
+.h100 {
+  height: 100% !important;
+}
+
+.w50 {
+  width: 50% !important;
+}
+
+.green-Btn {
+  background-color: #3ab44e !important;
+  color: #ffffff !important;
+}
+
+.white-Btn {
+  background-color: #ffffff !important;
+  color: #3ab44e !important;
+  border: 1px solid #3ab44e !important;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
+
+.cursorDrop {
+  cursor: no-drop;
+}
+
+.pointerEventNone {
+  pointer-events: none;
+}
+
+.pageContainer {
+  padding: 35px;
+}
+
+.bgLightGray {
+  background: #f8f8f8;
+}
+
+.justifyCenter {
+  justify-content: center;
+}
+.justifyEnd {
+  justify-content: end;
+}
+
+.flexSpacebetween {
+  justify-content: space-between;
+}
+
+.flexSpaceAround {
+  justify-content: space-around;
+}
+
+.bgBlack {
+  background-color: black;
+}
+
+.displayNone {
+  display: none;
+}
+
+.displayBlock {
+  display: block;
+}
+
+.main-content {
+  margin-left: 250px;  /* Match the width of the sidebar */
+  transition: margin-left .3s; /* Optional, adds a transition effect */
+}
+
+/* If you have a responsive sidebar, you can update the margin here */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 50px;  /* Match the width of the responsive sidebar */
+  }
+}
+
+.shadowAndBorder{
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 5px !important
+}

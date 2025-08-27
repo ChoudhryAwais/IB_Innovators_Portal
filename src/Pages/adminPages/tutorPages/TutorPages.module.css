@@ -1,0 +1,54 @@
+.dashboardContainer {
+    display: flex;
+    padding-top: 0px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    flex: 1
+  }
+  
+  .dataSummary {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 2rem;
+    color: black;
+  }
+  
+  .dataSection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .dataBox {
+    flex: 0 0 calc(50% - 1rem);
+    box-sizing: border-box;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .dataBox strong {
+    display: block;
+    font-size: 3rem;
+    margin-top: 1rem;
+    color: rgb(61, 121, 176);
+  }
+  
+  @media (max-width: 768px) {
+    .dataBox {
+      flex: 0 0 calc(50% - 1rem);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .dataBox {
+      flex: 0 0 100%;
+    }
+  }
+  

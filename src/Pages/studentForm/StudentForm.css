@@ -1,0 +1,41 @@
+.student-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.student-item {
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.student-name {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #ebebeb;
+  width: 100%;
+  text-align: left;
+}
+
+.student-details {
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .student-form-container {
+    width: 100%;
+  }
+
+  .student-item {
+    font-size: 0.9em;
+  }
+
+  .student-details {
+    font-size: 0.8em;
+    padding: 8px;
+  }
+}
