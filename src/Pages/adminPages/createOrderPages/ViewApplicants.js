@@ -4,16 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../../../firebase";
 import {
-  getDocs,
   collection,
-  where,
-  query,
-  onSnapshot,
   doc,
   updateDoc,
-  getDoc,
   setDoc,
-  runTransaction,
   addDoc,
   deleteDoc,
 } from "firebase/firestore";
@@ -37,7 +31,6 @@ import getTutorSelectedForStudentEmailTemplate from "../../../Components/getEmai
 import getJobApprovedEmailTemplate from "../../../Components/getEmailTemplate/getJobApprovedEmailTemplate";
 import getJobNotApprovedEmailTemplate from "../../../Components/getEmailTemplate/getJobNotApprovedEmailTemplate";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -45,22 +38,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export function ViewApplicants({ item, handleClose }) {
   const { userDetails } = useContext(MyContext);
 
-  const [enterPriceAndPlan, setEnterPriceAndPlan] = useState("");
-
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [tutorApplicants, setTutorApplicants] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
-
 
   const generatingLink = async (tutor) => {
     try {
       setLoading(true);
       const linkedRef = collection(db, "Linked");
 
-      // First, add the document and get its ID
       const linkId = await addDoc(linkedRef, {
         studentId: item?.studentInformation?.userId,
         studentName: item?.studentInformation?.userName,
@@ -76,40 +63,39 @@ export function ViewApplicants({ item, handleClose }) {
         tutorHourlyRate: item?.tutorHourlyRate,
       });
 
-      // Update the document to include the ID
       const docRef = doc(linkedRef, linkId.id);
       await updateDoc(docRef, {
         id: linkId.id,
       });
 
-      // Add to processed orders
       const processedOrderCollectionRef = collection(db, "processedOrders");
-
       const processedData = {
         ...item,
         selectedTeacher: tutor?.submittedBy,
       };
+      const processedOrderDocRef = doc(processedOrderCollectionRef, item?.id);
+      await setDoc(processedOrderDocRef, processedData);
 
-      const processedOrderDocRef = doc(processedOrderCollectionRef, item?.id); // Create a doc reference with order.id
-      await setDoc(processedOrderDocRef, processedData); // Set the document data
-
-      // Delete from orders
       const orderCollectionRef = collection(db, "orders");
-      const orderDocRef = doc(orderCollectionRef, item?.id); // Assuming order.id is the document id
+      const orderDocRef = doc(orderCollectionRef, item?.id);
       await deleteDoc(orderDocRef);
 
-      // STUDENT AND TEACHER EMAIL
       const serviceId = process.env.REACT_APP_EMAILSERVICEID;
       const templateId = process.env.REACT_APP_EMAILTEMPLATEID;
       const userId = process.env.REACT_APP_EMAILUSERID;
-      const emailTemplateToStudent = getTutorSelectedForStudentEmailTemplate(
-        item?.studentInformation?.userName,
-        item?.requestedHours,
-        item?.subject,
-        tutor?.tutorDetails?.userName
-      )
 
-      const tutorAndParentEmail = [tutor?.tutorDetails?.email, item?.studentInformation?.otherInformation?.userDetails?.parentEmail]
+      const emailTemplateToStudent =
+        getTutorSelectedForStudentEmailTemplate(
+          item?.studentInformation?.userName,
+          item?.requestedHours,
+          item?.subject,
+          tutor?.tutorDetails?.userName
+        );
+
+      const tutorAndParentEmail = [
+        tutor?.tutorDetails?.email,
+        item?.studentInformation?.otherInformation?.userDetails?.parentEmail,
+      ];
 
       const studentAndTeacherEmailParams = {
         from_name: "IBInnovators",
@@ -119,27 +105,25 @@ export function ViewApplicants({ item, handleClose }) {
         subject: `Introducing your new ${item?.subject} tutor`,
         message: emailTemplateToStudent,
       };
-      
 
-      // SELECTED TEACHER ONLY
       const emailTemplateForSelectedTeacher = getJobApprovedEmailTemplate(
         tutor?.tutorDetails?.userName,
         item?.studentInformation?.userName,
         item?.subject
-      )
+      );
       const selectedTutorEmailParams = {
         from_name: "IBInnovators",
-        to_name: "", // Change this to the appropriate name field
+        to_name: "",
         send_to: tutor?.tutorDetails?.email,
         subject: `Job Approved with ${item?.studentInformation?.userName} for ${item?.subject}`,
         message: emailTemplateForSelectedTeacher,
       };
 
-      // UN-SELECTED TEACHER ONLY
-      const emailTemplateForNotApprovedTeacher = getJobNotApprovedEmailTemplate(tutor?.tutorDetails?.userName)
+      const emailTemplateForNotApprovedTeacher =
+        getJobNotApprovedEmailTemplate(tutor?.tutorDetails?.userName);
       const unselectedTeacherEmailParams = {
         from_name: "IBInnovators",
-        to_name: "", // Change this to the appropriate name field
+        to_name: "",
         send_to: tutorApplicants
           ?.filter((item) => item !== tutor?.tutorDetails?.email)
           ?.join(", "),
@@ -147,34 +131,17 @@ export function ViewApplicants({ item, handleClose }) {
         message: emailTemplateForNotApprovedTeacher,
       };
 
-      await emailjs
-        .send(serviceId, templateId, studentAndTeacherEmailParams, userId)
-        .then((response) => {})
-        .catch((error) => {
-          console.error("Error sending email:", error);
-        });
-
-        await emailjs
-        .send(serviceId, templateId, selectedTutorEmailParams, userId)
-        .then((response) => {})
-        .catch((error) => {
-          console.error("Error sending email:", error);
-        });
+      await emailjs.send(serviceId, templateId, studentAndTeacherEmailParams, userId);
+      await emailjs.send(serviceId, templateId, selectedTutorEmailParams, userId);
 
       if (
         tutorApplicants?.filter((item) => item !== tutor?.tutorDetails?.email)
           ?.length > 1
       ) {
-        await emailjs
-          .send(serviceId, templateId, unselectedTeacherEmailParams, userId)
-          .then((response) => {})
-          .catch((error) => {
-            console.error("Error sending email:", error);
-          });
+        await emailjs.send(serviceId, templateId, unselectedTeacherEmailParams, userId);
       }
 
       toast.success("Link created successfully");
-
       handleClose(false);
     } catch (error) {
       toast.error("Error processing order", error);
@@ -186,16 +153,8 @@ export function ViewApplicants({ item, handleClose }) {
 
   const timePeriods = ["Before 12PM", "12PM - 3PM", "3PM - 6PM", "After 6PM"];
   const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday",
   ];
-
-  //   PAGINAGTION
 
   const itemsPerPage = 3;
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -225,26 +184,12 @@ export function ViewApplicants({ item, handleClose }) {
         {/* STUDENT INFO */}
         <div>
           <h2>Order ID: {item?.id}</h2>
-          <h2 style={{ textAlign: "left" }}>{item?.subject}</h2>
+          <h2 className="text-left">{item?.subject}</h2>
 
-          <div
-            style={{ fontSize: "medium", fontWeight: "bold", color: "#ccc" }}
-          >
-            Student
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "15px",
-            }}
-          >
+          <div className="text-base font-bold text-gray-400">Student</div>
+          <div className="flex flex-wrap items-center gap-4">
             <div>
-              <FontAwesomeIcon
-                style={{ marginLeft: "10px", fontSize: "2rem" }}
-                icon={faGraduationCap}
-              />
+              <FontAwesomeIcon className="ml-2 text-2xl" icon={faGraduationCap} />
             </div>
             <div>
               <b>{item?.studentName}</b>
@@ -256,245 +201,124 @@ export function ViewApplicants({ item, handleClose }) {
           </div>
         </div>
 
-        <h2
-          style={{ textAlign: "left", marginTop: "30px", marginBottom: "10px" }}
-        >
-          Applicants
-        </h2>
+        <h2 className="text-left mt-8 mb-2">Applicants</h2>
 
         {displayedSessions?.length === 0 ? (
-          <div
-            style={{
-              flex: 1,
-              textAlign: "center",
-              color: "#ccc",
-              fontSize: "1.5rem",
-            }}
-          >
+          <div className="flex-1 text-center text-gray-400 text-2xl">
             No Applicants Yet
           </div>
-        )
-      :
-      <>
+        ) : (
+          <>
+            {displayedSessions?.map((e, index) => {
+              const isSelected = (day, time) =>
+                e?.slotAvailable?.includes(`${day}-${time}`);
+              const isRequired = (day, time) =>
+                item?.slotRequired?.includes(`${day}-${time}`);
 
-        {displayedSessions?.map((e, index) => {
-          const isSelected = (day, time) =>
-            e?.slotAvailable?.includes(`${day}-${time}`);
-          const isRequired = (day, time) =>
-            item?.slotRequired?.includes(`${day}-${time}`);
-
-          return (
-            <Accordion key={index}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    justifyContent: "space-between",
-                    display: "flex",
-                    fontSize: "large",
-                    fontWeight: "bold",
-                  }}
-                >
-                  <div>{e?.tutorDetails?.userName}</div>
-
-                  <div>{e?.tutorDetails?.email}</div>
-                </div>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div style={{ flex: 1 }}>
-                  {/* TIME TABLE */}
-                  <div
-                    style={{
-                      flex: 1,
-                      marginTop: "20px",
-                      overflowX: "auto",
-                      overflowY: "hidden",
-                    }}
+              return (
+                <Accordion key={index}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1-content"
+                    id="panel1-header"
                   >
-                    <h2>Time Available</h2>
-
-                    {/* TIME TABLE */}
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        justifyContent: "space-between",
-                        flex: 1,
-                        minWidth: "600px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          flex: 1,
-                          gap: "10px",
-                          display: "flex",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <div
-                          style={{
-                            flex: 1,
-                            minHeight: "40px",
-                            padding: "5px",
-                            textAlign: "center",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        ></div>
-                        {timePeriods.map((time) => (
-                          <div
-                            key={time}
-                            style={{
-                              flex: 1,
-                              minHeight: "40px",
-                              padding: "5px",
-                              textAlign: "center",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            {time}
+                    <div className="flex flex-1 justify-between font-bold text-lg">
+                      <div>{e?.tutorDetails?.userName}</div>
+                      <div>{e?.tutorDetails?.email}</div>
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div className="flex-1">
+                      {/* TIME TABLE */}
+                      <div className="flex-1 mt-5 overflow-x-auto overflow-y-hidden">
+                        <h2>Time Available</h2>
+                        <div className="flex gap-2 justify-between min-w-[600px]">
+                          <div className="flex flex-col gap-2 flex-1">
+                            <div className="flex-1 min-h-10 p-1 flex items-center justify-center"></div>
+                            {timePeriods.map((time) => (
+                              <div
+                                key={time}
+                                className="flex-1 min-h-10 p-1 text-center flex items-center justify-center"
+                              >
+                                {time}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
 
-                      {days.map((day) => (
-                        <div
-                          key={day}
-                          style={{
-                            flex: 1,
-                            gap: "10px",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <div
-                            style={{
-                              flex: 1,
-                              minHeight: "40px",
-                              padding: "5px",
-                              textAlign: "center",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {day.slice(0, 3)}
-                          </div>
-                          {timePeriods.map((time) => (
-                            <div
-                              key={time}
-                              style={{
-                                flex: 1,
-                                minHeight: "40px",
-                                padding: "5px",
-                                textAlign: "center",
-                                display: "flex",
-                                alignItems: "center",
-                                userSelect: "none",
-                                transition: "all 0.5s ease-in-out",
-                                border: isRequired(day, time)
-                                  ? "2px solid red"
-                                  : "2px solid #ccc",
-                                background: isSelected(day, time)
-                                  ? "#007bff"
-                                  : "#ccc",
-                              }}
-                            ></div>
+                          {days.map((day) => (
+                            <div key={day} className="flex flex-col gap-2 flex-1">
+                              <div className="flex-1 min-h-10 p-1 flex items-center justify-center">
+                                {day.slice(0, 3)}
+                              </div>
+                              {timePeriods.map((time) => (
+                                <div
+                                  key={time}
+                                  className={`flex-1 min-h-10 p-1 flex items-center transition-all duration-500 ease-in-out select-none border ${
+                                    isRequired(day, time)
+                                      ? "border-red-500"
+                                      : "border-gray-300"
+                                  } ${
+                                    isSelected(day, time)
+                                      ? "bg-blue-600"
+                                      : "bg-gray-300"
+                                  }`}
+                                ></div>
+                              ))}
+                            </div>
                           ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <p
-                    style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontSize: "1.5rem",
-                      marginTop: "20px",
-                    }}
-                  >
-                    Blue = Selected by Teacher | Red = Required by Student
-                  </p>
-
-                  {/* SUPPORTING INFORMATION */}
-                  {e?.supportingInformation && (
-                    <div style={{ flex: 1, marginTop: "20px" }}>
-                      <div style={{ color: "#000", fontWeight: "bold" }}>
-                        Supporting Information
                       </div>
-                      <div
-                        style={{
-                          flex: 1,
-                          borderRadius: "3px",
-                          marginTop: "5px",
-                          border: "1px solid #ccc",
-                          borderRadius: "5px",
-                          padding: "10px",
-                        }}
-                      >
-                        {e?.supportingInformation}
+
+                      <p className="flex-1 text-center text-2xl mt-5">
+                        Blue = Selected by Teacher | Red = Required by Student
+                      </p>
+
+                      {/* SUPPORTING INFORMATION */}
+                      {e?.supportingInformation && (
+                        <div className="flex-1 mt-5">
+                          <div className="text-black font-bold">
+                            Supporting Information
+                          </div>
+                          <div className="flex-1 mt-1 border border-gray-300 rounded p-2">
+                            {e?.supportingInformation}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* GENERATE LINK BUTTON */}
+                      <div className="flex-1 mt-8">
+                        <Button
+                          className="w-full"
+                          variant="outlined"
+                          onClick={() => {
+                            setSelectedTutor(e);
+                            setShowModal(true);
+                          }}
+                        >
+                          CREATE LINK
+                        </Button>
                       </div>
                     </div>
-                  )}
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
 
-                  {/* GENERATE LINK BUTTON */}
-                  <div style={{ flex: 1, marginTop: "30px" }}>
-                    <Button
-                      style={{
-                        width: "100%",
-                      }}
-                      variant="outlined"
-                      onClick={() => {
-                        setSelectedTutor(e);
-                        setShowModal(true);
-                      }}
-                    >
-                      CREATE LINK
-                    </Button>
-                  </div>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-
-        {displayedSessions?.length && (
-          <div
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              display: "flex",
-              marginTop: '1rem'
-            }}
-          >
-            <Stack spacing={2}>
-              <Pagination
-                count={Math.ceil(item.applicants?.length / itemsPerPage)}
-                page={currentPage}
-                onChange={handleChangePage}
-              />
-            </Stack>
-          </div>
+            {displayedSessions?.length && (
+              <div className="flex-1 flex items-center justify-center mt-4">
+                <Stack spacing={2}>
+                  <Pagination
+                    count={Math.ceil(item.applicants?.length / itemsPerPage)}
+                    page={currentPage}
+                    onChange={handleChangePage}
+                  />
+                </Stack>
+              </div>
+            )}
+          </>
         )}
 
-</>
-      }
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: "20px",
-            gap: "10px",
-          }}
-        >
+        <div className="flex justify-end mt-5 gap-2">
           <Button
             variant="contained"
             color="error"

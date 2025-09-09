@@ -1,147 +1,63 @@
-import React, { useState } from "react";
-import classes from "./Login.module.css";
-import googleLogo from "../../assets/R.png";
-
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {
-  collection,
-  getDocs,
-  where,
-  query,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+import React, { useState, useContext } from "react";
+import LoginForm from "./LoginForm/LoginForm";
 import CustomModal from "./CustomModal/CustomModal";
 import Loader from "./Loader/Loader";
-import LoginForm from "./LoginForm/LoginForm";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { MyContext } from "../../Context/MyContext";
-import { useContext } from "react";
 import Logo from "../../assets/logo.png";
-import moment from "moment-timezone";
+import LoginImage from "../../assets/Login/login2.png";
 
 export default function Login() {
-  const auth = getAuth();
-  const navigate = useNavigate();
+  const { loading } = useContext(MyContext);
 
-  const provider = new GoogleAuthProvider();
-  provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
-  const [formError, setFormError] = useState("");
-  const [loading, setLoading] = useState(false);
+return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <CustomModal open={loading}>
+        <Loader />
+      </CustomModal>
+      <Toaster />
 
-  const { setIsUserLoggedIn, setUserDetails, setUserType } =
-    useContext(MyContext);
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden grid lg:grid-cols-2 min-h-[600px]">
+        {/* Left Side - Educational Illustration */}
+        <div className="hidden lg:flex bg-gradient-to-br from-blue-50 to-indigo-100 p-12 items-center justify-center relative">
+          <div className="absolute top-8 left-8">
+            <img src={Logo} alt="IB Innovators Logo" className="h-16 w-auto object-contain" />
+          </div>
 
-  const timeZone = moment.tz.guess();
-
-  // SIGN IN WITH GOOGLE
-  const loginWithGoogle = async () => {
-    try {
-      setLoading(true);
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
-      const userId = userCredential.user.uid;
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.size === 1) {
-        querySnapshot.forEach((doc) => {
-          const userType = doc.data().type;
-          const userData = doc.data();
-          setIsUserLoggedIn(true);
-          setUserDetails(userData);
-          setUserType(userType);
-          const docRef = doc(db, "userList", doc.id);
-          updateDoc(docRef, { timeZone: timeZone });
-        });
-        navigate("/", { replace: true });
-      } else {
-        toast.error("User doesn't exist.");
-      }
-    } catch (error) {
-      toast.error("Error logging in user");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  // ______________________________________________________________________________
-
-
-  
-  return (
-    <div className={classes.container}>
-      <div className={classes.innerContainer}>
-        {/* FORM CONTAINER */}
-        <div className={classes.formContainer}>
-          <div className={classes.loginContainer}>
-            {/* LOGO IMAGE */}
-            <div
-              style={{
-                margin: "0px auto",
-                width: "max-content",
-                marginBottom: "50px",
-              }}
-            >
-              <img
-                src={Logo}
-                alt=""
-                style={{
-                  height: "100%",
-                  width: "auto",
-                  objectFit: "contain",
-                  maxWidth: "200px",
-                }}
-              />
-            </div>
-
-            {/* TOP HEADINGS */}
-            <div className={classes.formHeading}>Login</div>
-            <div style={{marginBottom: '30px'}} className={classes.formDescription}>
-              Please enter your login credentials below.
-            </div>
-
-            {/* LOGIN WITH GOOGLE */}
-            
-            {/* <button
-              disabled={loading}
-              onClick={loginWithGoogle}
-              className={classes.signInWithGoogleButton}
-            >
-              <div
-                style={{
-                  height: "25px",
-                  width: "25px",
-                  backgroundImage: `url(${googleLogo})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                }}
-              ></div>
-              <div>{loading ? "Signing" : "Sign"} in with Google</div>
-            </button>
-            {formError !== "" && (
-              <div className={classes.error}>{formError}</div>
-            )}
-*/}
-            <LoginForm />
-
-            {/* @2024 LINE */}
-            <div className={classes.endLine}>
-              @2024 IB Innovators. All rights reserved
-            </div>
+          <div className="relative w-full max-w-md">
+            <img
+              src={LoginImage}
+              alt="International Day of Education illustration with globe, graduation cap, and learning elements"
+              className="w-full h-auto object-contain"
+            />
           </div>
         </div>
 
-        {/* IMAGE CONTAINER */}
-        <div className={classes.imageContainer}>
-          <div className={classes.backgroundLogoImage}></div>
+        {/* Right Side - Login Form */}
+        <div className="flex flex-col justify-center p-8 lg:p-12">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center mb-8">
+            <img src={Logo} alt="IB Innovators Logo" className="h-12 w-auto object-contain" />
+          </div>
+
+          {/* Logo for desktop */}
+          <div className="hidden lg:flex items-center mb-8">
+            <img src={Logo} alt="IB Innovators Logo" className="h-16 w-auto object-contain" />
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-4xl font-bold text-blue-600 mb-2">Class Core</h1>
+          <p className="text-gray-500 mb-8">Please login here</p>
+
+          {/* Login Form */}
+          <LoginForm />
+
+          {/* Footer */}
+          <div className="mt-8 text-center text-gray-400 text-sm">@2025 IB Innovators. All rights reserved</div>
         </div>
       </div>
+
       <div id="recaptcha-container"></div>
     </div>
-  );
+  )
 }

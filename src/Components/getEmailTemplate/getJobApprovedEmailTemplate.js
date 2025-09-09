@@ -1,31 +1,20 @@
-
 export default function getJobApprovedEmailTemplate(tutor_name, student_name, subject) {
-
-    return `
-    
+  return `
 <html>
   <head></head>
-  <body style="padding: 1rem; background: white">
-    <div style="flex: 1; width: 100%">
-      <div
-        style="
-          flex: 1;
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: center;
-        "
-      >
+  <body class="p-4 bg-white">
+    <div class="flex w-full">
+      <div class="flex flex-row justify-start items-center w-full">
         <img
           src="https://portal.ibinnovators.com/logo.png"
           alt="Logo"
           height="50"
           width="100"
-          style="height: 50; width: auto"
+          class="h-[50px] w-auto"
         />
       </div>
 
-      <div style="background: #eee; padding: 1rem; flex: 1; margin-top: 1rem">
+      <div class="bg-[#eee] p-4 w-full mt-4">
         <p>Dear ${tutor_name},</p>
 
         <p>Congratulations!</p>
@@ -40,7 +29,7 @@ export default function getJobApprovedEmailTemplate(tutor_name, student_name, su
           lesson and, as per standard procedure, ensure to:
         </p>
 
-        <ol>
+        <ol class="list-decimal list-inside">
           <li>Cc coordinator@ibinnovators.com</li>
           <li>Cc the parental email address if there is one given</li>
           <li>Introduce yourself- education, background, experience, etc.</li>
@@ -54,9 +43,7 @@ export default function getJobApprovedEmailTemplate(tutor_name, student_name, su
         <p>
           Please log on to your portal for the contact details of the student
           <a href="https://portal.ibinnovators.com/login" target="_blank"
-            >here</a
-          >
-          .
+            class="text-blue-600 underline">here</a>.
         </p>
 
         <p>If you have any questions, please don’t hesitate to ask.</p>
@@ -67,20 +54,18 @@ export default function getJobApprovedEmailTemplate(tutor_name, student_name, su
         </p>
       </div>
 
-      <div style="margin-top: 1rem">
-        <div style="font-size: small; color: #7e7e7e">
-          For 1-on-1 lessons and tutoring
-        </div>
-        <div style="font-size: small; color: #7e7e7e">education.ibinnovators.com</div>
-        <div style="font-size: small">
-          <a href="mailto:support@ibinnovators.com" target="_blank">
+      <div class="mt-4">
+        <div class="text-sm text-gray-500">For 1-on-1 lessons and tutoring</div>
+        <div class="text-sm text-gray-500">education.ibinnovators.com</div>
+        <div class="text-sm">
+          <a href="mailto:support@ibinnovators.com" target="_blank" class="text-blue-600 underline">
             support@ibinnovators.com
           </a>
         </div>
-        <div style="font-size: small; color: #7e7e7e">
+        <div class="text-sm text-gray-500">
           ${process.env.REACT_APP_EMAIL_TEMPLATE_WHATSAPP}
         </div>
-        <div style="color: #1555a0">
+        <div class="text-[#1555a0] mt-2">
           <b>
             IB INNOVATORS LTD,<br />
             Suite 4258, Unit 3A, 34-35 Hatton Garden,<br />
@@ -92,7 +77,5 @@ export default function getJobApprovedEmailTemplate(tutor_name, student_name, su
     </div>
   </body>
 </html>
-
 `
-
 }

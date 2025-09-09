@@ -1,120 +1,100 @@
-import React, { useState, useEffect, useContext } from "react";
+"use client"
 
-import { db } from "../../../../firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  onSnapshot,
-  where,
-  updateDoc,
-} from "firebase/firestore";
+import { useState } from "react"
 
-export function RevisionCourses({userDetails, userId}) {
+import { db } from "../../../../firebase"
+import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 
-  const [wantToTeachRevisionCourse, setWantToTeachRevisionCourse] = useState(userDetails?.wantToTeachRevisionCourse ? userDetails?.wantToTeachRevisionCourse : false);
+export function RevisionCourses({ userDetails, userId }) {
+  const [wantToTeachRevisionCourse, setWantToTeachRevisionCourse] = useState(
+    userDetails?.wantToTeachRevisionCourse ? userDetails?.wantToTeachRevisionCourse : false,
+  )
 
-  const [editing, setEditing] = useState(false);
-  const [savingDetails, setSavingDetails] = useState(false);
+  const [editing, setEditing] = useState(false)
+  const [savingDetails, setSavingDetails] = useState(false)
 
   async function savingChanges() {
-    
-      
-    setSavingDetails(true);
+    setSavingDetails(true)
     try {
-      const details = {wantToTeachRevisionCourse};
-  
-      const userListRef = collection(db, 'userList');
-      const q = query(userListRef, where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
-  
+      const details = { wantToTeachRevisionCourse }
+
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const querySnapshot = await getDocs(q)
+
       if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
-  
-        // Update only the specified fields in the document
-        await updateDoc(docRef, details);
+        const docRef = querySnapshot.docs[0].ref
+
+        await updateDoc(docRef, details)
       }
-  
-      setSavingDetails(false);
+
+      setSavingDetails(false)
       setEditing(false)
     } catch (e) {
-      console.error('Error saving changes:', e);
-      alert("Error saving changes. Please try again");
-      setSavingDetails(false);
+      console.error("Error saving changes:", e)
+      alert("Error saving changes. Please try again")
+      setSavingDetails(false)
     }
-
   }
 
-
   return (
-    <div
-    >
-      <div
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center", marginBottom: '20px'
-        }}
-      >
-        <div
-          style={{ textAlign: "left", fontSize: "1.5rem", fontWeight: "bold" }}
-        >
-          Revision Courses
+    <div className="bg-white p-6 rounded-lg">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Revision Courses</h2>
+
+        {/* Toggle Switch */}
+        <div className="relative">
+          <input
+            type="checkbox"
+            id="revision-toggle"
+            className="sr-only"
+            checked={wantToTeachRevisionCourse}
+            onChange={(e) => setWantToTeachRevisionCourse(e.target.checked)}
+          />
+          <label
+            htmlFor="revision-toggle"
+            className={`flex items-center cursor-pointer w-12 h-6 rounded-full transition-colors duration-200 ${
+              wantToTeachRevisionCourse ? "bg-green-500" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-200 ${
+                wantToTeachRevisionCourse ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </label>
         </div>
-
-        {editing===false ? 
-        <button onClick={() => {setEditing(true)}} style={{border: '1px solid #000', color: '#000', background: 'transparent', borderRadius: '0px', padding: '5px 10px'}}>EDIT</button>
-            :
-<div style={{display:'flex', gap: '10px'}}>
-<button onClick={() => {setEditing(false)}} style={{border: '1px solid red', color: 'white', background: 'red', borderRadius: '0px', padding: '5px 10px'}}>CANCEL</button>
-
-         <button onClick={savingChanges} style={{border: '1px solid green', color: 'white', background: 'green', borderRadius: '0px', padding: '5px 10px'}}>{savingDetails ? "SAVING" : "SAVE"}</button>
-</div>
-      }
       </div>
 
-      <div>
-        <div style={{fontSize: 'small'}}>I'm interested in teaching a revision course</div>
+      <div className="mb-4">
+        <p className="text-gray-700 mb-2">I'm interested in teaching a revision course</p>
 
+        {wantToTeachRevisionCourse ? (
+          <p className="text-green-600 font-semibold">
+            <span className="text-green-500">Yes,</span> I am able to teach them at the moment.
+          </p>
+        ) : (
+          <p className="text-gray-600 font-semibold">No, I am unable to teach them at the moment.</p>
+        )}
+      </div>
 
-        <p style={{fontWeight: 'bold', marginBottom: '20px'}}>
-      {editing === false ? (
-        <span style={{ fontWeight: "bold" }}>
-            {userDetails?.wantToTeachRevisionCourse === true
-    ? "Yes, I would like to teach online courses."
-    : userDetails?.wantToTeachRevisionCourse === false
-    ? "No, I am unable to teach them at the moment."
-    : "No, I am unable to teach them at the moment."}
-            </span>
-      ) : (
-        <div >
-          <label style={{marginRight: '20px'}}>
-            <input
-              type="radio"
-              value={true}
-              checked={wantToTeachRevisionCourse === true}
-              onChange={() => setWantToTeachRevisionCourse(true)}
-            />
-            Yes
-          </label>
-          <label style={{marginRight: '20px'}}>
-            <input
-              type="radio"
-              value={false}
-              checked={wantToTeachRevisionCourse === false}
-              onChange={() => setWantToTeachRevisionCourse(false)}
-            />
-            No
-          </label>
+      {/* Keep edit functionality but hide it for now to match design */}
+      {editing && (
+        <div className="mt-6 flex gap-2">
+          <button
+            onClick={() => setEditing(false)}
+            className="border border-red-600 text-white bg-red-600 rounded-none px-3 py-1.5"
+          >
+            CANCEL
+          </button>
+          <button
+            onClick={savingChanges}
+            className="border border-green-600 text-white bg-green-600 rounded-none px-3 py-1.5"
+          >
+            {savingDetails ? "SAVING" : "SAVE"}
+          </button>
         </div>
       )}
-    </p>
-
-      </div>
-
     </div>
-  );
+  )
 }

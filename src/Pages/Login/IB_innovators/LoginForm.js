@@ -8,7 +8,6 @@ import { MyContext } from "../../../Context/MyContext";
 import moment from "moment-timezone";
 import { toast } from "react-hot-toast";
 import OtpInput from "react-otp-input";
-import { Eye, EyeOff } from "lucide-react"
 
 export default function LoginForm() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -24,7 +23,7 @@ export default function LoginForm() {
   const [show, setShow] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [sending, setSending] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true)
+
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -129,91 +128,82 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        {/* Email Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">Email Address</label>
-          <input
-            type="email"
-            ref={emailRef}
-            placeholder="Adminname@example.com"
-            value={loginData.email}
-            onChange={handleEmailInput}
-            onBlur={handleEmailBlur}
-            className={`w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-              emailError ? "border-red-500 bg-red-50" : "border-gray-200"
-            }`}
-          />
-          {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
-        </div>
+    <form onSubmit={handleSubmit} className="mt-5 flex flex-col items-center w-full gap-6">
+      {formError !== "auth/multi-factor-auth-required" ? (
+        <>
+          <div className="flex flex-col gap-5 w-11/12 md:w-3/4">
+            <div>
+              <label className="block text-lg mb-2">Email</label>
+              <div onClick={focusEmail} onBlur={handleEmailBlur} className={`flex items-center justify-between px-5 py-3 border rounded-3xl ${emailError ? 'border-red-500' : 'border-gray-400'}`}>
+                <input
+                  type="email"
+                  ref={emailRef}
+                  placeholder="johndoe@example.com"
+                  value={loginData.email}
+                  onChange={handleEmailInput}
+                  className="flex-1 bg-transparent outline-none text-gray-900 text-base"
+                />
+              </div>
+              {emailError && <p className="text-red-500 mt-1">{emailError}</p>}
+            </div>
 
-        {/* Password Field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">Password</label>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              ref={passwordRef}
-              placeholder="••••••••••••"
-              value={loginData.password}
-              onChange={handlePasswordInput}
-              onBlur={handlePasswordBlur}
-              className={`w-full px-4 py-3 pr-12 border rounded-lg bg-gray-50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                passwordError ? "border-red-500 bg-red-50" : "border-gray-200"
-              }`}
-            />
-            <button
-              type="button"
-              onClick={toggleShowPassword}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            <div>
+              <label className="block text-lg mb-2">Password</label>
+              <div onClick={focusPassword} onBlur={handlePasswordBlur} className={`flex items-center justify-between px-5 py-3 border rounded-3xl ${passwordError ? 'border-red-500' : 'border-gray-400'}`}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  ref={passwordRef}
+                  placeholder="********"
+                  value={loginData.password}
+                  onChange={handlePasswordInput}
+                  className="flex-1 bg-transparent outline-none text-gray-900 text-base"
+                />
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  onClick={toggleShowPassword}
+                  className="cursor-pointer ml-2 text-gray-600"
+                />
+              </div>
+              {passwordError && <p className="text-red-500 mt-1">{passwordError}</p>}
+            </div>
+          </div>
+
+          <div className="flex justify-end w-11/12 md:w-3/4 mt-2">
+            <button type="button" onClick={forgotPassword} className="text-gray-500 font-bold hover:underline">
+              Forgot Password?
             </button>
           </div>
-          {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
-        </div>
-      </div>
 
-      {/* Remember Me and Forgot Password */}
-      <div className="flex items-center justify-between">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          {notification && <p className="text-green-500 text-center mt-2">{notification}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-11/12 md:w-3/4 bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 rounded-3xl mt-2 font-bold text-lg flex justify-center items-center disabled:opacity-50"
+          >
+            {loading ? "Logging In" : "Login"}
+          </button>
+
+          {formError && <p className="text-red-500 mt-2 text-center">{formError}</p>}
+        </>
+      ) : (
+        <div className="flex flex-col items-center gap-4 w-11/12 md:w-3/4">
+          <OtpInput
+            value={otp}
+            onChange={handleChange}
+            numInputs={6}
+            inputStyle={{ width: "50px", height: "70px", borderRadius: "0.625rem", border: "1px solid #ccc", outline: "none", marginRight: "10px" }}
           />
-          <span className="ml-2 text-sm text-gray-600">Remember Me</span>
-        </label>
-        <button
-          type="button"
-          onClick={forgotPassword}
-          className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
-        >
-          Forgot Password?
-        </button>
-      </div>
-
-      {notification && <p className="text-green-600 text-sm text-center bg-green-50 p-3 rounded-lg">{notification}</p>}
-
-      {/* Login Button */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-      >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-            Logging in...
-          </>
-        ) : (
-          "Login"
-        )}
-      </button>
-
-      {formError && <p className="text-red-500 text-sm text-center bg-red-50 p-3 rounded-lg">{formError}</p>}
+          <button
+            type="button"
+            onClick={verify}
+            disabled={verifying}
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 rounded-3xl font-bold text-lg"
+          >
+            {verifying ? "Submitting" : "Submit OTP"}
+          </button>
+        </div>
+      )}
     </form>
-  )
+  );
 }

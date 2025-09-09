@@ -1,74 +1,61 @@
-import React, { useState, useEffect, useContext } from "react";
+"use client"
 
-import { db } from "../../../firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  onSnapshot,
-  where,
-  updateDoc,
-} from "firebase/firestore";
-import { MyContext } from "../../../Context/MyContext";
-import { Modal } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react"
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { db } from "../../../firebase"
+import { collection, query, onSnapshot, where } from "firebase/firestore"
+import { MyContext } from "../../../Context/MyContext"
+import { Modal } from "@mui/material"
 
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import Button from '@mui/material/Button';
-import { CreateNewOrderForm } from "./CreateNewOrderForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
+
+import Pagination from "@mui/material/Pagination"
+import Stack from "@mui/material/Stack"
+import { CreateNewOrderForm } from "./CreateNewOrderForm"
 
 export function StudentsOnly() {
-  const { userDetails } = useContext(MyContext);
+  const { userDetails } = useContext(MyContext)
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState({})
 
-  const [subjects, setSubjects] = useState(
-    userDetails?.subjects ? userDetails?.subjects : {}
-  );
+  const [subjects, setSubjects] = useState(userDetails?.subjects ? userDetails?.subjects : {})
 
   function closingModal(e) {
-    setShowModal(e);
+    setShowModal(e)
   }
 
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState([])
 
   const fetchData = () => {
     try {
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("type", "==", "student"));
-  
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const studentData = querySnapshot.docs.map((doc) => doc.data());
-        // console.log(studentData);
-        setStudents(studentData);
-        setSearchedStudents(studentData);
-      });
-  
-      return unsubscribe; // Return the unsubscribe function to stop listening when the component unmounts
-    } catch (e) {
-      console.error("Error fetching data:", e);
-    }
-  };
-  
-  useEffect(() => {
-    const unsubscribe = fetchData();
-  
-    // Cleanup function to unsubscribe when the component unmounts
-    return () => {
-      unsubscribe();
-    };
-  }, []); // Empty dependency array to run the effect only once when the component mounts
-  
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("type", "==", "student"))
 
-  const [searchedStudents, setSearchedStudents] = useState(students);
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const studentData = querySnapshot.docs.map((doc) => doc.data())
+        setStudents(studentData)
+        setSearchedStudents(studentData)
+      })
+
+      return unsubscribe
+    } catch (e) {
+      console.error("Error fetching data:", e)
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = fetchData()
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const [searchedStudents, setSearchedStudents] = useState(students)
 
   function handleSearch(e) {
-    const searchedData = e.target.value.toLowerCase();
+    const searchedData = e.target.value.toLowerCase()
 
     if (searchedData.length >= 2) {
       setSearchedStudents(
@@ -77,140 +64,108 @@ export function StudentsOnly() {
             item?.userName.toLowerCase().includes(searchedData) ||
             item?.email.toLowerCase().includes(searchedData) ||
             item?.userId.toLowerCase().includes(searchedData)
-          );
-        })
-      );
+          )
+        }),
+      )
     } else {
-      setSearchedStudents(students);
+      setSearchedStudents(students)
     }
   }
 
-  // PAST LESSONS PAGINATION
-  const itemsPerPage = 5;
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 5
+  const [currentPage, setCurrentPage] = React.useState(1)
 
   const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage);
-  };
+    setCurrentPage(newPage)
+  }
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedSessions = searchedStudents?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const displayedSessions = searchedStudents?.slice(startIndex, endIndex)
 
   return (
-    <div
-    className="shadowAndBorder"
-    style={{
-      marginTop: "0px",
-      flex: 1,
-      height: "max-content",
-      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-      background: 'rgba(255,255,255, 0.5)',
-      backdropFilter: 'blur(4px)', // Adjust the blur intensity as needed
-      WebkitBackdropFilter: 'blur(4px)', // For Safari support,
-      padding: '10px',
-      borderRadius: '10px', 
-      marginBottom: '10px'
-    }}
-    >
-      <h2 style={{ textAlign: "left" }}>Students</h2>
-
-      {students.length !== 0 &&
-      <div
-        style={{
-          marginBottom: "10px",
-          marginTop: "20px",
-          display: "flex",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          borderBottom: "2px solid #ccc",
-        }}
-      >
-        <FontAwesomeIcon
-          style={{ marginLeft: "10px", marginRight: "10px" }}
-          icon={faMagnifyingGlass}
-        />
-        <input
-          onChange={handleSearch}
-          placeholder="Search via Name / Email / User ID"
-          style={{ border: "none", flex: 1, outline: "none", background: 'transparent' }}
-          defaultValue=""
-        />
-      </div>
-      }
-
-      {displayedSessions.map((student, index) => (
-        <div
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderTop: index!== 0 ? "2px solid #fff" : 'none',
-          }}
-          key={index}
-        >
-          <div style={{ fontWeight: "bold" }}>{student?.userName}</div>
-          <div>Email: {student?.email}</div>
-          <div>User ID: {student?.userId}</div>
-          <div>Balance: £ {(student?.credits && student?.credits > 0) ? student?.credits?.toFixed(2) : 0}</div>
-
-          <Button variant="outlined"
-            style={{
-              width: '100%',
-              marginTop: '5px',
-              marginBottom: '5px'
-            }}
-            onClick={() => {
-              setSelectedStudent(student);
-              setShowModal(true);
-            }}
-          >
-            CREATE JOB
-          </Button>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      {students.length !== 0 && (
+        <div className="relative mb-6">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FontAwesomeIcon className="text-gray-400" icon={faMagnifyingGlass} />
+          </div>
+          <input
+            onChange={handleSearch}
+            placeholder="Search by name/email"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            defaultValue=""
+          />
         </div>
-      ))}
+      )}
+
+      <div className="space-y-4">
+        {displayedSessions.map((student, index) => (
+          <div
+            className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:shadow-md transition-shadow"
+            key={index}
+          >
+            <div className="flex items-center space-x-4 flex-1">
+              <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
+                <img
+                  src={`/profile-picture-of-.jpg?key=i60jq&height=48&width=48&query=profile+picture+of+${student?.userName || "student"}`}
+                  alt={student?.userName}
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{student?.userName}</h3>
+                <div className="space-y-1 text-sm text-gray-600">
+                  <div>
+                    <span className="font-medium">Email:</span> {student?.email}
+                  </div>
+                  <div>
+                    <span className="font-medium">User ID:</span> {student?.userId}
+                  </div>
+                  <div>
+                    <span className="font-medium">Balance:</span> ${" "}
+                    {student?.credits && student?.credits > 0 ? student?.credits?.toFixed(2) : "0.16"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              onClick={() => {
+                setSelectedStudent(student)
+                setShowModal(true)
+              }}
+            >
+              Create Job
+            </button>
+          </div>
+        ))}
+      </div>
 
       {searchedStudents?.length > itemsPerPage && (
-        <div
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-            marginTop: "20px",
-            marginBottom: "10px",
-          }}
-        >
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
+          <div className="text-sm text-gray-500">
+            Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length}{" "}
+            records
+          </div>
           <Stack spacing={2}>
             <Pagination
-              count={Math.ceil(students?.length / itemsPerPage)}
+              count={Math.ceil(searchedStudents?.length / itemsPerPage)}
               page={currentPage}
               onChange={handleChangePage}
+              color="primary"
             />
           </Stack>
         </div>
       )}
 
-      {searchedStudents.length === 0 && (
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            color: "#ccc",
-            fontSize: "1.5rem",
-          }}
-        >
-          No Students
-        </div>
-      )}
+      {searchedStudents.length === 0 && <div className="text-center text-gray-400 text-xl py-12">No Students</div>}
 
-      <Modal
-        open={showModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
+      <Modal open={showModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
         <CreateNewOrderForm item={selectedStudent} handleClose={closingModal} />
       </Modal>
     </div>
-  );
+  )
 }

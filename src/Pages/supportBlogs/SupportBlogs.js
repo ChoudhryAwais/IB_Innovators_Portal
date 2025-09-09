@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import styles
-import "./SupportBlogs.css";
+import "react-quill/dist/quill.snow.css";
 import { db } from "../../firebase";
 import {
   collection,
   doc,
-  addDoc,
   deleteDoc,
   query,
   onSnapshot,
@@ -21,15 +19,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import toast from "react-hot-toast";
-import TopHeading from "../../Components/TopHeading/TopHeading";
 import { TextField } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
+
 import Box from "@mui/material/Box";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { useNavigate } from "react-router-dom"
 
 const filter = createFilterOptions();
 
@@ -48,90 +48,32 @@ const modules = {
   ],
 };
 
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "color",
-  "font",
-  "align",
-  "size",
-];
+const formats = ["header", "bold", "italic", "underline", "color", "font", "align", "size"];
 
 export default function SupportBlogs() {
-  const [editorContent, setEditorContent] = useState("");
-  const [viewers, setViewers] = useState("");
-  const [header, setHeader] = useState("");
-  const [subCategory, setSubCategory] = useState("");
+
+    const { setFirstMessage, setSecondMessage } = useTopHeading()
+    
+      useEffect(() => {
+        setFirstMessage("Support Blogs")
+        setSecondMessage("Show Support Blogs")
+      }, [setFirstMessage, setSecondMessage])
+
+  const [blogs, setBlogs] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const [blogs, setBlogs] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [editorContent, setEditorContent] = useState("");
+  const [viewers, setViewers] = useState("");
+  const [header, setHeader] = useState("");
+  const [subCategory, setSubCategory] = useState("");
 
-  const handleBlogSubmit = async () => {
-    if (viewers !== "" && header !== "" && editorContent !== "" && subCategory !== "") {
-      setLoading(true);
-      const blogsRef = collection(db, "SupportBlogs");
-      await addDoc(blogsRef, {
-        content: editorContent,
-        viewers: viewers,
-        header: header,
-        createdOn: new Date(),
-        subCategory: subCategory,
-      });
-      setEditorContent("");
-      setViewers("");
-      setHeader("");
-      setSubCategory("");
-      toast.success("Blog submitted successfully!");
-      setLoading(false);
-    } else {
-      toast("Please fill all details");
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const q = query(collection(db, "SupportBlogs"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const blogsArray = snapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setBlogs(blogsArray);
-
-      const subCategorySet = new Set();
-      const categorySet = new Set();
-      snapshot.docs.forEach((doc) => {
-        const subCategory = doc.data().subCategory;
-        const category = doc.data().viewers;
-        if (subCategory) {
-          subCategorySet.add(subCategory);
-        } if(category){
-          categorySet.add(category)
-        }
-      });
-
-      setSubCategories(Array.from(subCategorySet));
-      setCategories(Array.from(categorySet))
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const deleteBlog = async (id) => {
-    setLoading(true);
-    await deleteDoc(doc(db, "SupportBlogs", id));
-    setBlogs(blogs.filter((blog) => blog.id !== id));
-    setShowModal(false);
-    setLoading(false);
-  };
+    const navigate = useNavigate()
 
   const handleEditBlog = (blog) => {
     setSelectedBlog(blog);
@@ -143,15 +85,15 @@ export default function SupportBlogs() {
   };
 
   const handleSaveEdit = async () => {
-    if (viewers !== "" && header !== "" && editorContent !== "" && subCategory !== "") {
+    if (viewers && header && editorContent && subCategory) {
       setLoading(true);
       const blogRef = doc(db, "SupportBlogs", selectedBlog.id);
       await updateDoc(blogRef, {
         content: editorContent,
-        viewers: viewers,
-        header: header,
-        subCategory: subCategory,
-        updatedOn: new Date()
+        viewers,
+        header,
+        subCategory,
+        updatedOn: new Date(),
       });
       setShowEditModal(false);
       setEditorContent("");
@@ -166,7 +108,36 @@ export default function SupportBlogs() {
     }
   };
 
-  // Pagination
+  const deleteBlog = async (id) => {
+    setLoading(true);
+    await deleteDoc(doc(db, "SupportBlogs", id));
+    setBlogs(blogs.filter((blog) => blog.id !== id));
+    setShowModal(false);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const q = query(collection(db, "SupportBlogs"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const blogsArray = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setBlogs(blogsArray);
+
+      const subCategorySet = new Set();
+      const categorySet = new Set();
+      snapshot.docs.forEach((doc) => {
+        const subCategory = doc.data().subCategory;
+        const category = doc.data().viewers;
+        if (subCategory) subCategorySet.add(subCategory);
+        if (category) categorySet.add(category);
+      });
+
+      setSubCategories(Array.from(subCategorySet));
+      setCategories(Array.from(categorySet));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const upcomingItemsPerPage = 5;
   const [upcomingCurrentPage, setUpcomingCurrentPage] = useState(1);
 
@@ -179,229 +150,46 @@ export default function SupportBlogs() {
   const upcomingDisplayedSessions = blogs?.slice(upcomingStartIndex, upcomingEndIndex);
 
   return (
-    <>
-      <TopHeading>Support & Training Blogs</TopHeading>
-      <div
-        style={{
-          display: "flex",
-          paddingTop: "0px",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginRight: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <div
-          className="shadowAndBorder"
-          style={{
-            marginTop: "0px",
-            flex: 1,
-            height: "max-content",
-            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-            background: "rgba(255,255,255, 0.5)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          <h2 style={{ textAlign: "left" }}>Create a New Blog</h2>
-         
-          <Autocomplete
-            value={viewers}
-            style={{ marginBottom: "20px" }}
-            onChange={(event, newValue) => {
-              if (typeof newValue === "string") {
-                setViewers(newValue);
-              } else if (newValue && newValue.inputValue) {
-                setViewers(newValue.inputValue);
-              } else {
-                setViewers(newValue);
-              }
-            }}
-            filterOptions={(options, params) => {
-              const filtered = options.filter((option) =>
-                option.toLowerCase().includes(params.inputValue.toLowerCase())
-              );
-              const { inputValue } = params;
-              if (inputValue !== "" && !options.includes(inputValue)) {
-                filtered.push(inputValue);
-              }
-              return filtered;
-            }}
-            selectOnFocus
-            clearOnBlur
-            handleHomeEndKeys
-            id="free-solo-with-text-demo"
-            options={categories}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              if (option.inputValue) {
-                return option.inputValue;
-              }
-              return option;
-            }}
-            renderOption={(props, option) => <li {...props}>{option}</li>}
-            fullWidth
-            freeSolo
-            renderInput={(params) => <TextField {...params} label="Select category" />}
-          />
+    <TopHeadingProvider>
 
-          <Autocomplete
-            value={subCategory}
-            style={{ marginBottom: "20px" }}
-            onChange={(event, newValue) => {
-              if (typeof newValue === "string") {
-                setSubCategory(newValue);
-              } else if (newValue && newValue.inputValue) {
-                setSubCategory(newValue.inputValue);
-              } else {
-                setSubCategory(newValue);
-              }
-            }}
-            filterOptions={(options, params) => {
-              const filtered = options.filter((option) =>
-                option.toLowerCase().includes(params.inputValue.toLowerCase())
-              );
-              const { inputValue } = params;
-              if (inputValue !== "" && !options.includes(inputValue)) {
-                filtered.push(inputValue);
-              }
-              return filtered;
-            }}
-            selectOnFocus
-            clearOnBlur
-            handleHomeEndKeys
-            id="free-solo-with-text-demo"
-            options={subCategories}
-            getOptionLabel={(option) => {
-              if (typeof option === "string") {
-                return option;
-              }
-              if (option.inputValue) {
-                return option.inputValue;
-              }
-              return option;
-            }}
-            renderOption={(props, option) => <li {...props}>{option}</li>}
-            fullWidth
-            freeSolo
-            renderInput={(params) => <TextField {...params} label="Select subcategory" />}
-          />
+      <div className="flex flex-wrap gap-2 mr-2 mb-5 pt-0">
+        <div className="flex-1 shadow-lg bg-white/50 backdrop-blur-md rounded-lg p-3 mb-2">
 
-          
-<TextField
-            value={header}
-            type="text"
-            label="Blog Header"
-            onChange={(e) => setHeader(e.target.value)}
-            style={{
-              width: "100%",
-              minHeight: "40px",
-              marginBottom: "20px",
-            }}
-          />
-          
-          
-          <div style={{ marginBottom: "20px" }} className="text-input-section">
-            <label>Blog Body:</label>
-            <ReactQuill
-              value={editorContent}
-              onChange={setEditorContent}
-              modules={modules}
-              formats={formats}
-              style={{
-                width: "100%",
-                marginTop: "10px",
-                minHeight: "40px",
-                padding: "10px",
-                background: "rgba(255,255,255,0.3)",
-                borderRadius: "10px",
-              }}
-            />
-          </div>
-          <div className="submit-section">
-            <Button
-              disabled={loading}
-              variant="contained"
-              style={{ width: "100%" }}
-              onClick={handleBlogSubmit}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
-        <div
-          className="shadowAndBorder"
-          style={{
-            marginTop: "0px",
-            flex: 1,
-            height: "max-content",
-            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-            background: "rgba(255,255,255, 0.5)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
+        <Button
+          variant="contained"
+          color="primary"
+          className="mb-4"
+          onClick={() => navigate("/supportBlogs/new")}
         >
-          <h2 style={{ textAlign: "left" }}>Existing Blogs</h2>
+          Create a New Training Blog
+        </Button>
+
+          <h2 className="text-left font-semibold mb-3">Existing Blogs</h2>
+
           {upcomingDisplayedSessions.map((blog, index) => (
             <div
-              style={{
-                alignItems: "center",
-                flexDirection: "row",
-                display: "flex",
-                justifyContent: "space-between",
-                borderTop: index !== 0 ? "2px solid #ccc" : "none",
-                gap: "10px",
-                padding: "10px 5px",
-              }}
               key={index}
+              className={`flex flex-row justify-between items-center gap-2 p-2 ${
+                index !== 0 ? "border-t border-gray-300" : ""
+              }`}
             >
-              <div
-                style={{
-                  flex: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  fontSize: "1.1rem",
-                }}
-              >
+              <div className="flex-3 flex flex-col text-lg">
                 <div>{blog.header}</div>
                 <div
+                  className="text-base"
                   dangerouslySetInnerHTML={{
                     __html: blog?.content?.slice(0, 50),
                   }}
-                  style={{ fontSize: "medium" }}
-                ></div>
+                />
               </div>
-              <div
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  style={{
-                    width: "100%",
-                  }}
-                  onClick={() => handleEditBlog(blog)}
-                >
+              <div className="flex-1 flex flex-col gap-2">
+                <Button variant="outlined" className="w-full" onClick={() => handleEditBlog(blog)}>
                   Edit
                 </Button>
                 <Button
                   variant="outlined"
                   color="error"
-                  style={{
-                    width: "100%",
-                  }}
+                  className="w-full"
                   onClick={() => {
                     setSelectedBlog(blog);
                     setShowModal(true);
@@ -412,27 +200,13 @@ export default function SupportBlogs() {
               </div>
             </div>
           ))}
+
           {blogs?.length === 0 && (
-            <div
-              style={{
-                flex: 1,
-                textAlign: "center",
-                color: "#ccc",
-                fontSize: "1.5rem",
-              }}
-            >
-              No Blogs
-            </div>
+            <div className="flex-1 text-center text-gray-400 text-xl">No Blogs</div>
           )}
+
           {blogs?.length > upcomingItemsPerPage && (
-            <div
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-              }}
-            >
+            <div className="flex justify-center items-center mt-3">
               <Stack spacing={2}>
                 <Pagination
                   count={Math.ceil(blogs?.length / upcomingItemsPerPage)}
@@ -443,89 +217,55 @@ export default function SupportBlogs() {
             </div>
           )}
         </div>
-        <Dialog
-          open={showModal}
-          onClose={() => {
-            setShowModal(false);
-          }}
-        >
+
+        {/* Delete Confirmation Modal */}
+        <Dialog open={showModal} onClose={() => setShowModal(false)}>
           <DialogTitle>{"Please confirm if you want to delete this blog?"}</DialogTitle>
           <DialogActions>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
+            <Button variant="outlined" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="error"
-              onClick={() => deleteBlog(selectedBlog?.id)}
-            >
+            <Button disabled={loading} variant="contained" color="error" onClick={() => deleteBlog(selectedBlog?.id)}>
               {loading ? "Deleting" : "Delete"}
             </Button>
           </DialogActions>
         </Dialog>
-        <Dialog
-          open={showEditModal}
-          onClose={() => {
-            setShowEditModal(false);
-          }}
-        >
+
+        {/* Edit Blog Modal */}
+        <Dialog open={showEditModal} onClose={() => setShowEditModal(false)}>
           <DialogTitle>Edit Blog</DialogTitle>
-          <div style={{ padding: "20px" }}>
-            <FormControl fullWidth>
+          <div className="p-5">
+            <FormControl fullWidth className="mb-4">
               <InputLabel>Select category</InputLabel>
-              <Select
-                label="Select category"
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                  marginBottom: "20px",
-                }}
-                value={viewers}
-                onChange={(e) => setViewers(e.target.value)}
-              >
+              <Select value={viewers} onChange={(e) => setViewers(e.target.value)}>
                 <MenuItem value="">Select</MenuItem>
                 <MenuItem value="Student">Student</MenuItem>
                 <MenuItem value="Teacher">Teacher</MenuItem>
                 <MenuItem value="Admin">Admin</MenuItem>
               </Select>
             </FormControl>
+
             <TextField
               value={header}
               type="text"
               label="Blog Header"
               onChange={(e) => setHeader(e.target.value)}
-              style={{
-                width: "100%",
-                minHeight: "40px",
-                marginBottom: "20px",
-              }}
+              className="w-full mb-4"
             />
+
             <Autocomplete
               value={subCategory}
-              style={{ marginBottom: "20px" }}
+              className="mb-4"
               onChange={(event, newValue) => {
-                if (typeof newValue === "string") {
-                  setSubCategory(newValue);
-                } else if (newValue && newValue.inputValue) {
-                  setSubCategory(newValue.inputValue);
-                } else {
-                  setSubCategory(newValue);
-                }
+                if (typeof newValue === "string") setSubCategory(newValue);
+                else if (newValue?.inputValue) setSubCategory(newValue.inputValue);
+                else setSubCategory(newValue);
               }}
               filterOptions={(options, params) => {
                 const filtered = options.filter((option) =>
                   option.toLowerCase().includes(params.inputValue.toLowerCase())
                 );
-                const { inputValue } = params;
-                if (inputValue !== "" && !options.includes(inputValue)) {
-                  filtered.push(inputValue);
-                }
+                if (params.inputValue && !options.includes(params.inputValue)) filtered.push(params.inputValue);
                 return filtered;
               }}
               selectOnFocus
@@ -533,58 +273,35 @@ export default function SupportBlogs() {
               handleHomeEndKeys
               id="free-solo-with-text-demo"
               options={subCategories}
-              getOptionLabel={(option) => {
-                if (typeof option === "string") {
-                  return option;
-                }
-                if (option.inputValue) {
-                  return option.inputValue;
-                }
-                return option;
-              }}
+              getOptionLabel={(option) => (typeof option === "string" ? option : option.inputValue || option)}
               renderOption={(props, option) => <li {...props}>{option}</li>}
               fullWidth
               freeSolo
               renderInput={(params) => <TextField {...params} label="Select subcategory" />}
             />
-            <div style={{ marginBottom: "20px" }} className="text-input-section">
-              <label>Blog Body:</label>
+
+            <div className="flex flex-col mb-4">
+              <label className="mb-1 font-medium">Blog Body:</label>
               <ReactQuill
                 value={editorContent}
                 onChange={setEditorContent}
                 modules={modules}
                 formats={formats}
-                style={{
-                  width: "100%",
-                  marginTop: "10px",
-                  minHeight: "40px",
-                  padding: "10px",
-                  background: "rgba(255,255,255,0.3)",
-                  borderRadius: "10px",
-                }}
+                className="w-full mt-2 min-h-[40px] p-2 bg-white/30 rounded-lg"
               />
             </div>
           </div>
+
           <DialogActions>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setShowEditModal(false);
-              }}
-            >
+            <Button variant="outlined" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="primary"
-              onClick={handleSaveEdit}
-            >
+            <Button disabled={loading} variant="contained" color="primary" onClick={handleSaveEdit}>
               {loading ? "Saving" : "Save"}
             </Button>
           </DialogActions>
         </Dialog>
       </div>
-    </>
+    </TopHeadingProvider>
   );
 }

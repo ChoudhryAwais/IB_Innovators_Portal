@@ -1,273 +1,296 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import "./Sidebar.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+"use client"
+
+import { useState, useEffect, useContext } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import logo from "../assets/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faBars,
   faTachometerAlt,
   faUserPlus,
-  faGraduationCap,
-  faChalkboardTeacher,
-  faFileInvoice,
+  faUsers,
+  faGlobe,
+  faChevronDown,
+  faHome,
   faLink,
-  faBook,
   faBriefcase,
+  faChalkboardTeacher,
+  faGraduationCap,
+  faUserShield,
+  faBook,
+  faFileAlt,
+  faPhone,
+  faBookOpen,
+  faBlog,
+  faLifeRing,
+  faSearch,
+  faEye,
   faAddressCard,
   faChalkboardUser,
+  faFileInvoice,
   faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState, useEffect } from "react";
-import { MyContext } from "../Context/MyContext";
+  faChevronUp,
+} from "@fortawesome/free-solid-svg-icons"
+import { MyContext } from "../Context/MyContext"
+import { faWpforms } from "@fortawesome/free-brands-svg-icons"
 
 const Sidebar = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const location = useLocation();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(windowWidth < 769 ? true : false)
+  const [currentPath, setCurrentPath] = useState("")
+  const { userType } = useContext(MyContext)
 
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(
-    windowWidth < 769 ? true : false
-  );
+  const [expandedSections, setExpandedSections] = useState({
+    userManagement: false,
+    forms: false,
+    webControl: false,
+  })
 
-  const [currentPath, setCurrentPath] = useState("");
-
-useEffect(() => {
-  setCurrentPath(location.pathname)
-}, [location.pathname])
-
+  const [activeSection, setActiveSection] = useState("")
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
+    setCurrentPath(location.pathname)
 
-    window.addEventListener("resize", handleResize);
+    if (location.pathname === "/") {
+      setActiveSection("")
+      setExpandedSections({
+        userManagement: false,
+        forms: false,
+        webControl: false,
+      })
+    }
+  }, [location.pathname])
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
-  const { userType } = useContext(MyContext);
+  const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded)
 
-  function toggleSidebar() {
-    setIsSidebarExpanded(!isSidebarExpanded);
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => {
+      const newState = {
+        userManagement: false,
+        forms: false,
+        webControl: false,
+      }
+      newState[section] = !prev[section]
+
+      if (!prev[section]) {
+        if (section === "userManagement") {
+          navigate("/links")
+        } else if (section === "forms") {
+          navigate("/coursesForms")
+        } else if (section === "webControl") {
+          navigate("/subjects")
+        }
+      }
+
+      return newState
+    })
+
+    setActiveSection((prev) => (prev === section ? "" : section))
   }
 
-  const sidebarClass = isSidebarExpanded ? "sidebar expanded" : "sidebar";
+  // Dashboard link style (no bg on active, just blue text+icon)
+  const linkClass = (path, isDashboard = false) =>
+    `flex items-center justify-between w-[244px] p-2 rounded-md text-sm transition-colors cursor-pointer ${
+      currentPath === path
+        ? isDashboard
+          ? "text-blue-600" // only text + icon blue
+          : "bg-blue-50 text-blue-600"
+        : "text-gray-700"
+    }`
+
+  const sectionHeaderClass = (section, isExpanded) =>
+    `flex items-center justify-between w-[244px] p-2 rounded-md text-sm transition-colors cursor-pointer ${
+      activeSection === section && isExpanded ? "text-blue-600" : "text-gray-700"
+    }`
+
+  const subItemClass = (path, parent) =>
+    `flex items-center w-[244px] p-2 pl-8 rounded-md text-sm transition-colors cursor-pointer ${
+      currentPath === path
+        ? "bg-blue-50 text-blue-600 ml-2"
+        : activeSection === parent
+        ? "text-gray-700 ml-2"
+        : "text-gray-600 ml-2"
+    }`
 
   return (
-    <div className={sidebarClass}>
-      <div className="content">
+    <div
+      className={`fixed top-0 bottom-0 left-0 bg-[#fafafa] text-gray-700 z-50 transition-all ${
+        isSidebarExpanded ? "w-[300px] max-w-[300px]" : "w-max"
+      }`}
+    >
+      <div className="h-full w-full overflow-y-auto px-4">
+        <div className="mb-6">
+          <div className="flex items-center">
+            {(windowWidth > 768 || !isSidebarExpanded) && (
+              <img src={logo} alt="IB INNOVATORS" className="h-12 w-auto object-contain ml-2" />
+            )}
+          </div>
+        </div>
+
+        {/* Admin Sidebar */}
         {userType === "admin" && (
-          <ul>
+          <nav className="space-y-1">
             {windowWidth <= 768 && (
-              <li>
-                <Link to="#" onClick={toggleSidebar}>
-                  <FontAwesomeIcon icon={faBars} />
-                </Link>
-              </li>
+              <button onClick={toggleSidebar} className="p-2">
+                <FontAwesomeIcon icon={faBars} />
+              </button>
             )}
-            <li>
-              <Link className={currentPath === "/" ? "selected" : ""} to="/">
-                <FontAwesomeIcon icon={faTachometerAlt} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Dashboard</span>
-                )}
-              </Link>
-            </li>
 
-            <li>
-              <Link
-                className={currentPath === "/upcomingCourses" ? "selected" : ""}
-                to="/upcomingCourses"
-              >
-                <FontAwesomeIcon icon={faBook} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Upcoming Courses</span>
-                )}
-              </Link>
-            </li>
+            {/* Dashboard */}
+            <Link className={linkClass("/", true)} to="/">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faHome} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Dashboard</span>}
+              </div>
+            </Link>
 
-            <li>
-              <Link
-                className={currentPath === "/jobsAndRequests" ? "selected" : ""}
-                to="/jobsAndRequests"
+            {/* User Management Section */}
+            <div>
+              <div
+                className={sectionHeaderClass("userManagement", expandedSections.userManagement)}
+                onClick={() => toggleSection("userManagement")}
               >
-                <FontAwesomeIcon icon={faGraduationCap} />
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faUsers} className="w-4 h-4" />
+                  {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">User Management</span>}
+                </div>
                 {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Jobs & Requests</span>
+                  <FontAwesomeIcon
+                    icon={expandedSections.userManagement ? faChevronUp : faChevronDown}
+                    className="w-3.5 h-3.5 ml-2"
+                  />
                 )}
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={
-                  currentPath === "/tutorsAndSubjects" ? "selected" : ""
-                }
-                to="/tutorsAndSubjects"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Tutors & Subjects</span>
-                )}
-              </Link>
-            </li>
+              </div>
+              {expandedSections.userManagement && (windowWidth > 768 || !isSidebarExpanded) && (
+                <div className="mt-1 space-y-1">
+                  <Link className={subItemClass("/links", "userManagement")} to="/links">
+                    <FontAwesomeIcon icon={faLink} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Manage Links</span>
+                  </Link>
+                  <Link className={subItemClass("/jobsAndRequests", "userManagement")} to="/jobsAndRequests">
+                    <FontAwesomeIcon icon={faBriefcase} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Jobs & Requests</span>
+                  </Link>
+                  <Link className={subItemClass("/tutorsAndSubjects", "userManagement")} to="/tutorsAndSubjects">
+                    <FontAwesomeIcon icon={faChalkboardTeacher} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Tutors</span>
+                  </Link>
+                  <Link className={subItemClass("/myStudents", "userManagement")} to="/myStudents">
+                    <FontAwesomeIcon icon={faGraduationCap} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Students</span>
+                  </Link>
+                  <Link className={subItemClass("/signup", "userManagement")} to="/signup">
+                    <FontAwesomeIcon icon={faUserShield} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Admins</span>
+                  </Link>
+                </div>
+              )}
+            </div>
 
-            <li>
-              <Link
-                className={currentPath === "/links" ? "selected" : ""}
-                to="/links"
+            {/* Forms Section */}
+            <div>
+              <div
+                className={sectionHeaderClass("forms", expandedSections.forms)}
+                onClick={() => toggleSection("forms")}
               >
-                <FontAwesomeIcon icon={faLink} />
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faWpforms} className="w-4 h-4" />
+                  {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Forms</span>}
+                </div>
                 {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Manage Links</span>
+                  <FontAwesomeIcon icon={expandedSections.forms ? faChevronUp : faChevronDown} className="w-3.5 h-3.5 ml-2" />
                 )}
-              </Link>
-            </li>
+              </div>
+              {expandedSections.forms && (windowWidth > 768 || !isSidebarExpanded) && (
+                <div className="mt-1 space-y-1">
+                  <Link className={subItemClass("/coursesForms", "forms")} to="/coursesForms">
+                    <FontAwesomeIcon icon={faBook} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Courses</span>
+                  </Link>
+                  <Link className={subItemClass("/studentForms", "forms")} to="/studentForms">
+                    <FontAwesomeIcon icon={faFileAlt} className="w-3.5 h-3.5" />
+                    <span className="ml-2">1 - 1 Student Inquiry</span>
+                  </Link>
+                  <Link className={subItemClass("/tutorForms", "forms")} to="/tutorForms">
+                    <FontAwesomeIcon icon={faFileAlt} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Tutor Resume</span>
+                  </Link>
+                  <Link className={subItemClass("/contactUsForms", "forms")} to="/contactUsForms">
+                    <FontAwesomeIcon icon={faPhone} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Contact Us</span>
+                  </Link>
+                </div>
+              )}
+            </div>
 
-            <li>
-              <Link
-                className={currentPath === "/studentForms" ? "selected" : ""}
-                to="/studentForms"
+            {/* Web Control Section */}
+            <div>
+              <div
+                className={sectionHeaderClass("webControl", expandedSections.webControl)}
+                onClick={() => toggleSection("webControl")}
               >
-                <FontAwesomeIcon icon={faGraduationCap} />
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faGlobe} className="w-4 h-4" />
+                  {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Web Control</span>}
+                </div>
                 {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Student Forms</span>
+                  <FontAwesomeIcon
+                    icon={expandedSections.webControl ? faChevronUp : faChevronDown}
+                    className="w-3.5 h-3.5 ml-2"
+                  />
                 )}
-              </Link>
-            </li>
+              </div>
+              {expandedSections.webControl && (windowWidth > 768 || !isSidebarExpanded) && (
+                <div className="mt-1 space-y-1">
+                  <Link className={subItemClass("/subjects", "webControl")} to="/subjects">
+                    <FontAwesomeIcon icon={faBookOpen} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Subjects</span>
+                  </Link>
+                  <Link className={subItemClass("/upcomingCourses", "webControl")} to="/upcomingCourses">
+                    <FontAwesomeIcon icon={faBook} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Upcoming Courses</span>
+                  </Link>
+                  <Link className={subItemClass("/blogs", "webControl")} to="/blogs">
+                    <FontAwesomeIcon icon={faBlog} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Blogs</span>
+                  </Link>
+                  <Link className={subItemClass("/supportBlogs", "webControl")} to="/supportBlogs">
+                    <FontAwesomeIcon icon={faLifeRing} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Support Blogs</span>
+                  </Link>
+                  <Link className={subItemClass("/seo", "webControl")} to="/seo">
+                    <FontAwesomeIcon icon={faSearch} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Seo</span>
+                  </Link>
+                  <Link className={subItemClass("/supportBlogsPreview", "webControl")} to="/supportBlogsPreview">
+                    <FontAwesomeIcon icon={faEye} className="w-3.5 h-3.5" />
+                    <span className="ml-2">Support Blogs Preview</span>
+                  </Link>
+                </div>
+              )}
+            </div>
 
-            <li>
-              <Link
-                className={currentPath === "/tutorForms" ? "selected" : ""}
-                to="/tutorForms"
-              >
-                <FontAwesomeIcon icon={faChalkboardTeacher} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Tutor Forms</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/contactUsForms" ? "selected" : ""}
-                to="/contactUsForms"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Contact Us Forms</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={
-                  currentPath === "/requestCourseForm" ? "selected" : ""
-                }
-                to="/requestCourseForm"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Request Course F</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={
-                  currentPath === "/revisionCoursesForm" ? "selected" : ""
-                }
-                to="/revisionCoursesForm"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Revision Course F</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={
-                  currentPath === "/upcomingCoursesForm" ? "selected" : ""
-                }
-                to="/upcomingCoursesForm"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Upcoming Course F</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/createBlogs" ? "selected" : ""}
-                to="/createBlogs"
-              >
-                <FontAwesomeIcon icon={faBook} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Blogs</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/supportBlogs" ? "selected" : ""}
-                to="/supportBlogs"
-              >
-                <FontAwesomeIcon icon={faBook} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Support Blogs</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/seo" ? "selected" : ""}
-                to="/seo"
-              >
-                <FontAwesomeIcon icon={faBook} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>SEO</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/signup" ? "selected" : ""}
-                to="/signup"
-              >
-                <FontAwesomeIcon icon={faUserPlus} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Admin SignUp</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={
-                  currentPath === "/supportAndTraining" ? "selected" : ""
-                }
-                to="/supportAndTraining"
-              >
-                <FontAwesomeIcon icon={faChalkboardUser} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Support & Training</span>
-                )}
-              </Link>
-            </li>
-          </ul>
+            {/* User Sign Up */}
+            <Link className={linkClass("/userSignUp")} to="/userSignUp">
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faUserPlus} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">User Sign Up</span>}
+              </div>
+            </Link>
+          </nav>
         )}
 
+        {/* Teacher Sidebar */}
         {userType === "teacher" && (
-          <ul>
+          <ul className="flex flex-col gap-1 p-0 m-0 list-none">
             {windowWidth <= 768 && (
               <li>
                 <Link to="#" onClick={toggleSidebar}>
@@ -276,83 +299,41 @@ useEffect(() => {
               </li>
             )}
             <li>
-              <Link className={currentPath === "/" ? "selected" : ""} to="/">
-                <FontAwesomeIcon icon={faTachometerAlt} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Overview</span>
-                )}
+              <Link className={linkClass("/")} to="/">
+                <FontAwesomeIcon icon={faTachometerAlt} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Overview</span>}
               </Link>
             </li>
-
             <li>
-              <Link
-                className={currentPath === "/myStudents" ? "selected" : ""}
-                to="/myStudents"
-              >
-                <FontAwesomeIcon icon={faGraduationCap} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>My Students</span>
-                )}
+              <Link className={linkClass("/myStudents")} to="/myStudents">
+                <FontAwesomeIcon icon={faGraduationCap} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">My Students</span>}
               </Link>
             </li>
-
             <li>
-              <Link
-                className={currentPath === "/jobOpenings" ? "selected" : ""}
-                to="/jobOpenings"
-              >
-                <FontAwesomeIcon icon={faBriefcase} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Job Openings</span>
-                )}
+              <Link className={linkClass("/jobOpenings")} to="/jobOpenings">
+                <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Job Openings</span>}
               </Link>
             </li>
-
             <li>
-              <Link
-                className={
-                  currentPath === "/profileAndFinance" ? "selected" : ""
-                }
-                to="/profileAndFinance"
-              >
-                <FontAwesomeIcon icon={faAddressCard} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Profile & Finance</span>
-                )}
+              <Link className={linkClass("/profileAndFinance")} to="/profileAndFinance">
+                <FontAwesomeIcon icon={faAddressCard} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Profile & Finance</span>}
               </Link>
             </li>
-
             <li>
-              <Link
-                className={
-                  currentPath === "/supportAndTraining" ? "selected" : ""
-                }
-                to="/supportAndTraining"
-              >
-                <FontAwesomeIcon icon={faChalkboardUser} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Support & Training</span>
-                )}
+              <Link className={linkClass("/supportAndTraining")} to="/supportAndTraining">
+                <FontAwesomeIcon icon={faChalkboardUser} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Support & Training</span>}
               </Link>
             </li>
-            {/* _________________________________________________________________ */}
-            {/* <li>
-            <Link to="/activeCourses">
-              <FontAwesomeIcon icon={faGraduationCap} />
-              <span style={{ marginLeft: "5px" }}>Active Courses</span>
-            </Link>
-          </li>
-          <li>
-            <Link to='#' onClick={() => setShowLogoutModal(true)}>
-              <FontAwesomeIcon icon={faSignOutAlt} />
-              <span style={{ marginLeft: "5px" }}>Logout</span>
-            </Link>
-          </li> */}
           </ul>
         )}
 
+        {/* Student/Parent Sidebar */}
         {(userType === "student" || userType === "parent") && (
-          <ul>
+          <ul className="flex flex-col gap-1 p-0 m-0 list-none">
             {windowWidth <= 768 && (
               <li>
                 <Link to="#" onClick={toggleSidebar}>
@@ -361,66 +342,40 @@ useEffect(() => {
               </li>
             )}
             <li>
-              <Link className={currentPath === "/" ? "selected" : ""} to="/">
-                <FontAwesomeIcon icon={faTachometerAlt} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Overview</span>
-                )}
+              <Link className={linkClass("/")} to="/">
+                <FontAwesomeIcon icon={faTachometerAlt} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Overview</span>}
               </Link>
             </li>
             <li>
-              <Link
-                className={currentPath === "/mySubscriptions" ? "selected" : ""}
-                to="/mySubscriptions"
-              >
-                <FontAwesomeIcon icon={faFileInvoice} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>My Subscriptions</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/myCourses" ? "selected" : ""}
-                to="/myCourses"
-              >
-                <FontAwesomeIcon icon={faBook} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Courses & Requests</span>
-                )}
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                className={currentPath === "/profile" ? "selected" : ""}
-                to="/profile"
-              >
-                <FontAwesomeIcon icon={faUser} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Profile and Credit</span>
-                )}
+              <Link className={linkClass("/mySubscriptions")} to="/mySubscriptions">
+                <FontAwesomeIcon icon={faFileInvoice} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">My Subscriptions</span>}
               </Link>
             </li>
             <li>
-              <Link
-                className={
-                  currentPath === "/supportAndTraining" ? "selected" : ""
-                }
-                to="/supportAndTraining"
-              >
-                <FontAwesomeIcon icon={faChalkboardUser} />
-                {(windowWidth > 768 || !isSidebarExpanded) && (
-                  <span style={{ marginLeft: "5px" }}>Support & Training</span>
-                )}
+              <Link className={linkClass("/myCourses")} to="/myCourses">
+                <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Courses & Requests</span>}
+              </Link>
+            </li>
+            <li>
+              <Link className={linkClass("/profile")} to="/profile">
+                <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Profile and Credit</span>}
+              </Link>
+            </li>
+            <li>
+              <Link className={linkClass("/supportAndTraining")} to="/supportAndTraining">
+                <FontAwesomeIcon icon={faChalkboardUser} className="w-4 h-4" />
+                {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">Support & Training</span>}
               </Link>
             </li>
           </ul>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
-
+import React, { useState } from "react";
 import { db } from "../../../../../firebase";
 import {
   collection,
-  doc,
   getDocs,
   query,
-  onSnapshot,
   where,
   updateDoc,
 } from "firebase/firestore";
 
-export function YourStyleAndExperience({userDetails, userId}) {
-
-
+export function YourStyleAndExperience({ userDetails, userId }) {
   const [firstStyleBox, setFirstStyleBox] = useState(
     userDetails?.YourStyleAndExperience?.firstStyleBox
       ? userDetails?.YourStyleAndExperience?.firstStyleBox
@@ -31,22 +26,21 @@ export function YourStyleAndExperience({userDetails, userId}) {
   async function savingChanges() {
     setSavingDetails("SAVING");
     try {
-      const details = { YourStyleAndExperience: { firstStyleBox, secondStyleBox } };
-  
+      const details = {
+        YourStyleAndExperience: { firstStyleBox, secondStyleBox },
+      };
+
       const userListRef = collection(db, "userList");
       const q = query(userListRef, where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
-  
-        // Update only the specified fields in the document
         await updateDoc(docRef, details);
       }
-  
+
       setSavingDetails("SAVED");
-  
-      // Revert to "SAVE" after 2 seconds
+
       setTimeout(() => {
         setSavingDetails("SAVE");
       }, 1000);
@@ -56,42 +50,27 @@ export function YourStyleAndExperience({userDetails, userId}) {
       setSavingDetails("SAVE");
     }
   }
-  
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      <div
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ fontSize: "1.5rem" }}>Your Style and Experience</div>
+    <div className="mt-[30px]">
+      <div className="flex flex-1 flex-wrap items-center justify-between mb-[20px]">
+        <div className="text-[1.5rem]">Your Style and Experience</div>
 
         <button
           onClick={savingChanges}
-          style={{
-            border: "1px solid green",
-            color: "white",
-            background: "green",
-            borderRadius: "0px",
-            padding: "5px 10px",
-          }}
+          className="border border-green-600 text-white bg-green-600 rounded-none px-[10px] py-[5px]"
         >
           {savingDetails}
         </button>
       </div>
-      <p style={{marginBottom: '15px'}}>
+
+      <p className="mb-[15px]">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed faucibus
         odio a ligula cursus, in ultricies justo pharetra. Suspendisse potenti.
         Nulla facilisi. Proin quis risus vel odio ullamcorper vestibulum.
       </p>
 
-      <div style={{ fontSize: "1.3rem" }}>Your Style</div>
+      <div className="text-[1.3rem]">Your Style</div>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed faucibus
         odio a ligula cursus, in ultricies justo pharetra. Suspendisse potenti.
@@ -100,16 +79,7 @@ export function YourStyleAndExperience({userDetails, userId}) {
 
       <p>
         <input
-          style={{
-            flex: 1,
-            borderRadius: "0px",
-            marginTop: "15px",
-            marginBottom: "15px",
-            width: "100%",
-            border: "2px dotted #fff",
-            background: 'rgba(255,255,255,0.3)',
-            outline: 'none'
-          }}
+          className="flex-1 rounded-none mt-[15px] mb-[15px] w-full border-2 border-dotted border-white bg-white/30 outline-none"
           type="text"
           value={firstStyleBox}
           onChange={(e) => {
@@ -119,12 +89,7 @@ export function YourStyleAndExperience({userDetails, userId}) {
         />
       </p>
 
-
-
-
-      {/* _______________________________________ */}
-
-      <div style={{ fontSize: "1.3rem", marginTop: '15px' }}>Your Experience</div>
+      <div className="text-[1.3rem] mt-[15px]">Your Experience</div>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed faucibus
         odio a ligula cursus, in ultricies justo pharetra. Suspendisse potenti.
@@ -133,15 +98,7 @@ export function YourStyleAndExperience({userDetails, userId}) {
 
       <p>
         <input
-          style={{
-            flex: 1,
-            borderRadius: "0px",
-            marginTop: "15px",
-            marginBottom: "15px",
-            width: "100%",
-            border: "2px dotted #fff",
-            background: 'rgba(255,255,255,0.3)', outline: 'none'
-          }}
+          className="flex-1 rounded-none mt-[15px] mb-[15px] w-full border-2 border-dotted border-white bg-white/30 outline-none"
           type="text"
           value={secondStyleBox}
           onChange={(e) => {
@@ -150,8 +107,6 @@ export function YourStyleAndExperience({userDetails, userId}) {
           placeholder="Enter details here"
         />
       </p>
-
-      
     </div>
   );
 }

@@ -10,7 +10,6 @@ import {
   updateDoc,
   query,
   where,
-  onSnapshot,
   getDocs,
 } from "firebase/firestore";
 import { db } from "../../../firebase";
@@ -75,9 +74,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
     if (e.target.value !== "Other") {
       setStartDate("Immediately");
-    }
-    // If "Other" is selected, clear the custom date
-    else if (e.target.value !== "Other") {
+    } else if (e.target.value !== "Other") {
       setCustomStartDate("");
       setStartDate("");
     }
@@ -152,22 +149,15 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
       const userListRef = collection(db, "orders");
       const docRef = await addDoc(userListRef, details);
-
-      // Retrieve the newly created document ID
       const docId = docRef.id;
-
-      // Update the document with the new field 'id'
       await updateDoc(doc(db, "orders", docId), { id: docId });
 
-      console.log("Form submitted successfully!");
       handleClose(false);
 
       const checkTeacherEligibility = (teacher) => {
         const filteredSubjects = Object.entries(teacher.subjects)
           .filter(([_, value]) => value === true)
           .map(([subject]) => subject);
-
-        // Check if any of the teacher's subjects match the order subjects
         return filteredSubjects.includes(subject);
       };
 
@@ -180,27 +170,23 @@ export function CreateNewOrderForm({ item, handleClose }) {
         .filter((teacher) => checkTeacherEligibility(teacher, subject))
         .map(({ email, userId }) => ({ email, userId }));
 
-      console.log(eligibleTeacherEmails);
-
       const serviceId = process.env.REACT_APP_EMAILSERVICEID;
       const templateId = process.env.REACT_APP_EMAILTEMPLATEID;
       const userId = process.env.REACT_APP_EMAILUSERID;
 
       eligibleTeacherEmails.forEach((e) => {
-
-        
-      const emailTemplate = getCourseRequestedEmailTemplate(
-        item?.userName,
-        subject,
-        yearOfGraduation,
-        country,
-        startDate,
-        `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e?.userId}`
-      )
+        const emailTemplate = getCourseRequestedEmailTemplate(
+          item?.userName,
+          subject,
+          yearOfGraduation,
+          country,
+          startDate,
+          `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e?.userId}`
+        );
 
         const emailParams = {
           from_name: "IBInnovators",
-          to_name: "", 
+          to_name: "",
           send_to: e.email,
           subject: `New Job Available for ${subject}`,
           message: emailTemplate,
@@ -208,12 +194,8 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
         emailjs
           .send(serviceId, templateId, emailParams, userId)
-          .then((response) => {
-            console.log("Email sent successfully");
-          })
-          .catch((error) => {
-            console.error("Error sending email:", error);
-          });
+          .then(() => console.log("Email sent successfully"))
+          .catch((error) => console.error("Error sending email:", error));
       });
 
       toast.success("Job created successfully");
@@ -227,26 +209,16 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
   return (
     <CustomModal>
-      <div style={{ flex: 1 }}>
-        <h2>JOB CREATION FORM</h2>
+      <div className="flex-1">
+        <h2 className="text-xl font-bold">JOB CREATION FORM</h2>
+
         {/* STUDENT INFO */}
         <div>
-          <div
-            style={{ fontSize: "medium", fontWeight: "bold", color: "#6e6e6e" }}
-          >
-            Student
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "15px",
-            }}
-          >
+          <div className="text-gray-600 font-bold text-base">Student</div>
+          <div className="flex flex-wrap items-center gap-4">
             <div>
               <FontAwesomeIcon
-                style={{ marginLeft: "10px", fontSize: "2rem" }}
+                className="ml-2 text-2xl"
                 icon={faGraduationCap}
               />
             </div>
@@ -259,50 +231,18 @@ export function CreateNewOrderForm({ item, handleClose }) {
         </div>
 
         {/* TIME TABLE */}
-        <div style={{ flex: 1, marginTop: "30px", overflow: "auto" }}>
-          <h2 style={{ textAlign: "left", marginBottom: "10px" }}>
+        <div className="flex-1 mt-8 overflow-auto">
+          <h2 className="text-left mb-2 text-lg font-semibold">
             Choose Time Required
           </h2>
 
-          {/* TIME TABLE */}
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              justifyContent: "space-between",
-              flex: 1,
-              minWidth: "600px",
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                gap: "10px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                style={{
-                  flex: 1,
-                  minHeight: "40px",
-                  padding: "5px",
-                  textAlign: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              ></div>
+          <div className="flex gap-2 justify-between min-w-[600px]">
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="flex-1 min-h-10 p-1 text-center flex items-center"></div>
               {timePeriods.map((time) => (
                 <div
                   key={time}
-                  style={{
-                    flex: 1,
-                    minHeight: "40px",
-                    padding: "5px",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
+                  className="flex-1 min-h-10 p-1 text-center flex items-center"
                 >
                   {time}
                 </div>
@@ -310,44 +250,19 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </div>
 
             {days.map((day) => (
-              <div
-                key={day}
-                style={{
-                  flex: 1,
-                  gap: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    minHeight: "40px",
-                    padding: "5px",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
+              <div key={day} className="flex flex-col gap-2 flex-1">
+                <div className="flex-1 min-h-10 p-1 text-center flex items-center justify-center">
                   {day.slice(0, 3)}
                 </div>
                 {timePeriods.map((time) => (
                   <div
                     key={time}
-                    style={{
-                      flex: 1,
-                      minHeight: "40px",
-                      padding: "5px",
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      userSelect: "none",
-                      transition: "all 0.5s ease-in-out",
-                      cursor: "pointer",
-                      background: isSelected(day, time) ? "#007bff" : "#ccc",
-                    }}
                     onClick={() => handleSlotClick(day, time)}
+                    className={`flex-1 min-h-10 p-1 text-center flex items-center select-none transition-all duration-500 cursor-pointer ${
+                      isSelected(day, time)
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-300"
+                    }`}
                   ></div>
                 ))}
               </div>
@@ -356,31 +271,17 @@ export function CreateNewOrderForm({ item, handleClose }) {
         </div>
 
         {/* ADDITIONAL INFO */}
-
-        <div style={{ flex: 1, marginTop: "30px" }}>
-          <h2 style={{ textAlign: "left", marginBottom: "10px" }}>
+        <div className="flex-1 mt-8">
+          <h2 className="text-left mb-2 text-lg font-semibold">
             Additional Information
-          </h2>{" "}
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              marginTop: "20px",
-            }}
-          >
-            {/* REQUESTED SUBJECT */}
-            <div style={{ flex: 1 }}>
+          </h2>
+          <div className="flex flex-col gap-3 mt-5">
+            {/* Requested Subject */}
+            <div className="flex-1">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Choose Required Subject *
-                </InputLabel>
+                <InputLabel>Choose Required Subject *</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   value={subject}
-                  label="Choose Required Subject *"
                   required
                   onChange={(e) => setSubject(e.target.value)}
                 >
@@ -393,11 +294,12 @@ export function CreateNewOrderForm({ item, handleClose }) {
               </FormControl>
             </div>
 
+            {/* Country */}
             <div>
               <Autocomplete
                 id="country-select-demo"
                 options={countries}
-                style={{ flex: 1, minWidth: "300px" }}
+                className="flex-1 min-w-[300px]"
                 value={countryObject}
                 onChange={(item, newValue) => {
                   setCountry(newValue?.label);
@@ -412,16 +314,8 @@ export function CreateNewOrderForm({ item, handleClose }) {
                     {...props}
                   >
                     <img
-                      style={{
-                        width: "20px",
-                        padding: "0px",
-                        borderRadius: "0px",
-                        margin: "0px",
-                        objectFit: "contain",
-                        marginRight: "10px",
-                      }}
+                      className="w-5 object-contain mr-2"
                       loading="lazy"
-                      width="20"
                       srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
                       src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                       alt=""
@@ -436,22 +330,20 @@ export function CreateNewOrderForm({ item, handleClose }) {
                     required
                     inputProps={{
                       ...params.inputProps,
-                      autoComplete: "new-password", // disable autocomplete and autofill
+                      autoComplete: "new-password",
                     }}
                   />
                 )}
               />
             </div>
 
-            <div style={{ flex: 1 }}>
+            {/* Timezone */}
+            <div className="flex-1">
               <FormControl fullWidth>
                 <InputLabel>Select TimeZone *</InputLabel>
                 <Select
                   value={gmt}
-                  label="Select TimeZone *"
-                  onChange={(e) => {
-                    setGmt(e.target.value);
-                  }}
+                  onChange={(e) => setGmt(e.target.value)}
                 >
                   {timezones.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -462,16 +354,12 @@ export function CreateNewOrderForm({ item, handleClose }) {
               </FormControl>
             </div>
 
-            <div style={{ flex: 1 }}>
+            {/* Session */}
+            <div className="flex-1">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Choose Session *
-                </InputLabel>
+                <InputLabel>Choose Session *</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   value={session}
-                  label="Choose Session *"
                   required
                   onChange={(e) => setSession(e.target.value)}
                 >
@@ -483,20 +371,14 @@ export function CreateNewOrderForm({ item, handleClose }) {
               </FormControl>
             </div>
 
+            {/* Year of Graduation */}
             <div>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Year of Graduation *
-                </InputLabel>
+                <InputLabel>Year of Graduation *</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   value={yearOfGraduation}
-                  label="Year of Graduation *"
                   required
-                  onChange={(e) => {
-                    setYearOfGraduation(e.target.value);
-                  }}
+                  onChange={(e) => setYearOfGraduation(e.target.value)}
                 >
                   {graduationYears?.map((item) => (
                     <MenuItem key={item} value={item}>
@@ -506,73 +388,23 @@ export function CreateNewOrderForm({ item, handleClose }) {
                 </Select>
               </FormControl>
             </div>
-            {/* 
-      <div>
-        Time Zone:
-        <input
-          type="text"
-          value={timeZone}
-          onChange={(e) => setTimeZone(e.target.value)}
-        />
-      </div> */}
 
+            {/* Requested Hours */}
             <div>
               <TextField
                 label="Requested Hours"
                 required
                 fullWidth
-                type="text"
                 value={requestedHours}
                 onChange={(e) => setRequestedHours(e.target.value)}
               />
             </div>
 
-            {/* <div>
-                <div>Tutor Level:</div>
-                <select
-                style={{ width: "100%", marginTop: "10px", minHeight: "40px", padding: '10px', background: 'rgba(255,255,255,0.4)', borderRadius: '10px' }}
-              onChange={(e) => setTutorTier(e.target.value)}
-              aria-label=".form-select-sm example"
-              value={tutorTier}
-            >
-              <option value="">Select</option>
-              <option value="Foundation">Foundation Level</option>
-              <option value="Advanced">Advanced Level</option>
-              <option value="Expert">Expert Level</option>
-            </select>
-              </div> */}
-
-            {/* <div>
-              <TextField
-                label="Grade Predicted"
-                required
-                fullWidth
-                type="text"
-                value={gradePredicted}
-                onChange={(e) => setGradePredicted(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <TextField
-                label="Grade Aimed"
-                required
-                fullWidth
-                type="text"
-                value={gradeAimed}
-                onChange={(e) => setGradeAimed(e.target.value)}
-              />
-            </div> */}
-
+            {/* Start Date */}
             <div>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Start Date *
-                </InputLabel>
+                <InputLabel>Start Date *</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  label="Start Date *"
                   required
                   value={startDateType}
                   onChange={handleStartDateTypeChange}
@@ -589,29 +421,27 @@ export function CreateNewOrderForm({ item, handleClose }) {
                   value={customStartDate}
                   onChange={handleCustomStartDateChange}
                   fullWidth
-                  style={{ margin: "10px 0px" }}
+                  className="my-2"
                 />
               )}
             </div>
 
+            {/* Hourly Rate */}
             <TextField
               type="number"
               label="Tutor Hourly Rate (USD)"
               value={tutorHourlyRate}
-              onChange={(e) => {
-                setTutorHourlyRate(e.target.value);
-              }}
+              onChange={(e) => setTutorHourlyRate(e.target.value)}
               required
               fullWidth
             />
 
+            {/* Price */}
             <TextField
               type="number"
               label="Hourly Price charged to Student (USD)"
               value={price}
-              onChange={(e) => {
-                setPrice(e.target.value);
-              }}
+              onChange={(e) => setPrice(e.target.value)}
               required
               fullWidth
             />
@@ -619,21 +449,13 @@ export function CreateNewOrderForm({ item, handleClose }) {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-          gap: "10px",
-        }}
-      >
+      {/* Footer Buttons */}
+      <div className="flex justify-end mt-5 gap-3">
         <Button
           disabled={submitting}
           variant="outlined"
           color="error"
-          onClick={() => {
-            handleClose(false);
-          }}
+          onClick={() => handleClose(false)}
         >
           CANCEL
         </Button>

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+"use client"
+
+import React, { useState, useEffect, useContext } from "react"
 import {
   collection,
-  getDocs,
   doc,
   deleteDoc,
   updateDoc,
@@ -11,54 +12,52 @@ import {
   onSnapshot,
   getDoc,
   orderBy,
-} from "firebase/firestore";
-import { db } from "../../firebase";
-import { MyContext } from "../../Context/MyContext";
-import { useNavigate } from "react-router-dom";
+} from "firebase/firestore"
+import { db } from "../../firebase"
+import { MyContext } from "../../Context/MyContext"
+import { useNavigate } from "react-router-dom"
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faMagnifyingGlass, faBook, faSuitcase } from "@fortawesome/free-solid-svg-icons"
 
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-import ViewInvoices from "./ViewInvoices";
+import Pagination from "@mui/material/Pagination"
+import Stack from "@mui/material/Stack"
+import ViewInvoices from "./ViewInvoices"
 
-import { MenuItem, Modal, Select, TextField } from "@mui/material";
+import { MenuItem, Select, Button ,TextField,Modal} from "@mui/material"
+import { useTopHeading } from "../../Components/Layout"
+import { TopHeadingProvider } from "../../Components/Layout"
 
-import Button from "@mui/material/Button";
-import TopHeading from "../../Components/TopHeading/TopHeading";
-import toast from "react-hot-toast";
+import toast from "react-hot-toast"
 import CustomModal from "../../Components/CustomModal/CustomModal";
 
 export default function ManageLinks() {
-  const [links, setLinks] = useState([]);
-  const { calculateHoursLeft, convertToGBP, addNotification } = useContext(MyContext);
-  const [searchedLinks, setSearchedLinks] = useState([]);
-  const [selectedLink, setSelectedLink] = useState(null);
-  const [invoicePrice, setInvoicePrice] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [link, setLink] = useState({});
+  const [links, setLinks] = useState([])
+  const { calculateHoursLeft, convertToGBP, addNotification } = useContext(MyContext)
+  const [searchedLinks, setSearchedLinks] = useState([])
+  const [selectedLink, setSelectedLink] = useState(null)
+  const [invoicePrice, setInvoicePrice] = useState("")
+  const [showModal, setShowModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [link, setLink] = useState({})
+  const [newHourlyRate, setNewHourlyRate] = useState(0)
+  const [showInvoicesModal, setShowInvoicesModal] = useState(false)
+  const [showHourlyRateModal, setShowHourlyRateModal] = useState(false)
+  const [deactivatedStudents, setDeactivatedStudents] = useState([])
+  const [active, setActive] = useState("Active Links")
+  const [currentData, setCurrentData] = useState([])
+  const [currentSearched, setCurrentSearched] = useState([])
+  const [removeBalance, setRemoveBalance] = useState(false)
+  const [creditsForSelectedStudent, setCreditsForSelectedStudent] = useState(0)
+  const [fetchingCredits, setFetchingCredits] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const [newHourlyRate, setNewHourlyRate] = useState(0);
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
 
-  const [showInvoicesModal, setShowInvoicesModal] = useState(false);
-
-  const [showHourlyRateModal, setShowHourlyRateModal] = useState(false);
-
-  const [deactivatedStudents, setDeactivatedStudents] = useState([]);
-
-  const [active, setActive] = useState("Active Links");
-
-  const [currentData, setCurrentData] = useState([]);
-  const [currentSearched, setCurrentSearched] = useState([]);
-
-  const [removeBalance, setRemoveBalance] = useState(false);
-
-  const [creditsForSelectedStudent, setCreditsForSelectedStudent] = useState(0);
-  const [fetchingCredits, setFetchingCredits] = useState(false);
-
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setFirstMessage("Manage Links")
+    setSecondMessage("Show all managed links")
+  }, [setFirstMessage, setSecondMessage])
 
   useEffect(() => {
     if (link?.studentId) {
@@ -378,7 +377,7 @@ export default function ManageLinks() {
   };
 
   // PAST LESSONS PAGINATION
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const handleChangePage = (event, newPage) => {
@@ -389,609 +388,429 @@ export default function ManageLinks() {
   const endIndex = startIndex + itemsPerPage;
   const displayedSessions = currentSearched?.slice(startIndex, endIndex);
 
-  return (
-    <div style={{ flex: 1 }}>
-      <TopHeading>Manage Links</TopHeading>
-
-      <div
-        style={{
-          display: "flex",
-          paddingTop: "0px",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginRight: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <div
-          className="shadowAndBorder"
-          style={{
-            marginTop: "0px",
-            flex: 1,
-            height: "max-content",
-            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-            background: "rgba(255,255,255, 0.5)",
-            backdropFilter: "blur(4px)", // Adjust the blur intensity as needed
-            WebkitBackdropFilter: "blur(4px)", // For Safari support,
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {links.length !== 0 && (
-            <div
-              style={{
-                marginBottom: "10px",
-                marginTop: "20px",
-                display: "flex",
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                borderBottom: "2px solid #ccc",
-              }}
-            >
-              <FontAwesomeIcon
-                style={{ marginLeft: "10px", marginRight: "10px" }}
-                icon={faMagnifyingGlass}
-              />
-              <input
-                onChange={handleSearch}
-                placeholder="Search via Student Or Teacher Name / Email / User ID / Link ID"
-                style={{
-                  border: "none",
-                  flex: 1,
-                  outline: "none",
-                  background: "transparent",
-                }}
-                defaultValue=""
-              />
-            </div>
-          )}
-
-          <Select
-            id="demo-select-small"
-            value={active}
-            onChange={handleActiveChange}
-            fullWidth
-            variant="outlined"
-            style={{
-              marginBottom: "10px",
-            }}
-          >
-            <MenuItem value={"Active Links"}>Active Links</MenuItem>
-            <MenuItem value={"Deactivated Links"}>Deactivated Links</MenuItem>
-          </Select>
-
-          {displayedSessions.map((item, index) => (
-            <div
-              style={{
-                borderTop: index !== 0 ? "2px solid #ccc" : "none",
-                cursor: "pointer",
-                padding: "10px",
-                width: "100%",
-              }}
-              key={index}
-            >
-              <div>Subscription# {item?.id}</div>
-              <div>Student: {item?.studentName}</div>
-              <div>Tutor: {item?.teacherName}</div>
-
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setLink(item);
-                }}
-                style={{ flex: 1, marginTop: "5px", width: "100%" }}
-              >
-                SELECT
-              </Button>
-            </div>
-          ))}
-
-          {currentSearched?.length > itemsPerPage && (
-            <div
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                marginTop: "20px",
-                marginBottom: "10px",
-              }}
-            >
-              <Stack spacing={2}>
-                <Pagination
-                  count={Math.ceil(currentSearched?.length / itemsPerPage)}
-                  page={currentPage}
-                  onChange={handleChangePage}
-                />
-              </Stack>
-            </div>
-          )}
-
-          {currentSearched.length === 0 && (
-            <div
-              style={{
-                flex: 1,
-                textAlign: "center",
-                color: "#ccc",
-                fontSize: "1.5rem",
-              }}
-            >
-              No Students
-            </div>
-          )}
-        </div>
-
-        <div
-          className="shadowAndBorder"
-          style={{
-            marginTop: "0px",
-            flex: 2,
-            height: "max-content",
-            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-            background: "rgba(255,255,255, 0.5)",
-            backdropFilter: "blur(4px)", // Adjust the blur intensity as needed
-            WebkitBackdropFilter: "blur(4px)", // For Safari support,
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {Object.values(link).length === 0 ? (
-            <div
-              style={{
-                fontSize: "3rem",
-                fontWeight: "bold",
-                color: "#aeaeae",
-                textAlign: "center",
-                minHeight: "400px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <div>
-                <div>No Details Available</div>
-                <div style={{ fontSize: "1.5rem" }}>
-                  Select a link to show details
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div
-                style={{
-                  margin: "5px",
-                  padding: "10px",
-                  marginBottom: "10px",
-                }}
-              >
-                <div style={{ fontSize: "x-large", textAlign: "center" }}>
-                  <b>Subscription# {link?.id}</b>
-                </div>
-                {link?.reactivateRequest && (
-                  <>
-                    <div
-                      style={{
-                        color: "green",
-                        fontSize: "large",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Reactivating Request: {link?.reactivatingReason}
-                    </div>
-                  </>
-                )}
-                {link?.studentDeactivated && (
-                  <div
-                    style={{
-                      color: "red",
-                      fontSize: "large",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    This Student is Deactivated
-                  </div>
-                )}
-                <div style={{ marginBottom: "10px" }}>
-                  Subject: {link?.subject}
-                </div>
-                <div>Student: {link?.studentName}</div>
-                <div style={{ marginBottom: "10px" }}>
-                  Student Email: {link?.studentEmail}
-                </div>
-                <div>Tutor: {link?.teacherName}</div>
-                <div style={{ marginBottom: "10px" }}>
-                  Tutor Email: {link?.teacherEmail || "N/A"}
-                </div>
-                {fetchingCredits ? (
-                  <div>Fetching Balance...</div>
-                ) : (
-                  <>
-                    <div>
-                      Balance (GBP): £ {creditsForSelectedStudent?.toFixed(2)}
-                    </div>
-
-                    <div>
-                      Credits:{" "}
-                      {calculateHoursLeft(
-                        convertToGBP(link?.price),
-                        creditsForSelectedStudent
-                      )?.toFixed(2)}
-                    </div>
-                  </>
-                )}
-                <div>Hourly Rate (USD): ${link?.price}</div>
-                <div>Tutor Hourly Rate (USD): ${link?.tutorHourlyRate}</div>
-                {/* <div>Plan Selected: {link?.plan}</div> */}
-                <div>
-                  Start Date:{" "}
-                  {link?.startDate &&
-                    new Date(link?.startDate.toDate()).toLocaleDateString()}
-                </div>
-              </div>
-              <div
-                style={{
-                  flexDirection: "column",
-                  display: "flex",
-                  margin: "5px",
-                  padding: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flex: 1,
-                    gap: "10px",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    style={{
-                      flex: 1,
-                    }}
-                    onClick={() => {
-                      handleGenerateInvoiceClick(link);
-                    }}
-                  >
-                    Add Balance
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    style={{
-                      flex: 1,
-                    }}
-                    onClick={() => {
-                      {
-                        setSelectedLink(link);
-                        setRemoveBalance(true);
-                      }
-                    }}
-                  >
-                    Remove Balance
-                  </Button>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flex: 1,
-                    gap: "10px",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    style={{
-                      flex: 1,
-                    }}
-                    onClick={() => {
-                      handleViewInvoicesClick(link);
-                    }}
-                  >
-                    View Invoices
-                  </Button>
-
-                  {/* <Button variant="contained"
-                    style={{
-                      flex: 1,
-                    }}
-                    onClick={() => {
-                      setSelectedLink(link);
-                      setShowHourlyRateModal(true);
-                      setNewHourlyRate(link.price);
-                    }}
-                  >
-                    Edit Hourly Rate
-                  </Button> */}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flex: 1,
-                    gap: "10px",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {link?.studentDeactivated && (
-                    <Button
-                      variant="contained"
-                      style={{ flex: 1 }}
-                      onClick={() => {
-                        setSelectedLink(link);
-                        setShowReactivateModal(true);
-                      }}
-                    >
-                      Reactivate Student
-                    </Button>
-                  )}
-
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    style={{
-                      flex: 1,
-                    }}
-                    onClick={() => {
-                      handleDeleteInvoiceClick(link);
-                    }}
-                  >
-                    Delete Link
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <Modal
-        open={showInvoicesModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <ViewInvoices
-            data={selectedLink}
-            setShowInvoicesModal={setShowInvoicesModal}
-          />
-        </CustomModal>
-      </Modal>
-
-      <Modal
-        open={showReactivateModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <h2>Reactivate Student</h2>
-
-          <div style={{ marginTop: "10px" }}>
-            <button
-              style={{
-                marginRight: "10px",
-                padding: "10px 15px",
-                width: "100%",
-              }}
-              onClick={() => setShowReactivateModal(false)}
-            >
-              Close
-            </button>
-            <button
-              style={{
-                padding: "10px 15px",
-                width: "100%",
-              }}
-              onClick={() => reactivateStudent(selectedLink)}
-            >
-              Reactivate
-            </button>
-          </div>
-        </CustomModal>
-      </Modal>
-
-      <Modal
-        open={showHourlyRateModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <h2>Enter New Hourly Rate</h2>
-
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ fontSize: "x-large", fontWeight: "bold" }}>£</span>{" "}
+return (
+  <TopHeadingProvider firstMessage="Manage Links" secondMessage="Show all managed links">
+    <div className="min-h-screen p-6">
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="flex flex-col md:flex-row md:items-stretch md:space-x-4 mb-6">
+          <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 flex-1">
+            <FontAwesomeIcon className="text-gray-500 mr-2" icon={faMagnifyingGlass} />
             <input
-              type="number"
-              value={newHourlyRate}
-              onChange={(e) => setNewHourlyRate(e.target.value)}
-              placeholder="Enter New Hourly Rate"
-              style={{
-                width: "100%",
-                padding: "10px",
-                margin: "10px 0",
-                border: "1px solid #ccc",
-                background: "rgba(255,255,255,0.5)",
-                borderRadius: "10px",
-              }}
-              min={0}
+              onChange={handleSearch}
+              placeholder="Search via Student Or Teacher Name / Email / User ID / Link ID"
+              className="flex-1 bg-transparent border-none outline-none text-sm"
             />
           </div>
-          <div
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => setShowHourlyRateModal(false)}
-              style={{
-                marginRight: "10px",
+          <div className="w-full md:w-48">
+            <Select
+              value={active}
+              onChange={handleActiveChange}
+              fullWidth
+              size="small"
+              className="bg-white h-full"
+              sx={{
+                height: "100%",
+                ".MuiSelect-select": {
+                  display: "flex",
+                  alignItems: "center",
+                  py: 0,
+                },
               }}
             >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => {
-                hourlyRateUpdate(selectedLink);
-              }}
-            >
-              Submit
-            </Button>
+              <MenuItem value={"Active Links"}>Active Links</MenuItem>
+              <MenuItem value={"Deactivated Links"}>Deactivated Links</MenuItem>
+            </Select>
           </div>
-        </CustomModal>
-      </Modal>
+        </div>
 
-      <Modal
-        open={showModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <h2>Enter Balance Amount</h2>
-          <TextField
-            type="number"
-            value={invoicePrice}
-            onChange={(e) => setInvoicePrice(e.target.value)}
-            label="Enter Amount in GBP"
-            min={0}
-            style={{ width: "100%", marginBottom: "15px" }}
-          />
-
-          {/* <div style={{marginBottom: '15px'}}>
-                  Credits to be added: {calculateHoursLeft(convertToGBP(link?.price), invoicePrice)}
-                </div> */}
-          <div
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => {
-                setInvoicePrice(0);
-                setShowModal(false);
-              }}
-              style={{ marginRight: "10px" }}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="success"
-              onClick={handleModalSubmit}
-            >
-              {loading ? "Submitting" : "Submit"}
-            </Button>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            {displayedSessions.map((item, index) => (
+              <div className="p-4 border rounded-lg shadow-sm bg-white mb-4" key={index}>
+                <div className="flex items-center mb-3">
+                  <FontAwesomeIcon icon={faBook} className="text-blue-500 mr-2" />
+                  <span className="font-semibold text-gray-800">{item?.subject}</span>
+                </div>
+                <div className="flex justify-between items-stretch">
+                  <div className="flex flex-col text-sm text-gray-700 space-y-1">
+                    <div>
+                      <span className="font-medium">Subscription:</span> #{item?.id}
+                    </div>
+                    <div>
+                      <span className="font-medium">Student:</span> {item?.studentName}
+                    </div>
+                    <div>
+                      <span className="font-medium">Tutor:</span> {item?.teacherName}
+                    </div>
+                  </div>
+                  <Button
+                    sx={{
+                      color:'#4071B6',
+                      backgroundColor:'#4071B60D',
+                      border: '1px solid #4071B6',
+                      '&:hover': {
+                        color:'#4071B6',
+                        backgroundColor:'#4071B60D',
+                        border: '1px solid #4071B6', 
+                      },
+                    }}
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setLink(item)}
+                    className="h-full ml-4"
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </div>
+            ))}
+            {currentSearched?.length > itemsPerPage && (
+              <div className="flex justify-center items-center mt-5 mb-2">
+                <Stack spacing={2}>
+                  <Pagination
+                    count={Math.ceil(currentSearched?.length / itemsPerPage)}
+                    page={currentPage}
+                    onChange={handleChangePage}
+                  />
+                </Stack>
+              </div>
+            )}
+            {currentSearched.length === 0 && (
+              <div className="flex-1 text-center text-gray-400 text-2xl">No Students</div>
+            )}
           </div>
-        </CustomModal>
-      </Modal>
 
-      <Modal
-        open={removeBalance}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <h2>Enter Balance Amount to Remove</h2>
+          <div>
+            {Object.values(link).length === 0 ? (
+              <div className="text-center py-20 text-gray-400">
+                <div className="text-2xl font-light">No Details Available</div>
+                <div className="text-sm mt-2">Select a link to show details</div>
+              </div>
+            ) : (
+              <>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center space-x-2">
+                      <FontAwesomeIcon icon={faSuitcase} className="text-blue-600 text-lg" />
+                      <span className="text-lg font-semibold text-gray-800">{link?.subject}</span>
+                    </div>
+                    {link?.studentDeactivated ? (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        onClick={() => {
+                          setSelectedLink(link);
+                          setShowReactivateModal(true);
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Reactivate
+                      </Button>
+                    ) : (
+                      <Button
+                        sx={{
+                          color:'#A81E1E',
+                          backgroundColor:'#A81E1E0D',
+                          border: '1px solid #A81E1E',
+                          '&:hover': {
+                            color:'#A81E1E',
+                            backgroundColor:'#A81E1E0D',
+                            border: '1px solid #A81E1E', 
+                          },
+                        }}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleDeleteInvoiceClick(link)}
+                        className="w-[100px] h-[32px]"
+                      >
+                        Deactivate
+                      </Button>
+                    )}
+                  </div>
 
-          <TextField
-            type="number"
-            value={invoicePrice}
-            onChange={(e) => setInvoicePrice(e.target.value)}
-            label="Enter Amount in GBP"
-            min={0}
-            style={{ width: "100%", marginBottom: "15px" }}
-          />
+                  <div className="space-y-4 text-sm text-gray-700">
+                    <div className="flex">
+                      <span className="font-semibold w-40">Subscription:</span>
+                      <span className="text-gray-900">#{link?.id}</span>
+                    </div>
+                    
+                    <div className="h-2" />
+                    
+                    <div className="flex">
+                      <span className="font-semibold w-40">Student:</span>
+                      <span className="text-gray-900">{link?.studentName}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-semibold w-40">Email:</span>
+                      <span className="text-gray-900">{link?.studentEmail}</span>
+                    </div>
+                    
+                    <div className="h-2" />
+                    
+                    <div className="flex">
+                      <span className="font-semibold w-40">Tutor:</span>
+                      <span className="text-gray-900">{link?.teacherName}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-semibold w-40">Email:</span>
+                      <span className="text-gray-900">{link?.teacherEmail || "N/A"}</span>
+                    </div>
+                    
+                    <div className="h-2" />
+                    
+                    <div className="flex">
+                      <span className="font-semibold w-40">Start Date:</span>
+                      <span className="text-gray-900">
+                        {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-semibold w-40">Credits:</span>
+                      <span className="text-gray-900">
+                        {fetchingCredits
+                          ? "Fetching..."
+                          : calculateHoursLeft(
+                              convertToGBP(link?.price),
+                              creditsForSelectedStudent
+                            )?.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-semibold w-40">Hourly Rate (USD):</span>
+                      <span className="text-gray-900">${link?.price}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-semibold w-40">Tutor Hourly Rate (USD):</span>
+                      <span className="text-gray-900">${link?.tutorHourlyRate}</span>
+                    </div>
+                    
+                    <div className="h-2" />
+                    
+                    <div className="flex">
+                      <span className="font-semibold w-40">Balance (GBP):</span>
+                      <span className="text-gray-900">
+                        {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
+                      </span>
+                    </div>
+                  </div>
 
-          {/* <div style={{marginBottom: '15px'}}>
-                  Credits to be removed: {calculateHoursLeft(convertToGBP(link?.price), invoicePrice)}
-                </div> */}
+                  <div className="grid grid-cols-3 gap-3 mt-6">
+                    <Button
+                      sx={{
+                        color:'#F49342',
+                        backgroundColor:'#F493420D',
+                        border: '1px solid #F49342',
+                        fontSize: '12px',
+                        '&:hover': {
+                          color:'#F49342',
+                          backgroundColor:'#F493420D',
+                          border: '1px solid #F49342', 
+                          fontSize: '12px',
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedLink(link);
+                        setRemoveBalance(true);
+                      }}
+                      className="h-11 w-[135px] h-[40px] text-[12px] rounded-[8px]"
+                    >
+                      Remove Credits
+                    </Button>
+                    <Button
+                      sx={{
+                        color:'#3FC28A',
+                        backgroundColor:'#3FC28A0D',
+                        border: '1px solid #3FC28A',
+                        fontSize: '12px',
+                        '&:hover': {
+                          color:'#3FC28A',
+                          backgroundColor:'#3FC28A0D',
+                          border: '1px solid #3FC28A',
+                          fontSize: '12px', 
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => handleGenerateInvoiceClick(link)}
+                      className="h-11 w-[135px] h-[40px] text-[12px] rounded-[8px]"
+                    >
+                      Add Credits
+                    </Button>
+                    <Button
+                      sx={{
+                        color:'#4071B6',
+                        backgroundColor:'#4071B60D',
+                        border: '1px solid #4071B6',
+                        fontSize: '12px',
+                        '&:hover': {
+                          color:'#4071B6',
+                          backgroundColor:'#4071B60D',
+                          border: '1px solid #4071B6',
+                          fontSize: '12px', 
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => handleViewInvoicesClick(link)}
+                      className="h-11 w-[135px] h-[40px] rounded-[8px]"
+                    >
+                      View Invoice
+                    </Button>
+                  </div>
+                </div>
 
-          <div
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => {
-                setInvoicePrice(0);
-                setRemoveBalance(false);
-              }}
-              style={{
-                marginRight: "10px",
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="success"
-              onClick={handleRemoveBalanceModalSubmit}
-            >
-              {loading ? "Submitting" : "Submit"}
-            </Button>
+                <Modal open={showInvoicesModal}>
+                  <CustomModal>
+                    <ViewInvoices data={selectedLink} setShowInvoicesModal={setShowInvoicesModal} />
+                  </CustomModal>
+                </Modal>
+
+                <Modal open={showReactivateModal}>
+                  <CustomModal>
+                    <h2>Reactivate Student</h2>
+                    <div className="mt-4 flex flex-col space-y-2">
+                      <Button
+                        variant="outlined"
+                        onClick={() => setShowReactivateModal(false)}
+                      >
+                        Close
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => reactivateStudent(selectedLink)}
+                      >
+                        Reactivate
+                      </Button>
+                    </div>
+                  </CustomModal>
+                </Modal>
+
+                <Modal open={showHourlyRateModal}>
+                  <CustomModal>
+                    <h2>Enter New Hourly Rate</h2>
+                    <div className="flex items-center mt-4">
+                      <span className="font-bold text-xl mr-2">£</span>
+                      <input
+                        type="number"
+                        value={newHourlyRate}
+                        onChange={(e) => setNewHourlyRate(e.target.value)}
+                        placeholder="Enter New Hourly Rate"
+                        className="w-full p-2 border rounded-lg"
+                        min={0}
+                      />
+                    </div>
+                    <div className="flex justify-end mt-4 space-x-2">
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => setShowHourlyRateModal(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => hourlyRateUpdate(selectedLink)}
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  </CustomModal>
+                </Modal>
+
+                <Modal open={showModal}>
+                  <CustomModal>
+                    <h2>Enter Balance Amount</h2>
+                    <TextField
+                      type="number"
+                      value={invoicePrice}
+                      onChange={(e) => setInvoicePrice(e.target.value)}
+                      label="Enter Amount in GBP"
+                      fullWidth
+                      className="mb-4"
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => {
+                          setInvoicePrice(0);
+                          setShowModal(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        disabled={loading}
+                        variant="contained"
+                        color="success"
+                        onClick={handleModalSubmit}
+                      >
+                        {loading ? "Submitting" : "Submit"}
+                      </Button>
+                    </div>
+                  </CustomModal>
+                </Modal>
+
+                <Modal open={removeBalance}>
+                  <CustomModal>
+                    <h2>Enter Balance Amount to Remove</h2>
+                    <TextField
+                      type="number"
+                      value={invoicePrice}
+                      onChange={(e) => setInvoicePrice(e.target.value)}
+                      label="Enter Amount in GBP"
+                      fullWidth
+                      className="mb-4"
+                    />
+                    <div className="flex justify-end space-x-2">
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => {
+                          setInvoicePrice(0);
+                          setRemoveBalance(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        disabled={loading}
+                        variant="contained"
+                        color="success"
+                        onClick={handleRemoveBalanceModalSubmit}
+                      >
+                        {loading ? "Submitting" : "Submit"}
+                      </Button>
+                    </div>
+                  </CustomModal>
+                </Modal>
+
+                <Modal open={showDeleteModal}>
+                  <CustomModal>
+                    <h2>Are you sure you want to delete this link?</h2>
+                    <div className="flex justify-end space-x-2 mt-4">
+                      <Button variant="outlined" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                      </Button>
+                      <Button
+                        disabled={loading}
+                        variant="contained"
+                        color="error"
+                        onClick={handleDeleteModalSubmit}
+                      >
+                        {loading ? "Deleting" : "Delete"}
+                      </Button>
+                    </div>
+                  </CustomModal>
+                </Modal>
+              </>
+            )}
           </div>
-        </CustomModal>
-      </Modal>
-
-      <Modal
-        open={showDeleteModal}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <CustomModal>
-          <h2>Are you sure you want to delete this link?</h2>
-          <div
-            style={{
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={() => setShowDeleteModal(false)}
-              style={{
-                marginRight: "10px",
-              }}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              disabled={loading}
-              variant="contained"
-              color="error"
-              onClick={handleDeleteModalSubmit}
-            >
-              {loading ? "Deleting" : "Delete"}
-            </Button>
-          </div>
-        </CustomModal>
-      </Modal>
+        </div>
+      </div>
     </div>
-  );
+  </TopHeadingProvider>
+)
 }

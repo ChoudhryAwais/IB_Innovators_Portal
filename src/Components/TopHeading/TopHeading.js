@@ -1,21 +1,12 @@
+import { useTopHeading } from "../Layout"
 
-import React from "react"
-import classes from "./TopHeading.module.css";
+export default function TopHeading() {
+  const { firstMessage, secondMessage } = useTopHeading()
 
-export default function TopHeading({children}){
-
-    return(
-        <div
-        style={{
-          marginTop: "0px",
-          flex: 1,
-          height: "max-content",marginRight: '10px',
-          marginBottom: '10px',
-        }}
-       >
-          <div className={classes.heading} >
-          {children}
-        </div>
-      </div>
-    )
+  return (
+    <div className="flex flex-col">
+      <h1 className="text-xl font-semibold text-gray-900">{firstMessage || "Welcome User Name"}</h1>
+      <p className="text-sm text-gray-500">{secondMessage || "Good Morning"}</p>
+    </div>
+  )
 }

@@ -1,8 +1,6 @@
 import { Button } from "@mui/material";
 import { db, auth } from "../../firebase";
-import React, { useEffect } from "react";
-import { useContext } from "react";
-import { useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { MyContext } from "../../Context/MyContext";
 import { MuiTelInput } from "mui-tel-input";
@@ -15,13 +13,12 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-
 import {
-    PhoneAuthProvider,
-    PhoneMultiFactorGenerator,
-    RecaptchaVerifier,
-    multiFactor,
-  } from "firebase/auth";
+  PhoneAuthProvider,
+  PhoneMultiFactorGenerator,
+  RecaptchaVerifier,
+  multiFactor,
+} from "firebase/auth";
 
 export default function StepTwo({ setStep, setverification }) {
   const { userDetails } = useContext(MyContext);
@@ -30,7 +27,7 @@ export default function StepTwo({ setStep, setverification }) {
 
   useEffect(() => {
     if (userDetails?.phone) {
-        setPhone(userDetails?.phone)
+      setPhone(userDetails?.phone);
     }
   }, [userDetails?.phone]);
 
@@ -42,10 +39,7 @@ export default function StepTwo({ setStep, setverification }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const details = {
-        phone: phone,
-      };
-
+      const details = { phone };
       const userListRef = collection(db, "userList");
       const q = query(userListRef, where("userId", "==", userDetails.userId));
       const querySnapshot = await getDocs(q);
@@ -60,72 +54,54 @@ export default function StepTwo({ setStep, setverification }) {
     }
   }
 
-  useEffect(() => {
-    console.log("Phone", phone?.split(" ")?.join(""))
-  }, [phone])
-
-  
   const sentotp = async () => {
-    try{
-    auth.onAuthStateChanged(async (user) => {
-      /* Creating a new recaptcha verifier. */
-      const recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
+    try {
+      auth.onAuthStateChanged(async (user) => {
+        const recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
           size: "invisible",
-          callback: () => {
-            console.log('recaptcha resolved..')
-          },
-        }
-      );
-      recaptchaVerifier.render();
-      await multiFactor(user)
-        .getSession()
-        .then(function (multiFactorSession) {
-          // Specify the phone number and pass the MFA session.
-          const phoneInfoOptions = {
-            phoneNumber: phone?.split(" ")?.join(""),
-            session: multiFactorSession,
-          };
-
-          const phoneAuthProvider = new PhoneAuthProvider(auth);
-
-          // Send SMS verification code.
-          return phoneAuthProvider.verifyPhoneNumber(
-            phoneInfoOptions,
-            recaptchaVerifier
-          );
-        })
-        .then(function (verificationId) {
-          setverification(verificationId);
-          toast.success("OTP Sent");
-          console.log('OTP Sent')
-          setStep((prev) => prev + 1);
+          callback: () => console.log("recaptcha resolved.."),
         });
-    });
-}
-catch(e){
-    console.error(e)
-} finally{
-    setLoading(false);
-}
+        recaptchaVerifier.render();
+        await multiFactor(user)
+          .getSession()
+          .then((multiFactorSession) => {
+            const phoneInfoOptions = {
+              phoneNumber: phone?.split(" ")?.join(""),
+              session: multiFactorSession,
+            };
+            const phoneAuthProvider = new PhoneAuthProvider(auth);
+            return phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier);
+          })
+          .then((verificationId) => {
+            setverification(verificationId);
+            toast.success("OTP Sent");
+            setStep((prev) => prev + 1);
+          });
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-
   return (
-    <form onSubmit={saveAndNext}>
-      <h5>Please confirm your phone number</h5>
+    <form onSubmit={saveAndNext} className="flex flex-col gap-3">
+      <h5 className="text-lg font-semibold">Please confirm your phone number</h5>
 
       <MuiTelInput
-        style={{ marginBottom: "10px" }}
+        className="w-full mb-2"
         required
-        fullWidth
         value={phone}
         onChange={handleChange}
       />
 
-      <Button variant="contained" disabled={loading} type="submit" fullWidth>
+      <Button
+        variant="contained"
+        disabled={loading}
+        type="submit"
+        className="w-full"
+      >
         {loading ? "Sending OTP" : "Confirm and Send OTP"}
       </Button>
     </form>

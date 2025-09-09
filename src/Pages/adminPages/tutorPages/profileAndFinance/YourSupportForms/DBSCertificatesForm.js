@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { db } from "../../../../../firebase";
 import {
   collection,
-  doc,
   getDocs,
   query,
   updateDoc,
@@ -28,14 +27,11 @@ export function DBSCertificates({ userDetails, userId }) {
 
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
-
-        // Update only the specified fields in the document
         await updateDoc(docRef, details);
       }
 
       setSavingDetails("SAVED");
 
-      // Revert to "SAVE" after 2 seconds
       setTimeout(() => {
         setSavingDetails("SAVE");
       }, 1000);
@@ -47,73 +43,61 @@ export function DBSCertificates({ userDetails, userId }) {
   }
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      <div
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ fontSize: "1.5rem" }}>DBS Certificates</div>
+    <div className="mt-[30px]">
+      <div className="flex flex-1 justify-between flex-wrap items-center mb-5">
+        <div className="text-2xl">DBS Certificates</div>
 
         <button
           onClick={savingChanges}
-          style={{
-            border: "1px solid green",
-            color: "white",
-            background: "green",
-            borderRadius: "0px",
-            padding: "5px 10px",
-          }}
+          className="border border-green-600 bg-green-600 text-white px-3 py-1 rounded-none"
         >
           {savingDetails}
         </button>
       </div>
 
-      <p style={{ marginBottom: "15px" }}>
+      <p className="mb-[15px]">
         DBS Certificates are issued by the UK Government to demonstrate that you
         have not been barred from working with young people. We may ask you for
         DBS in order to tutor students.
       </p>
 
       <p>
-        Did you have enhanced DBS Certificate issued in last two years?{" "}<br></br>
-        <span style={{ fontWeight: "bold", display: 'flex', justifyContent: 'space-around' }}>
+        Did you have enhanced DBS Certificate issued in last two years?
+        <br />
+        <span className="font-bold flex justify-around">
           <span>
-          <input
-            type="radio"
-            id="yes"
-            name="enhancedCertificate"
-            checked={enhancedCertificate === true}
-            onChange={() => setEnhancedCertificate(true)}
-          />
-          <label htmlFor="yes">Yes</label></span>
+            <input
+              type="radio"
+              id="yes"
+              name="enhancedCertificate"
+              checked={enhancedCertificate === true}
+              onChange={() => setEnhancedCertificate(true)}
+            />
+            <label htmlFor="yes" className="ml-1">
+              Yes
+            </label>
+          </span>
           <span>
-          <input
-            type="radio"
-            id="no"
-            name="enhancedCertificate"
-            checked={enhancedCertificate === false}
-            onChange={() => setEnhancedCertificate(false)}
-          />
-          <label htmlFor="no">No</label></span>
+            <input
+              type="radio"
+              id="no"
+              name="enhancedCertificate"
+              checked={enhancedCertificate === false}
+              onChange={() => setEnhancedCertificate(false)}
+            />
+            <label htmlFor="no" className="ml-1">
+              No
+            </label>
+          </span>
         </span>
       </p>
 
-      <div style={{ marginBottom: "20px", fontSize: "1.5rem", marginTop: "30px" }}>
-        Update your DBS Record
-      </div>
+      <div className="mb-5 text-2xl mt-[30px]">Update your DBS Record</div>
 
-      <p style={{ marginBottom: "15px", marginTop: "15px" }}>
+      <p className="mb-[15px] mt-[15px]">
         If you have enhanced DBS Certificate so please send to{" "}
-        <span style={{ textDecoration: "underline" }}>
-          contact@ibinnovators.com
-        </span>{" "}
-        so we can update your profile accordingly.
+        <span className="underline">contact@ibinnovators.com</span> so we can
+        update your profile accordingly.
       </p>
     </div>
   );

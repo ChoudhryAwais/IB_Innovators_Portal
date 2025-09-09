@@ -1,127 +1,106 @@
-import React, { useState, useEffect, useContext } from "react";
+"use client"
 
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { db } from "../../../firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import React, { useState, useContext } from "react"
+import { db } from "../../../firebase"
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore"
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogTitle from "@mui/material/DialogTitle"
+import Slide from "@mui/material/Slide"
+import Button from "@mui/material/Button"
+import { Modal } from "@mui/material"
 
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
-import { Modal } from "@mui/material";
-
-import LoadingButton from "@mui/lab/LoadingButton";
-import SaveIcon from "@mui/icons-material/Save";
-import CircularProgress from "@mui/material/CircularProgress";
-import { MyContext } from "../../../Context/MyContext";
-import toast from "react-hot-toast";
+import LoadingButton from "@mui/lab/LoadingButton"
+import SaveIcon from "@mui/icons-material/Save"
+import { MyContext } from "../../../Context/MyContext"
+import toast from "react-hot-toast"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+  return <Slide direction="up" ref={ref} {...props} />
+})
 
 export function AddSubjectsApplication({ userDetails, userId }) {
-  const { subjectsArray } = useContext(MyContext);
+  const { subjectsArray } = useContext(MyContext)
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedLink, setSelectedLink] = useState({});
-  const [subjectsToTeach, setSubjectsToTeach] = useState(
-    userDetails?.subjects ? userDetails?.subjects : {}
-  );
+  const [showModal, setShowModal] = useState(false)
+  const [selectedLink, setSelectedLink] = useState({})
+  const [subjectsToTeach, setSubjectsToTeach] = useState(userDetails?.subjects ? userDetails?.subjects : {})
 
-  const [deleteSessionModal, setDeleteSessionModal] = useState(false);
+  const [deleteSessionModal, setDeleteSessionModal] = useState(false)
 
-  const [submitting, setSubmitting] = useState(false);
-  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [submitting, setSubmitting] = useState(false)
+  const [selectedSubjects, setSelectedSubjects] = useState([])
 
-  const [currentTier, setCurrentTier] = useState(userDetails?.tutorTier || "");
-  const [hourlyRate, setHourlyRate] = useState(userDetails?.hourlyRate || "");
+  const [currentTier, setCurrentTier] = useState(userDetails?.tutorTier || "")
+  const [hourlyRate, setHourlyRate] = useState(userDetails?.hourlyRate || "")
 
-  const [tierSubmitting, setTierSubmitting] = useState(false);
-  const [enrolledSubmitting, setEnrolledSubmitting] = useState(false);
+  const [tierSubmitting, setTierSubmitting] = useState(false)
+  const [enrolledSubmitting, setEnrolledSubmitting] = useState(false)
 
   async function savingTierInformationChanges() {
-    setTierSubmitting(true);
+    setTierSubmitting(true)
     try {
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const querySnapshot = await getDocs(q)
 
       if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
-        const userData = querySnapshot.docs[0].data();
+        const docRef = querySnapshot.docs[0].ref
+        const userData = querySnapshot.docs[0].data()
 
-        var details = {};
+        let details = {}
         if (hourlyRate !== 0 && currentTier !== "") {
-          details = { hourlyRate: hourlyRate, tutorTier: currentTier };
+          details = { hourlyRate: hourlyRate, tutorTier: currentTier }
         } else if (hourlyRate !== 0) {
-          details = { hourlyRate: hourlyRate };
+          details = { hourlyRate: hourlyRate }
         } else if (currentTier !== "") {
-          details = { tutorTier: currentTier };
+          details = { tutorTier: currentTier }
         }
 
-        // Update only the specified fields in the document
-        await updateDoc(docRef, details);
-        toast.success("Info Updated!");
+        await updateDoc(docRef, details)
+        toast.success("Info Updated!")
       }
     } catch (e) {
-      toast.error("Error updating information");
+      toast.error("Error updating information")
     } finally {
-      setTierSubmitting(false);
-      setHourlyRate(0);
-      setCurrentTier("");
+      setTierSubmitting(false)
+      setHourlyRate(0)
+      setCurrentTier("")
     }
   }
 
   async function savingChanges() {
-    setSubmitting(true);
+    setSubmitting(true)
     try {
-      const formattedSubjects = {};
+      const formattedSubjects = {}
       selectedSubjects.forEach((subject) => {
-        formattedSubjects[subject] = true;
-      });
+        formattedSubjects[subject] = true
+      })
 
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const querySnapshot = await getDocs(q)
 
       if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
-        const userData = querySnapshot.docs[0].data();
+        const docRef = querySnapshot.docs[0].ref
+        const userData = querySnapshot.docs[0].data()
 
-        // Merge the existing subjects with the new ones
         const mergedSubjects = {
           ...userData.subjects,
           ...formattedSubjects,
-        };
+        }
 
-        const details = { subjects: mergedSubjects };
+        const details = { subjects: mergedSubjects }
 
-        // Update only the specified fields in the document
-        await updateDoc(docRef, details);
-        setShowModal(false);
-        toast.success("Subjects added");
+        await updateDoc(docRef, details)
+        setShowModal(false)
+        toast.success("Subjects added")
       }
     } catch (e) {
-      toast.error("Error adding subjects");
+      toast.error("Error adding subjects")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 
@@ -129,28 +108,28 @@ export function AddSubjectsApplication({ userDetails, userId }) {
     setSubjectsToTeach((prevState) => ({
       ...prevState,
       [subject]: !prevState[subject],
-    }));
-  };
+    }))
+  }
 
   const handleDelete = (subject) => {
-    const { [subject]: omit, ...rest } = subjectsToTeach;
-    setSubjectsToTeach(rest);
-  };
+    const { [subject]: omit, ...rest } = subjectsToTeach
+    setSubjectsToTeach(rest)
+  }
 
   const renderElement = () => {
     return (
-      <React.Fragment>
+      <>
         <div>
           <select
-            style={{ width: "100%", padding: "10px", flex: 1, outline: "none" }}
-            onChange={(e) =>
-              setSelectedSubjects([...selectedSubjects, e.target.value])
-            }
+            className="w-full p-2.5 flex-1 outline-none border border-gray-300 rounded-md"
+            onChange={(e) => setSelectedSubjects([...selectedSubjects, e.target.value])}
             aria-label=".form-select-sm example"
           >
             <option value="">Select</option>
-            {subjectsArray.map((item) => (
-              <option value={item}>{item}</option>
+            {subjectsArray.map((item, index) => (
+              <option key={index} value={item}>
+                {item}
+              </option>
             ))}
           </select>
         </div>
@@ -158,536 +137,226 @@ export function AddSubjectsApplication({ userDetails, userId }) {
         <div>
           {selectedSubjects.map((item, index) => (
             <button
-              onMouseOver={(event) => {
-                event.target.style.backgroundColor = "rgb(156, 16, 16)";
-              }}
-              onMouseOut={(event) => {
-                event.target.style.backgroundColor = "#292929";
-              }}
-              style={{
-                margin: "10px",
-                backgroundColor: "#292929",
-                borderRadius: "2rem",
-              }}
-              onClick={() => {
-                setSelectedSubjects(selectedSubjects.filter((e) => e !== item));
-              }}
+              key={index}
+              className="m-2 bg-[#292929] text-white px-4 py-1 rounded-full transition-colors duration-300 hover:bg-red-800"
+              onClick={() => setSelectedSubjects(selectedSubjects.filter((e) => e !== item))}
             >
               {item}
             </button>
           ))}
         </div>
-      </React.Fragment>
-    );
-  };
+      </>
+    )
+  }
 
   async function saveEnrolledSubjects() {
-    setEnrolledSubmitting(true);
+    setEnrolledSubmitting(true)
     try {
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const querySnapshot = await getDocs(q)
 
       if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;
+        const docRef = querySnapshot.docs[0].ref
 
-        const details = { subjects: subjectsToTeach };
+        const details = { subjects: subjectsToTeach }
 
-        // Update enrolled subjects in Firestore
-        await updateDoc(docRef, details);
-        toast.success("Changes saved");
+        await updateDoc(docRef, details)
+        toast.success("Changes saved")
       }
     } catch (e) {
-      toast.error("Error saving enrolled subjects");
+      toast.error("Error saving enrolled subjects")
     } finally {
-      setEnrolledSubmitting(false);
+      setEnrolledSubmitting(false)
     }
   }
 
   async function deleteItemHandler(notificationId) {
-    setSubmitting(true);
+    setSubmitting(true)
     try {
-      // Query Firestore to get user details based on userId
-      const userListRef = collection(db, "userList");
-      const q = query(userListRef, where("userId", "==", userId));
-      const userDocSnapshot = await getDocs(q);
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const userDocSnapshot = await getDocs(q)
 
       if (!userDocSnapshot.empty) {
-        // User document found
-        const userDoc = userDocSnapshot.docs[0];
-        const userData = userDoc.data();
-        // Filter out the item with the specified notificationId
+        const userDoc = userDocSnapshot.docs[0]
+        const userData = userDoc.data()
         const updatedNotifications = userData.teacherSubjectApplication.filter(
-          (notification) => notification.id !== notificationId
-        );
-        // Update teacherSubjectApplication array in Firestore
+          (notification) => notification.id !== notificationId,
+        )
         await updateDoc(doc(db, "userList", userDoc.id), {
           teacherSubjectApplication: updatedNotifications,
-        });
+        })
 
-        toast.success("Application Deleted");
-        setDeleteSessionModal(false);
+        toast.success("Application Deleted")
+        setDeleteSessionModal(false)
       } else {
-        toast.error("User document not found");
+        toast.error("User document not found")
       }
     } catch (error) {
-      console.error("Error deleting notification:", error);
-      toast.error("Failed to delete notification");
+      console.error("Error deleting notification:", error)
+      toast.error("Failed to delete notification")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 
   return (
     <>
-      {/* <Accordion
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <div
-            style={{
-              textAlign: "left",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              flex: 1,
-              textAlign: "left",
-            }}
-          >
-            Tier & Hourly Rate
-          </div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div style={{ width: "100%", marginTop: "20px" }}>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ marginRight: "10px", flex: 1 }}>
-                <b>Current Tier:</b> {userDetails?.tutorTier}
-              </div>
-              <div style={{ flex: 1 }}>
-                <select
-                  style={{
-                    height: "50px",
-                    paddingLeft: "15px",
-                    width: "100%",
-                    background: "rgba(255,255,255,0.4)",
-                    borderRadius: "0px",
-                    outline: "none",
-                    borderRadius: "5px",
-                    border: "1px solid #eee",
-                  }}
-                  onChange={(e) => setCurrentTier(e.target.value)}
-                  aria-label=".form-select-sm example"
-                  value={currentTier}
-                >
-                  <option value="">Select</option>
-                  <option value="Standard">Standard Level ($24)</option>
-                  <option value="Top">Top Level ($28)</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
+      {/* Approved Subjects */}
+      <div className="bg-white p-6 rounded-lg">
+        <div className="text-left text-2xl font-bold mb-6">Approved Subjects</div>
 
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "10px",
-                marginBottom: "20px",
-              }}
-            >
-              <div style={{ marginRight: "10px", flex: 1 }}>
-                <b>Current Hourly Rate:</b> $ {userDetails?.hourlyRate}
-              </div>
-              <div style={{ flex: 1 }}>
-                <input
-                  style={{
-                    flex: 1,
-                    height: "50px",
-                    paddingLeft: "15px",
-                    width: "100%",
-                    background: "rgba(255,255,255,0.4)",
-                    borderRadius: "0px",
-                    outline: "none",
-                    borderRadius: "5px",
-                    border: "1px solid #eee",
-                  }}
-                  onChange={(e) => setHourlyRate(e.target.value)}
-                  value={hourlyRate}
-                  type={"number"}
-                />
-              </div>
-            </div>
-
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              {tierSubmitting ? (
-                <LoadingButton
-                  loading
-                  loadingPosition="start"
-                  startIcon={<SaveIcon />}
-                  variant="outlined"
-                >
-                  SAVING
-                </LoadingButton>
-              ) : (
-                <Button
-                  onClick={savingTierInformationChanges}
-                  variant="contained"
-                  color="success"
-                >
-                  SAVE
-                </Button>
-              )}
-            </div>
-          </div>
-        </AccordionDetails>
-      </Accordion> */}
-
-      <Accordion
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <div
-            style={{
-              textAlign: "left",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              flex: 1,
-              textAlign: "left",
-            }}
-          >
-            Approved Subjects
-          </div>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div style={{ width: "100%", marginTop: "20px" }}>
+        <div className="w-full">
+          <div className="grid grid-cols-1 gap-3">
             {Object.keys(userDetails?.subjects ? userDetails?.subjects : {})
               .sort((a, b) => a.localeCompare(b))
-              .map((subject) => (
+              .map((subject, index) => (
                 <div
-                  key={subject}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
+                  key={index}
+                  className="flex justify-between items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
                 >
-                  <label>
+                  <label className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={subjectsToTeach[subject]}
                       onChange={() => handleChange(subject)}
+                      className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                     />
-                    {subject}
+                    <span className="text-gray-900">{subject}</span>
                   </label>
-                  <IconButton
-                    aria-label="delete"
-                    size="large"
-                    onClick={() => handleDelete(subject)}
-                  >
-                    <DeleteIcon fontSize="inherit" />
-                  </IconButton>
+                  <button onClick={() => handleDelete(subject)} className="text-red-500 hover:text-red-700 p-1">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
                 </div>
               ))}
-
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              {enrolledSubmitting ? (
-                <LoadingButton
-                  loading
-                  loadingPosition="start"
-                  startIcon={<SaveIcon />}
-                  variant="outlined"
-                >
-                  SAVING
-                </LoadingButton>
-              ) : (
-                <Button
-                  onClick={saveEnrolledSubjects}
-                  variant="contained"
-                  color="success"
-                >
-                  SAVE
-                </Button>
-              )}
-            </div>
           </div>
-        </AccordionDetails>
-      </Accordion>
 
-      {
-  userDetails?.teacherSubjectApplication?.length > 0 &&
-      <Accordion
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-        >
-          <div
-            style={{
-              textAlign: "left",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              flex: 1,
-              textAlign: "left",
-            }}
-          >
-            New Subject Applications
-          </div>
-        </AccordionSummary>
-        <AccordionDetails>
-          {userDetails?.teacherSubjectApplication?.map((item) => (
-            <Accordion
-              style={{
-                borderRadius: "5px",
-                background: "rgba(255,255,255,0.2)",
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
+          <div className="flex justify-end items-center gap-3 mt-6">
+            {enrolledSubmitting ? (
+              <button className="bg-green-600 text-white px-4 py-2 rounded-lg opacity-50 cursor-not-allowed">
+                SAVING...
+              </button>
+            ) : (
+              <button
+                onClick={saveEnrolledSubjects}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
-                <div
-                  style={{
-                    flex: 1,
-                    justifyContent: "space-between",
-                    display: "flex",
-                    fontSize: "large",
-                    fontWeight: "bold",
-                  }}
-                >
-                  <div>{item.subjectsToBeClearedFor}</div>
-                </div>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div>
-                  <div>
-                    <b>Subject To Be Cleared For:</b>{" "}
-                    {item.subjectsToBeClearedFor}
-                  </div>
+                SAVE
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
 
+      {/* New Subject Applications */}
+      {userDetails?.teacherSubjectApplication?.length > 0 && (
+        <div className="bg-white p-6 rounded-lg mt-6">
+          <div className="text-left text-2xl font-bold mb-6">New Subject Applications</div>
+
+          <div className="space-y-4">
+            {userDetails?.teacherSubjectApplication?.map((item, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <div className="text-lg font-semibold text-gray-900 mb-3">{item.subjectsToBeClearedFor}</div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div>
+                    <b>Subject To Be Cleared For:</b> {item.subjectsToBeClearedFor}
+                  </div>
                   <div>
                     <b>Tutor Name:</b> {item.tutorName}
                   </div>
-
                   <div>
-                    <b>Previous Experience:</b>{" "}
-                    {item.describePreviousExperience}
+                    <b>Previous Experience:</b> {item.describePreviousExperience}
                   </div>
-
                   <div>
                     <b>Proof of Grade:</b>{" "}
-                    <a href={item.proofOfGrade} download>
+                    <a href={item.proofOfGrade} download className="text-blue-600 hover:underline">
                       Download
                     </a>
                   </div>
-
-                  <div
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <Button
-                      onClick={() => {
-                        setSelectedLink(item);
-                        setDeleteSessionModal(true);
-                      }}
-                      variant="outlined"
-                      color="error"
-                    >
-                      DELETE
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowModal(true);
-                        setSelectedLink(item);
-                      }}
-                      variant="contained"
-                      color="success"
-                    >
-                      ADD SUBJECT
-                    </Button>
-                  </div>
                 </div>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </AccordionDetails>
-      </Accordion>
-    }
 
+                <div className="flex justify-end items-center gap-3 mt-4">
+                  <button
+                    onClick={() => {
+                      setSelectedLink(item)
+                      setDeleteSessionModal(true)
+                    }}
+                    className="border border-red-500 text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    DELETE
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowModal(true)
+                      setSelectedLink(item)
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    ADD SUBJECT
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation dialog */}
       <Dialog
         open={deleteSessionModal}
         TransitionComponent={Transition}
         keepMounted
-        onClose={() => {
-          setDeleteSessionModal(false);
-        }}
+        onClose={() => setDeleteSessionModal(false)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>
-          {"Are you sure you want to delete this application?"}
-        </DialogTitle>
+        <DialogTitle>{"Are you sure you want to delete this application?"}</DialogTitle>
 
         <DialogActions>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => {
-              setDeleteSessionModal(false);
-            }}
-          >
+          <Button variant="outlined" color="error" onClick={() => setDeleteSessionModal(false)}>
             NO
           </Button>
           {!submitting ? (
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => deleteItemHandler(selectedLink.id)}
-            >
+            <Button variant="contained" color="success" onClick={() => deleteItemHandler(selectedLink.id)}>
               YES
             </Button>
           ) : (
-            <LoadingButton
-              loading
-              loadingPosition="start"
-              startIcon={<SaveIcon />}
-              variant="outlined"
-            >
+            <LoadingButton loading loadingPosition="start" startIcon={<SaveIcon />} variant="outlined">
               DELETING
             </LoadingButton>
           )}
         </DialogActions>
       </Dialog>
 
-      <Modal
-        open={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-      >
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center", // center the modal content vertically and horizontally
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              minWidth: "70%",
-              maxWidth: "1000px",
-              maxHeight: "90vh",
-              overflow: "hidden",
-              boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-              background: "rgba(255,255,255, 0.6)",
-              backdropFilter: "blur(4px)", // Adjust the blur intensity as needed
-              WebkitBackdropFilter: "blur(4px)", // For Safari support,
-              borderRadius: "10px",
-            }}
-          >
-            <div
-              style={{
-                padding: "20px",
-                flex: 1,
-                overflow: "auto",
-              }}
-            >
-              <h2 style={{ textAlign: "left" }}>Add Subjects</h2>
-              <div style={{ marginTop: "20px", padding: "10px" }}>
-                <div
-                  style={{
-                    padding: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: "rgba(255,255,255,0.5)",
-                    borderRadius: "10px",
-                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
+      {/* Add subject modal */}
+      <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center">
+          <div className="flex flex-col min-w-[70%] max-w-[1000px] max-h-[90vh] overflow-hidden shadow-lg bg-white/60 backdrop-blur-md rounded-lg">
+            <div className="p-5 flex-1 overflow-auto">
+              <h2 className="text-left text-xl font-semibold">Add Subjects</h2>
+              <div className="mt-5 p-2.5">
+                <div className="p-2.5 flex flex-col justify-center items-center bg-white/50 rounded-lg shadow-md">
                   {renderElement()}
                 </div>
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  flex: 1,
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  gap: "10px",
-                  width: "100%",
-                  marginTop: "20px",
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setShowModal(false)}
-                >
+              <div className="flex flex-wrap justify-end items-center gap-3 w-full mt-5">
+                <Button variant="outlined" color="error" onClick={() => setShowModal(false)}>
                   CANCEL
                 </Button>
                 {submitting ? (
-                  <LoadingButton
-                    loading
-                    loadingPosition="start"
-                    startIcon={<SaveIcon />}
-                    variant="outlined"
-                  >
+                  <LoadingButton loading loadingPosition="start" startIcon={<SaveIcon />} variant="outlined">
                     ADDING
                   </LoadingButton>
                 ) : (
-                  <Button
-                    onClick={() => {
-                      savingChanges();
-                    }}
-                    variant="contained"
-                    color="success"
-                  >
+                  <Button onClick={savingChanges} variant="contained" color="success">
                     ADD
                   </Button>
                 )}
@@ -697,5 +366,5 @@ export function AddSubjectsApplication({ userDetails, userId }) {
         </div>
       </Modal>
     </>
-  );
+  )
 }

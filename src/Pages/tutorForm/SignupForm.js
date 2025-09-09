@@ -1,5 +1,4 @@
-import React, { useState  } from "react";
-import styles from "./SignUpOnly.module.css";
+import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
@@ -9,7 +8,6 @@ import SaveIcon from "@mui/icons-material/Save";
 
 import toast from "react-hot-toast";
 import Button from "@mui/material/Button";
-
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -17,7 +15,6 @@ import emailjs from "emailjs-com";
 import getTutorRegisterEmailTemplate from "../../Components/getEmailTemplate/getTutorRegisterEmailTemplate";
 
 function SignupForm({ tutor, setCreateAccountModal }) {
-
   const [signUpEmail, setSignUpEmail] = useState(tutor?.email);
   const [signUpPassword, setSignUpPassword] = useState("Basic1234");
   const [subjectsToTeach, setSubjectsToTeach] = useState({
@@ -34,7 +31,6 @@ function SignupForm({ tutor, setCreateAccountModal }) {
   const [tutorTier, setTutorTier] = useState("");
 
   const [submitting, setSubmitting] = useState(false);
-
 
   const SignUpHandler = async () => {
     if (
@@ -86,8 +82,12 @@ function SignupForm({ tutor, setCreateAccountModal }) {
         const serviceId = process.env.REACT_APP_EMAILSERVICEID;
         const templateId = process.env.REACT_APP_EMAILTEMPLATEID;
         const emailUserId = process.env.REACT_APP_EMAILUSERID;
-        const emailTemplate = getTutorRegisterEmailTemplate(userName, signUpEmail, signUpPassword);
-        
+        const emailTemplate = getTutorRegisterEmailTemplate(
+          userName,
+          signUpEmail,
+          signUpPassword
+        );
+
         const emailParams = {
           from_name: "IBInnovators",
           to_name: "IBInnovators",
@@ -132,254 +132,151 @@ function SignupForm({ tutor, setCreateAccountModal }) {
   };
 
   return (
-    <div>
-      <div>
-        <h2 className={styles.headerTitle}>Register Tutor</h2>
+    <div className="p-4">
+      <h2 className="text-center py-8 text-2xl font-semibold">
+        Register Tutor
+      </h2>
 
-        <form>
-          <div style={{ width: "100%" }}>
-            <div
-              style={{
-                color: "#1e1e1e",
-                textAlign: "left",
-                flex: 1,
-                width: "100%",
-              }}
-            >
-              Full Name
-            </div>
-            <input
-              required
-              type="text"
-              placeholder="Enter Full Name"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              style={{
-                height: "50px",
-                paddingLeft: "15px",
-                width: "100%",
-                background: "rgba(255,255,255,0.4)",
-                outline: "none",
-                borderRadius: "5px",
-                border: "1px solid #eee",
-              }}
-            />
-          </div>
+      <form className="w-full">
+        {/* Full Name */}
+        <div className="w-full">
+          <label className="text-left text-gray-900 block">Full Name</label>
+          <input
+            required
+            type="text"
+            placeholder="Enter Full Name"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="h-12 w-full px-4 bg-white/40 border border-gray-200 rounded-md outline-none"
+          />
+        </div>
 
-          <div style={{ width: "100%", marginTop: "20px" }}>
-            <div
-              style={{
-                color: "#1e1e1e",
-                textAlign: "left",
-                flex: 1,
-                width: "100%",
-              }}
-            >
-              Email
-            </div>
-            <input
-              required
-              type="email"
-              placeholder="Enter email address"
-              value={signUpEmail}
-              onChange={(e) => setSignUpEmail(e.target.value)}
-              style={{
-                height: "50px",
-                paddingLeft: "15px",
-                width: "100%",
-                background: "rgba(255,255,255,0.4)",
-                outline: "none",
-                borderRadius: "5px",
-                border: "1px solid #eee",
-              }}
-            />
-          </div>
+        {/* Email */}
+        <div className="w-full mt-5">
+          <label className="text-left text-gray-900 block">Email</label>
+          <input
+            required
+            type="email"
+            placeholder="Enter email address"
+            value={signUpEmail}
+            onChange={(e) => setSignUpEmail(e.target.value)}
+            className="h-12 w-full px-4 bg-white/40 border border-gray-200 rounded-md outline-none"
+          />
+        </div>
 
-          <div style={{ width: "100%", marginTop: "20px" }}>
-            <div
-              style={{
-                color: "#1e1e1e",
-                textAlign: "left",
-                flex: 1,
-                width: "100%",
-              }}
-            >
-              Tutor Tier
-            </div>
-            <select
-              style={{
-                height: "50px",
-                paddingLeft: "15px",
-                width: "100%",
-                background: "rgba(255,255,255,0.4)",
-                outline: "none",
-                borderRadius: "5px",
-                border: "1px solid #eee",
-              }}
-              onChange={(e) => {
-                if (e.target.value === "Standard") {
-                  setHourlyRate(24);
-                } else if (e.target.value === "Top") {
-                  setHourlyRate(28);
-                } else {
-                  setHourlyRate(0);
-                }
-                setTutorTier(e.target.value);
-              }}
-              aria-label=".form-select-sm example"
-              value={tutorTier}
-            >
-              <option value="">Select</option>
-              <option value="Standard">Standard ($24)</option>
-              <option value="Top">Top ($28)</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          {tutorTier === "Other" && (
-            <div style={{ width: "100%", marginTop: "20px" }}>
-              <div
-                style={{
-                  color: "#1e1e1e",
-                  textAlign: "left",
-                  flex: 1,
-                  width: "100%",
-                }}
-              >
-                Hourly Rate in USD ($)
-              </div>
-              <input
-                required
-                type="number"
-                placeholder="Enter hourly rate"
-                value={hourlyRate}
-                onChange={(e) => setHourlyRate(e.target.value)}
-                style={{
-                  height: "50px",
-                  paddingLeft: "15px",
-                  width: "100%",
-                  background: "rgba(255,255,255,0.4)",
-                  outline: "none",
-                  borderRadius: "5px",
-                  border: "1px solid #eee",
-                }}
-              />
-            </div>
-          )}
-
-          <div style={{ width: "100%", marginTop: "20px" }}>
-            <div
-              style={{
-                color: "#1e1e1e",
-                textAlign: "left",
-                flex: 1,
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            >
-              Subjects to Teach
-            </div>
-            {Object.entries(subjectsToTeach).map(([subject, value]) => (
-              <div
-                key={subject}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  borderBottom: "1px solid #9e9e9e",
-                }}
-              >
-                <label
-                  style={{ display: "flex", gap: "10px", alignItems: "center" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={value}
-                    onChange={() => handleChange(subject)}
-                  />
-                  {subject}
-                </label>
-                <IconButton
-                  aria-label="delete"
-                  size="large"
-                  onClick={() => handleDelete(subject)}
-                >
-                  <DeleteIcon fontSize="inherit" />
-                </IconButton>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ width: "100%", marginTop: "20px" }}>
-            <div
-              style={{
-                color: "#1e1e1e",
-                textAlign: "left",
-                flex: 1,
-                width: "100%",
-              }}
-            >
-              Password
-            </div>
-            <input
-              required
-              type={"text"}
-              placeholder="Enter your password"
-              value={signUpPassword}
-              onChange={(e) => setSignUpPassword(e.target.value)}
-              style={{
-                height: "50px",
-                paddingLeft: "15px",
-                width: "100%",
-                background: "rgba(255,255,255,0.4)",
-                outline: "none",
-                borderRadius: "5px",
-                border: "1px solid #eee",
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: "10px",
-              width: "100%",
-              marginTop: "20px",
+        {/* Tutor Tier */}
+        <div className="w-full mt-5">
+          <label className="text-left text-gray-900 block">Tutor Tier</label>
+          <select
+            className="h-12 w-full px-4 bg-white/40 border border-gray-200 rounded-md outline-none"
+            onChange={(e) => {
+              if (e.target.value === "Standard") {
+                setHourlyRate(24);
+              } else if (e.target.value === "Top") {
+                setHourlyRate(28);
+              } else {
+                setHourlyRate(0);
+              }
+              setTutorTier(e.target.value);
             }}
+            value={tutorTier}
           >
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => setCreateAccountModal(false)}
-            >
-              CANCEL
-            </Button>
-            {submitting ? (
-              <LoadingButton
-                loading
-                loadingPosition="start"
-                startIcon={<SaveIcon />}
-                variant="outlined"
-              >
-                REGISTERING
-              </LoadingButton>
-            ) : (
-              <Button
-                disabled={!hourlyRate}
-                onClick={() => SignUpHandler()}
-                variant="contained"
-                color="success"
-              >
-                REGISTER
-              </Button>
-            )}
+            <option value="">Select</option>
+            <option value="Standard">Standard ($24)</option>
+            <option value="Top">Top ($28)</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        {/* Hourly Rate */}
+        {tutorTier === "Other" && (
+          <div className="w-full mt-5">
+            <label className="text-left text-gray-900 block">
+              Hourly Rate in USD ($)
+            </label>
+            <input
+              required
+              type="number"
+              placeholder="Enter hourly rate"
+              value={hourlyRate}
+              onChange={(e) => setHourlyRate(e.target.value)}
+              className="h-12 w-full px-4 bg-white/40 border border-gray-200 rounded-md outline-none"
+            />
           </div>
-        </form>
-      </div>
+        )}
+
+        {/* Subjects */}
+        <div className="w-full mt-5">
+          <label className="text-left text-gray-900 block mb-2">
+            Subjects to Teach
+          </label>
+          {Object.entries(subjectsToTeach).map(([subject, value]) => (
+            <div
+              key={subject}
+              className="flex justify-between border-b border-gray-400 py-2"
+            >
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={value}
+                  onChange={() => handleChange(subject)}
+                />
+                {subject}
+              </label>
+              <IconButton
+                aria-label="delete"
+                size="large"
+                onClick={() => handleDelete(subject)}
+              >
+                <DeleteIcon fontSize="inherit" />
+              </IconButton>
+            </div>
+          ))}
+        </div>
+
+        {/* Password */}
+        <div className="w-full mt-5">
+          <label className="text-left text-gray-900 block">Password</label>
+          <input
+            required
+            type="text"
+            placeholder="Enter your password"
+            value={signUpPassword}
+            onChange={(e) => setSignUpPassword(e.target.value)}
+            className="h-12 w-full px-4 bg-white/40 border border-gray-200 rounded-md outline-none"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex flex-wrap justify-end items-center gap-3 w-full mt-6">
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setCreateAccountModal(false)}
+          >
+            CANCEL
+          </Button>
+          {submitting ? (
+            <LoadingButton
+              loading
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              variant="outlined"
+            >
+              REGISTERING
+            </LoadingButton>
+          ) : (
+            <Button
+              disabled={!hourlyRate}
+              onClick={() => SignUpHandler()}
+              variant="contained"
+              color="success"
+            >
+              REGISTER
+            </Button>
+          )}
+        </div>
+      </form>
     </div>
   );
 }

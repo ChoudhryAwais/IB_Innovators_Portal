@@ -1,31 +1,20 @@
-
 export default function getJobNotApprovedEmailTemplate(tutor_name) {
-
-    return `
-    
-    <html>
+  return `
+<html>
   <head></head>
-  <body style="padding: 1rem; background: white">
-    <div style="flex: 1; width: 100%">
-      <div
-        style="
-          flex: 1;
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: center;
-        "
-      >
+  <body class="p-4 bg-white">
+    <div class="flex-1 w-full">
+      <div class="flex flex-row justify-start items-center flex-1">
         <img
           src="https://portal.ibinnovators.com/logo.png"
           alt="Logo"
           height="50"
           width="100"
-          style="height: 50; width: auto"
+          class="h-[50px] w-auto"
         />
       </div>
 
-      <div style="background: #eee; padding: 1rem; flex: 1; margin-top: 1rem">
+      <div class="bg-[#eee] p-4 flex-1 mt-4">
         <p>Dear ${tutor_name},</p>
 
         <p>
@@ -35,20 +24,20 @@ export default function getJobNotApprovedEmailTemplate(tutor_name) {
         </p>
       </div>
 
-      <div style="margin-top: 1rem">
-        <div style="font-size: small; color: #7e7e7e">
+      <div class="mt-4">
+        <div class="text-sm text-[#7e7e7e]">
           For 1-on-1 lessons and tutoring
         </div>
-        <div style="font-size: small; color: #7e7e7e">education.ibinnovators.com</div>
-        <div style="font-size: small">
+        <div class="text-sm text-[#7e7e7e]">education.ibinnovators.com</div>
+        <div class="text-sm">
           <a href="mailto:support@ibinnovators.com" target="_blank">
             support@ibinnovators.com
           </a>
         </div>
-        <div style="font-size: small; color: #7e7e7e">
+        <div class="text-sm text-[#7e7e7e]">
           ${process.env.REACT_APP_EMAIL_TEMPLATE_WHATSAPP}
         </div>
-        <div style="color: #1555a0">
+        <div class="text-[#1555a0]">
           <b>
             IB INNOVATORS LTD,<br />
             Suite 4258, Unit 3A, 34-35 Hatton Garden,<br />
@@ -60,7 +49,5 @@ export default function getJobNotApprovedEmailTemplate(tutor_name) {
     </div>
   </body>
 </html>
-
-`
-
+`;
 }

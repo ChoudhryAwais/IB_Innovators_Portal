@@ -17,6 +17,7 @@ import SignUpOnly from "./Pages/SignUp/SignUpOnly";
 import StudentForm from "./Pages/studentForm/StudentForm";
 import TutorForm from "./Pages/tutorForm/TutorForm";
 import Blogs from "./Pages/Blogs/Blogs";
+import EditBlog from "./Pages/Blogs/EditBlog";
 
 import ManageLinks from "./Pages/ManageLinks/ManageLinks";
 
@@ -35,10 +36,12 @@ import RevisionCoursesForm from "./Pages/revisionCourseForm/RevisionCoursesForm"
 
 import { Toaster } from "react-hot-toast";
 import { TutorPages } from "./Pages/adminPages/tutorPages/TutorPages";
+import TutorDetail from "./Pages/adminPages/tutorPages/TutorDetail"; //inserted tutor Detail
 import MySubscriptions from "./Pages/studentPages/mySubscriptions/MySubscriptions";
 import NewCourses from "./Pages/studentPages/newCourses/NewCourses";
 import ProfileAndFinanceStudent from "./Pages/studentPages/profileAndFinance/ProfileAndFinanceStudent";
 import SupportBlogs from "./Pages/supportBlogs/SupportBlogs";
+import CreateSupportBlog from "./Pages/supportBlogs/createSupportBlogs"; //inserted create support blog
 import Details from "./Pages/SupportAndTraining/Details";
 import { JobApplication } from "./Pages/jobApplication/JobApplication";
 import SEO from "./Pages/adminPages/SEO/SEO";
@@ -47,6 +50,8 @@ import Layout from "./Components/Layout";
 import CustomModal from "./Pages/Login/CustomModal/CustomModal";
 import Loader from "./Pages/Login/Loader/Loader";
 import UpcomingCourseForm from "./Pages/upcomingCourseForm/UpcomingCourseForm";
+import {CourseTabs} from "./Pages/coursesTabbed/CourseTabs" //inserted coursesTabb
+import {ManageSubjects} from "./Pages/adminPages/tutorPages/ManageSubjects"
 
 function App() {
   const { isUserLoggedIn, userType, loading } = useContext(MyContext);
@@ -83,20 +88,28 @@ function App() {
               {userType === "admin" && (
                 <>
                   <Route path="/seo" element={<SEO />} />
-                  <Route path="/createBlogs" element={<Blogs />} />
+                  <Route path="/blogs" element={<Blogs />} />
+                  <Route path="/blogs/new" element={<EditBlog />} />
+
                   {/* <Route path="/jobOpenings/:id" element={<JobApplication />} /> */}
                   <Route path="/supportBlogs" element={<SupportBlogs />} />
+                  <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />
                   <Route path="/upcomingCourses" element={<UpcommingCourses />} />
                   <Route path="/studentForms" element={<StudentForm />} />
-                  <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} />
+                  <Route path="/coursesForms" element={<CourseTabs />} />
+                  {/* <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} /> */}
                   <Route path="/tutorForms" element={<TutorForm />} />
                   <Route path="/tutorsAndSubjects" element={<TutorPages />} />
+                  <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
                   <Route path="/signup" element={<SignUpOnly />} />
                   <Route path="/links" element={<ManageLinks />} />
                   <Route path="/contactUsForms" element={<ContactUsForm />} />
-                  <Route path="/requestCourseForm" element={<RequestCoursesForm />} />
-                  <Route path="/revisionCoursesForm" element={<RevisionCoursesForm />} />
+                  {/* <Route path="/requestCourseForm" element={<RequestCoursesForm />} />
+                  <Route path="/revisionCoursesForm" element={<RevisionCoursesForm />} /> */}
                   <Route path="/jobsAndRequests" element={<CreateOrder />} />
+                  <Route path="/subjects" element={<ManageSubjects />} />
+
+                  
                 </>
               )}
               {userType === "student" && (

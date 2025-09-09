@@ -71,13 +71,8 @@ export function CreateOrderForm({ item, handleClose }) {
 
       const userListRef = collection(db, "orders");
       const docRef = await addDoc(userListRef, details);
-
-      // Retrieve the newly created document ID
       const docId = docRef.id;
-
-      // Update the document with the new field 'id'
       await updateDoc(doc(db, "orders", docId), { id: docId });
-
       await deleteDoc(doc(db, "studentRequests", item?.id));
 
       handleClose(false);
@@ -87,13 +82,11 @@ export function CreateOrderForm({ item, handleClose }) {
           .filter(([_, value]) => value === true)
           .map(([subject]) => subject);
 
-        // Check if any of the teacher's subjects match the order subjects
         return filteredSubjects.includes(item?.subject);
       };
 
       const userListRefSecond = collection(db, "userList");
       const q = query(userListRefSecond, where("type", "==", "teacher"));
-
       const querySnapshot = await getDocs(q);
       const teachersData = querySnapshot.docs.map((doc) => doc.data());
       const eligibleTeacherEmails = teachersData
@@ -105,30 +98,26 @@ export function CreateOrderForm({ item, handleClose }) {
       const userId = process.env.REACT_APP_EMAILUSERID;
 
       eligibleTeacherEmails.forEach((e) => {
-        
-      const emailTemplate = getCourseRequestedEmailTemplate(
-        item?.studentInformation?.userName,
-        item?.subject,
-        item?.yearOfGraduation,
-        item?.country,
-        item?.startDate,
-        `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e.userId}`
-      )
-      
+        const emailTemplate = getCourseRequestedEmailTemplate(
+          item?.studentInformation?.userName,
+          item?.subject,
+          item?.yearOfGraduation,
+          item?.country,
+          item?.startDate,
+          `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e.userId}`
+        );
+
         const emailParams = {
           from_name: "IBInnovators",
-          to_name: "", // Change this to the appropriate name field
+          to_name: "",
           send_to: e.email,
           subject: `IB Innovators ${item?.subject} Opening (${item?.gmt})`,
           message: emailTemplate,
         };
 
-        emailjs
-          .send(serviceId, templateId, emailParams, userId)
-          .then((response) => {})
-          .catch((error) => {
-            console.error("Error sending email:", error);
-          });
+        emailjs.send(serviceId, templateId, emailParams, userId).catch((err) =>
+          console.error("Error sending email:", err)
+        );
       });
 
       addNotification(
@@ -150,26 +139,16 @@ export function CreateOrderForm({ item, handleClose }) {
 
   return (
     <CustomModal>
-      <div style={{ flex: 1 }}>
-        <h2>ORDER SUBMISSION FORM</h2>
+      <div className="flex-1">
+        <h2 className="text-xl font-semibold">ORDER SUBMISSION FORM</h2>
+
         {/* STUDENT INFO */}
         <div>
-          <div
-            style={{ fontSize: "medium", fontWeight: "bold", color: "#6e6e6e" }}
-          >
-            Student
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "15px",
-            }}
-          >
+          <div className="text-gray-600 font-bold text-base">Student</div>
+          <div className="flex flex-wrap items-center gap-4">
             <div>
               <FontAwesomeIcon
-                style={{ marginLeft: "10px", fontSize: "2rem" }}
+                className="ml-2 text-2xl"
                 icon={faGraduationCap}
               />
             </div>
@@ -182,50 +161,18 @@ export function CreateOrderForm({ item, handleClose }) {
         </div>
 
         {/* TIME TABLE */}
-        <div style={{ flex: 1, marginTop: "30px", overflow: "auto" }}>
-          <h2 style={{ textAlign: "left", marginBottom: "10px" }}>
+        <div className="flex-1 mt-8 overflow-auto">
+          <h2 className="text-left mb-2 text-lg font-semibold">
             Slot(s) Required
           </h2>
 
-          {/* TIME TABLE */}
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              justifyContent: "space-between",
-              flex: 1,
-              minWidth: "600px",
-            }}
-          >
-            <div
-              style={{
-                flex: 1,
-                gap: "10px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                style={{
-                  flex: 1,
-                  minHeight: "40px",
-                  padding: "5px",
-                  textAlign: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              ></div>
+          <div className="flex gap-2 justify-between min-w-[600px]">
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="flex items-center min-h-10 p-1 text-center"></div>
               {timePeriods.map((time) => (
                 <div
                   key={time}
-                  style={{
-                    flex: 1,
-                    minHeight: "40px",
-                    padding: "5px",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
+                  className="flex items-center min-h-10 p-1 text-center"
                 >
                   {time}
                 </div>
@@ -233,44 +180,18 @@ export function CreateOrderForm({ item, handleClose }) {
             </div>
 
             {days.map((day) => (
-              <div
-                key={day}
-                style={{
-                  flex: 1,
-                  gap: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    minHeight: "40px",
-                    padding: "5px",
-                    textAlign: "center",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
+              <div key={day} className="flex flex-col gap-2 flex-1">
+                <div className="flex items-center justify-center min-h-10 p-1 text-center">
                   {day.slice(0, 3)}
                 </div>
                 {timePeriods.map((time) => (
                   <div
                     key={time}
-                    style={{
-                      flex: 1,
-                      minHeight: "40px",
-                      padding: "5px",
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      userSelect: "none",
-                      transition: "all 0.5s ease-in-out",
-                      // cursor: "pointer",
-                      background: isSelected(day, time) ? "#007bff" : "#ccc",
-                    }}
-                    // onClick={() => handleSlotClick(day, time)}
+                    className={`flex items-center min-h-10 p-1 text-center select-none transition-all duration-500 ${
+                      isSelected(day, time)
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-300"
+                    }`}
                   ></div>
                 ))}
               </div>
@@ -278,200 +199,65 @@ export function CreateOrderForm({ item, handleClose }) {
           </div>
         </div>
 
-        <div style={{ flex: 1, marginTop: "50px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Requested Subject</div>
-            <div>{item?.subject}</div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Country</div>
-            <div>{item?.country}</div>
-          </div>
-          
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>GMT</div>
-            <div>{item?.gmt}</div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Year of Graduation</div>
-            <div>{item?.yearOfGraduation}</div>
-          </div>
-          
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Session</div>
-            <div>{item?.session}</div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Requested Tutor Tier</div>
-            <div>{item?.tutorTier}</div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Requested Hours</div>
-            <div>{item?.requestedHours}</div>
-          </div>
-
-          {/* <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Grade Predicted</div>
-            <div>{item?.gradePredicted}</div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Grade Aimed</div>
-            <div>{item?.gradeAimed}</div>
-          </div> */}
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              paddingBottom: "0.5rem",
-              borderBottom: "1px solid #ccc",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div>Starting Date</div>
-            <div>
-              {item?.startDate !== "Other"
+        {/* DETAILS */}
+        <div className="flex-1 mt-12">
+          {[
+            ["Requested Subject", item?.subject],
+            ["Country", item?.country],
+            ["GMT", item?.gmt],
+            ["Year of Graduation", item?.yearOfGraduation],
+            ["Session", item?.session],
+            ["Requested Tutor Tier", item?.tutorTier],
+            ["Requested Hours", item?.requestedHours],
+            [
+              "Starting Date",
+              item?.startDate !== "Other"
                 ? item?.startDate
-                : item?.customStartDate}
+                : item?.customStartDate,
+            ],
+          ].map(([label, value], idx) => (
+            <div
+              key={idx}
+              className="flex justify-between items-end border-b border-gray-300 pb-2 mt-2"
+            >
+              <div>{label}</div>
+              <div>{value}</div>
             </div>
-          </div>
+          ))}
         </div>
 
         <TextField
           type="number"
           label="Tutor Hourly Rate (USD)"
           value={tutorHourlyRate}
-          onChange={(e) => {
-            setTutorHourlyRate(e.target.value);
-          }}
+          onChange={(e) => setTutorHourlyRate(e.target.value)}
           fullWidth
           required
-          style={{ marginTop: "20px" }}
+          className="mt-5"
         />
 
         <TextField
           type="number"
           label="Hourly Price charged to Student (USD)"
           value={price}
-          onChange={(e) => {
-            setPrice(e.target.value);
-          }}
+          onChange={(e) => setPrice(e.target.value)}
           fullWidth
           required
-          style={{ marginTop: "10px", marginBottom: "20px" }}
+          className="mt-3 mb-5"
         />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-          gap: "10px",
-        }}
-      >
+      {/* ACTION BUTTONS */}
+      <div className="flex justify-end mt-5 gap-3">
         <Button
           disabled={submitting}
           variant="outlined"
           color="error"
-          onClick={() => {
-            handleClose(false);
-          }}
+          onClick={() => handleClose(false)}
         >
           CANCEL
         </Button>
-        <Button
-          disabled={submitting}
-          variant="contained"
-          onClick={submittingForm}
-        >
+        <Button disabled={submitting} variant="contained" onClick={submittingForm}>
           {submitting ? "Submitting" : "SUBMIT"}
         </Button>
       </div>

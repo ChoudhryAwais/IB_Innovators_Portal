@@ -1,22 +1,19 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   collection,
-  doc,
   getDocs,
   query,
-  onSnapshot,
   where,
-  updateDoc,
-  setDoc
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
-
-export function EducationHistory({userDetails, userId}) {
-  
+export function EducationHistory({ userDetails, userId }) {
   const [savingDetails, setSavingDetails] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [educationRecords, setEducationRecords] = useState(userDetails?.educationRecords ? userDetails?.educationRecords : [] );
+  const [educationRecords, setEducationRecords] = useState(
+    userDetails?.educationRecords ? userDetails?.educationRecords : []
+  );
 
   const [newRecord, setNewRecord] = useState({
     id: null,
@@ -27,28 +24,29 @@ export function EducationHistory({userDetails, userId}) {
   });
 
   useEffect(() => {
-    if(editing===false){
-      setEducationRecords(userDetails?.educationRecords ? userDetails?.educationRecords : [])
+    if (editing === false) {
+      setEducationRecords(
+        userDetails?.educationRecords ? userDetails?.educationRecords : []
+      );
     }
-  }, [editing])
+  }, [editing]);
 
   const [addingNewRecord, setAddingNewRecord] = useState(false);
 
   async function savingChanges() {
     setSavingDetails(true);
-  
+
     try {
       const userListRef = collection(db, "userList");
       const q = query(userListRef, where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
-  
-        // Replace the entire educationRecords array in the document
+
         await setDoc(docRef, { educationRecords }, { merge: true });
-      } 
-  
+      }
+
       setSavingDetails(false);
       setEditing(false);
     } catch (e) {
@@ -59,7 +57,9 @@ export function EducationHistory({userDetails, userId}) {
   }
 
   const removeEducationRecord = (id) => {
-    const updatedRecords = educationRecords.filter((record) => record.id !== id);
+    const updatedRecords = educationRecords.filter(
+      (record) => record.id !== id
+    );
     setEducationRecords(updatedRecords);
   };
 
@@ -69,167 +69,186 @@ export function EducationHistory({userDetails, userId}) {
 
   const renderEducationRecords = () => {
     return educationRecords.map((record) => (
-      <div key={record.id} style={{ flex: 1, marginBottom: "20px" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", flex: 1 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Qualification Title</div>
-            <div style={{ fontSize: "medium" }}>{record.qualificationTitle}</div>
+      <div key={record.id} className="flex-1 mb-5">
+        <div className="flex flex-wrap flex-1">
+          <div className="flex-1">
+            <div className="text-xs">Qualification Title</div>
+            <div className="text-base">{record.qualificationTitle}</div>
           </div>
 
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Year of Graduation</div>
-            <div style={{ fontSize: "medium" }}>{record.yearOfGraduation}</div>
+          <div className="flex-1">
+            <div className="text-xs">Year of Graduation</div>
+            <div className="text-base">{record.yearOfGraduation}</div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap flex-1">
+          <div className="flex-1">
+            <div className="text-xs">University</div>
+            <div className="text-base">{record.university}</div>
+          </div>
+
+          <div className="flex-1">
+            <div className="text-xs">Grade (Or in progress)</div>
+            <div className="text-base">{record.grade}/4</div>
           </div>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", flex: 1 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>University</div>
-            <div style={{ fontSize: "medium" }}>{record.university}</div>
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Grade (Or in progress)</div>
-            <div style={{ fontSize: "medium" }}>{record.grade}/4</div>
-          </div>
-        </div>
-{editing === true && 
-        <button 
-          style={{padding: '3px 6px', borderRadius: '0px', background: 'red'}} onClick={() => removeEducationRecord(record.id)}>
-          Remove Record
-        </button>
-
-}
+        {editing === true && (
+          <button
+            className="px-2 py-1 bg-red-600 text-white rounded-none"
+            onClick={() => removeEducationRecord(record.id)}
+          >
+            Remove Record
+          </button>
+        )}
       </div>
     ));
   };
 
   const renderNewRecordInputs = () => {
     return (
-      <div key={newRecord.id} style={{ flex: 1, marginBottom: "20px" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", flex: 1 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Qualification Title</div>
+      <div key={newRecord.id} className="flex-1 mb-5">
+        <div className="flex flex-wrap flex-1">
+          <div className="flex-1">
+            <div className="text-xs">Qualification Title</div>
             <input
               type="text"
               value={newRecord.qualificationTitle}
-              onChange={(e) => handleInputChange("qualificationTitle", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("qualificationTitle", e.target.value)
+              }
+              className="border p-1 w-full"
             />
           </div>
 
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Year of Graduation</div>
+          <div className="flex-1">
+            <div className="text-xs">Year of Graduation</div>
             <input
               type="text"
               value={newRecord.yearOfGraduation}
-              onChange={(e) => handleInputChange("yearOfGraduation", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("yearOfGraduation", e.target.value)
+              }
+              className="border p-1 w-full"
             />
           </div>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", flex: 1 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>University</div>
+        <div className="flex flex-wrap flex-1">
+          <div className="flex-1">
+            <div className="text-xs">University</div>
             <input
               type="text"
               value={newRecord.university}
-              onChange={(e) => handleInputChange("university", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("university", e.target.value)
+              }
+              className="border p-1 w-full"
             />
           </div>
 
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "small" }}>Grade (Or in progress)</div>
+          <div className="flex-1">
+            <div className="text-xs">Grade (Or in progress)</div>
             <input
               type="text"
               value={newRecord.grade}
               onChange={(e) => handleInputChange("grade", e.target.value)}
+              className="border p-1 w-full"
             />
           </div>
         </div>
-        <div style={{flex: 1, display: 'flex', gap: '10px', marginTop: '15px'}}>
-        <button 
-          style={{padding: '3px 6px', borderRadius: '0px', background: 'red'}} onClick={() => setAddingNewRecord(false)}>
-          Cancel
-        </button>
-        <button
-          style={{padding: '3px 6px', borderRadius: '0px', background: 'green'}}
-          onClick={() => {
-            setEducationRecords([...educationRecords, newRecord]);
-            setAddingNewRecord(false);
-          }}
-        >
-          Add
-        </button>
+
+        <div className="flex flex-1 gap-2 mt-4">
+          <button
+            className="px-2 py-1 bg-red-600 text-white rounded-none"
+            onClick={() => setAddingNewRecord(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-2 py-1 bg-green-600 text-white rounded-none"
+            onClick={() => {
+              setEducationRecords([...educationRecords, newRecord]);
+              setAddingNewRecord(false);
+            }}
+          >
+            Add
+          </button>
         </div>
       </div>
     );
   };
 
-
-
-
   return (
-    <div style={{paddingBottom: '10px', borderBottom: '1px solid #ccc'}}>
-
-      <div
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center", marginBottom: '20px'
-        }}
-      >
-        <div
-          style={{ textAlign: "left", fontSize: "1.5rem", fontWeight: "bold" }}
-        >
+    <div className="pb-2.5 border-b border-gray-300">
+      <div className="flex flex-1 justify-between items-center flex-wrap mb-5">
+        <div className="text-left text-2xl font-bold">
           Education History
         </div>
 
-        {editing===false ? 
-        <button onClick={() => {setEditing(true)}} style={{border: '1px solid #000', color: '#000', background: 'transparent', borderRadius: '0px', padding: '5px 10px'}}>EDIT</button>
-            :
-<div style={{display:'flex', gap: '10px'}}>
-<button onClick={() => {setEditing(false)}} style={{border: '1px solid red', color: 'white', background: 'red', borderRadius: '0px', padding: '5px 10px'}}>CANCEL</button>
+        {editing === false ? (
+          <button
+            onClick={() => {
+              setEditing(true);
+            }}
+            className="border border-black text-black bg-transparent rounded-none px-3 py-1.5"
+          >
+            EDIT
+          </button>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setEditing(false);
+              }}
+              className="border border-red-600 text-white bg-red-600 rounded-none px-3 py-1.5"
+            >
+              CANCEL
+            </button>
 
-         <button 
-         onClick={savingChanges} 
-         style={{border: '1px solid green', color: 'white', background: 'green', borderRadius: '0px', padding: '5px 10px'}}>{savingDetails ? "SAVING" : "SAVE"}</button>
-</div>
-      }
+            <button
+              onClick={savingChanges}
+              className="border border-green-600 text-white bg-green-600 rounded-none px-3 py-1.5"
+            >
+              {savingDetails ? "SAVING" : "SAVE"}
+            </button>
+          </div>
+        )}
       </div>
-      
-      {educationRecords.length !== 0 ? renderEducationRecords() : <div style={{marginBottom: '10px'}}>No Educational History</div>}
-      
 
-      {editing===true && 
-      
-      <>
-      
-      
-      {addingNewRecord ? (
-        renderNewRecordInputs()
+      {educationRecords.length !== 0 ? (
+        renderEducationRecords()
       ) : (
-        <button
-          style={{padding: '3px 6px', borderRadius: '0px'}}
-          onClick={() => {
-            const newId = Math.floor(1000000000 + Math.random() * 9000000000);
-            setNewRecord({
-              id: newId,
-              qualificationTitle: "",
-              yearOfGraduation: "",
-              university: "",
-              grade: "",
-            });
-            setAddingNewRecord(true);
-          }}
-        >
-          Add New Record
-        </button>
+        <div className="mb-2.5">No Educational History</div>
       )}
 
-</>
-      }
+      {editing === true && (
+        <>
+          {addingNewRecord ? (
+            renderNewRecordInputs()
+          ) : (
+            <button
+              className="px-2 py-1 border border-gray-400 rounded-none"
+              onClick={() => {
+                const newId = Math.floor(
+                  1000000000 + Math.random() * 9000000000
+                );
+                setNewRecord({
+                  id: newId,
+                  qualificationTitle: "",
+                  yearOfGraduation: "",
+                  university: "",
+                  grade: "",
+                });
+                setAddingNewRecord(true);
+              }}
+            >
+              Add New Record
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 }

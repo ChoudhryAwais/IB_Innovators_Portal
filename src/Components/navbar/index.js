@@ -1,325 +1,175 @@
-import React, { useState, useEffect } from "react";
-import "./styles.css";
-import Logo from "../../images/IBI/IBILogo.png";
-import LogoMobile from "../../images/IBI/final logo-16.png";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { MyContext } from "../../Context/MyContext";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import {
-  collection,
-  doc,
-  updateDoc,
-  getDoc,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  onSnapshot,
-} from "firebase/firestore";
+"use client"
 
-import { db } from "../../firebase";
+import React, { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { useContext } from "react"
+import { MyContext } from "../../Context/MyContext"
+import { collection, query, where, onSnapshot } from "firebase/firestore"
+import { db } from "../../firebase"
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faDoorOpen,
-  faUserCircle,
-  faArrowRightFromBracket,
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBell, faArrowRightFromBracket, faChevronDown } from "@fortawesome/free-solid-svg-icons"
 
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import { getAuth } from "firebase/auth";
-import { IconButton } from "@mui/material";
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogTitle from "@mui/material/DialogTitle"
+import Slide from "@mui/material/Slide"
+import { getAuth } from "firebase/auth"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+  return <Slide direction="up" ref={ref} {...props} />
+})
 
 const NavBar = () => {
-  const navigtePages = useNavigate();
-  const [currentTab, setCurrentTab] = useState("/");
-  const [showModal, setShowModal] = useState(false);
-
-  const { userType, userDetails, setIsUserLoggedIn } = useContext(MyContext);
-
-  const [notifications, setNotifications] = useState([]);
+  const navigtePages = useNavigate()
+  const [showModal, setShowModal] = useState(false)
+  const { userType, userDetails, setIsUserLoggedIn } = useContext(MyContext)
+  const [notifications, setNotifications] = useState([])
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    let unsubscribe;
-
+    let unsubscribe
     async function fetchAdminNotifications() {
       try {
-        const notificationsRef = collection(db, "adminNotifications");
+        const notificationsRef = collection(db, "adminNotifications")
         unsubscribe = onSnapshot(notificationsRef, (querySnapshot) => {
           const notifications = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
-          }));
-          notifications.sort((a, b) => b.time - a.time);
-          setNotifications(notifications);
-        });
+          }))
+          notifications.sort((a, b) => b.time - a.time)
+          setNotifications(notifications)
+        })
       } catch (error) {
-        console.error("Failed to fetch admin notifications: " + error.message);
+        console.error("Failed to fetch admin notifications: " + error.message)
       }
     }
 
     if (userType === "teacher" || userType === "student") {
       if (userDetails.userId) {
-        const userListRef = collection(db, "userList");
-        const q = query(userListRef, where("userId", "==", userDetails.userId));
+        const userListRef = collection(db, "userList")
+        const q = query(userListRef, where("userId", "==", userDetails.userId))
 
         unsubscribe = onSnapshot(
           q,
           (querySnapshot) => {
             querySnapshot.forEach((doc) => {
-              const userDetails = doc.data();
-              setNotifications(userDetails.notifications);
-            });
+              const userDetails = doc.data()
+              setNotifications(userDetails.notifications)
+            })
           },
           (error) => {
-            console.error("Error fetching user details: ", error);
-          }
-        );
+            console.error("Error fetching user details: ", error)
+          },
+        )
       }
     } else if (userType === "admin") {
-      fetchAdminNotifications();
+      fetchAdminNotifications()
     }
 
     return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, [userType, userDetails]);
+      if (unsubscribe) unsubscribe()
+    }
+  }, [userType, userDetails])
 
   function logOutHandler() {
-    setIsUserLoggedIn(false);
-    const auth = getAuth();
-    auth.signOut();
-    navigtePages("/login", { replace: true });
+    setIsUserLoggedIn(false)
+    const auth = getAuth()
+    auth.signOut()
+    navigtePages("/login", { replace: true })
   }
 
-  // handle change pages
   const handleChange = (e, navValue) => {
-    e.preventDefault();
-    const pageNavigate = navValue === "home" ? "/" : navValue;
-    navigtePages(pageNavigate);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const [isMobile, setIsMobile] = useState(false);
+    e.preventDefault()
+    const pageNavigate = navValue === "home" ? "/" : navValue
+    navigtePages(pageNavigate)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   const checkIsMobile = () => {
-    setIsMobile(window.innerWidth <= 769); // You can adjust the width threshold as needed
-  };
+    setIsMobile(window.innerWidth <= 769)
+  }
 
   useEffect(() => {
-    checkIsMobile(); // Initial check
-    window.addEventListener("resize", checkIsMobile); // Add event listener
-
-    // Clean up the event listener when the component unmounts
+    checkIsMobile()
+    window.addEventListener("resize", checkIsMobile)
     return () => {
-      window.removeEventListener("resize", checkIsMobile);
-    };
-  }, []);
+      window.removeEventListener("resize", checkIsMobile)
+    }
+  }, [])
 
   return (
     <>
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "space-between",
-          top: 0,
-          width: "100%",
-          height: "80px",
-          padding: "15px",
-          pointerEvents: "none",
-          position: "fixed",
-          // background: 'rgba(238,238,238, 0.3)',
-          zIndex: 999,
-          margin: "0px auto",
-          maxWidth: "1800px",
-        }}
-      >
+      <div className="flex items-center gap-4">
+        {/* Profile section */}
         <div
-          style={{
-            flex: 1,
-            marginLeft: isMobile ? "6px" : "20px",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
+          className="flex items-center gap-3 bg-purple-100 rounded-lg px-3 py-2 cursor-pointer hover:bg-purple-200 transition-colors"
+          onClick={(e) => {
+            if (userType === "teacher") {
+              handleChange(e, "profileAndFinance")
+            } else if (userType === "admin") {
+              handleChange(e, "/")
+            } else {
+              handleChange(e, "profile")
+            }
           }}
         >
-          <img
-            src={isMobile ? LogoMobile : Logo}
-            className="LogoImg"
-            alt="SomeImage"
-            style={{
-              objectFit: "contain",
-              width: isMobile ? "40px" : "160px",
-              marginBottom: "10px",
-            }}
-          />
+          {/* Avatar with emoji */}
+          <div className="w-8 h-8 bg-purple-200 rounded-lg flex items-center justify-center text-lg">🤗</div>
+
+          {/* User info */}
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-900">{userDetails?.name || "Shahrukh"}</span>
+            <span className="text-xs text-gray-500">
+              {userType === "admin" ? "Admin Manager" : userType === "teacher" ? "Teacher" : "Student"}
+            </span>
+          </div>
+
+          {/* Dropdown arrow */}
+          <FontAwesomeIcon icon={faChevronDown} className="text-gray-400 text-xs" />
         </div>
 
+        {/* Notification bell */}
         <div
-          style={{
-            justifyContent: "flex-end",
-            flexDirection: "row",
+          className="relative p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+          onClick={(e) => handleChange(e, "notifications")}
+        >
+          <FontAwesomeIcon icon={faBell} className="text-gray-600 text-lg" />
+          {notifications?.length > 0 && (
+            <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex justify-center items-center text-xs font-medium">
+              {notifications?.length}
+            </div>
+          )}
+        </div>
+
+        {/* Additional action button */}
+        <div
+          className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+          onClick={() => {
+            setShowModal(true)
           }}
         >
-          <div
-            style={{
-              alignItems: "center",
-              gap: "5px",
-              flexDirection: "row",
-              display: "flex",
-              justifyContent: "flex-end",
-              height: "100%",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              background: "rgba(0,0,0,0.1)",
-              width: "max-content",
-              padding: "10px 5px",
-              borderRadius: "30px",
-            }}
-          >
-            <div
-              className="navBarItem"
-              style={{
-                position: "relative",
-                backgroundColor: "white",
-                borderRadius: "50%",
-                height: "43px",
-                width: "43px",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "30px",
-                cursor: "pointer",
-                zIndex: 999999,
-                pointerEvents: "auto",
-                userSelect: "none",
-              }}
-              onClick={(e) => handleChange(e, "notifications")}
-            >
-              <FontAwesomeIcon icon={faBell} />
-
-              {/* Display the notification count if greater than 0 */}
-              {notifications?.length > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                    backgroundColor: "red",
-                    color: "white",
-                    borderRadius: "50%",
-                    fontSize: "10px",
-                    minWidth: "20px",
-                    textAlign: "center",
-                    width: "27px",
-                    height: "27px",
-                    fontSize: "15px",
-                    fontWeight: "bold",
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  {notifications?.length}
-                </div>
-              )}
-            </div>
-
-            <>
-              <div
-                className="navBarItem"
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "50%",
-                  height: "43px",
-                  width: "43px",
-                  boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "30px",
-                  cursor: "pointer",
-                  zIndex: 999999,
-                  pointerEvents: "auto",
-                }}
-                onClick={() => {
-                  setShowModal(true);
-                  document
-                    .getElementById("navbarSupportedContent")
-                    .classList.remove("show");
-                }}
-              >
-                <FontAwesomeIcon icon={faArrowRightFromBracket} />
-              </div>
-
-              <div
-                className="navBarItem"
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: "50%",
-                  height: "43px",
-                  width: "43px",
-                  boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  transition: "all 0.5s ease-in-out",
-                  zIndex: 999999,
-                  pointerEvents: "auto",
-                  overflow: "hidden",
-                }}
-                onClick={(e) => {
-                  if (userType === "teacher") {
-                    handleChange(e, "profileAndFinance");
-                  } else if (userType === "admin") {
-                    handleChange(e, "/");
-                  } else {
-                    handleChange(e, "profile");
-                  }
-                }}
-              >
-                <FontAwesomeIcon
-                  style={{ width: "105%", height: "105%" }}
-                  icon={faUserCircle}
-                />
-              </div>
-            </>
-          </div>
+          <FontAwesomeIcon icon={faArrowRightFromBracket} className="text-gray-600 text-lg" />
         </div>
       </div>
 
+      {/* Logout confirmation modal */}
       <Dialog
         open={showModal}
         TransitionComponent={Transition}
         keepMounted
         onClose={() => {
-          setShowModal(false);
+          setShowModal(false)
         }}
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>{"Are you sure you want to Log Out?"}</DialogTitle>
-
         <DialogActions>
           <Button
             variant="outlined"
             onClick={() => {
-              setShowModal(false);
+              setShowModal(false)
             }}
           >
             CANCEL
@@ -329,8 +179,8 @@ const NavBar = () => {
             variant="contained"
             color="error"
             onClick={() => {
-              logOutHandler();
-              setShowModal(false);
+              logOutHandler()
+              setShowModal(false)
             }}
           >
             LOG OUT
@@ -338,7 +188,7 @@ const NavBar = () => {
         </DialogActions>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default NavBar;
+export default NavBar

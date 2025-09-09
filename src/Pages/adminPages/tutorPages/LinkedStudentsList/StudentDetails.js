@@ -1,231 +1,224 @@
-import React, { useEffect, useState } from "react";
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "../../../../firebase";
-import { toast } from "react-hot-toast";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Pagination from "@mui/material/Pagination"; // Import Pagination
+"use client"
 
-export default function StudentDetails({ studentData, studentId }) {
-  const [balanceHistory, setBalanceHistory] = useState([]);
-  const [result, setResult] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // State to manage current page
-  const itemsPerPage = 5; // Number of classes per page
+import { useEffect, useState } from "react"
+import { getDoc, doc } from "firebase/firestore"
+import { db } from "../../../../firebase"
+import { toast } from "react-hot-toast"
+
+export default function StudentDetails({ studentData, studentId, viewType }) {
+  const [balanceHistory, setBalanceHistory] = useState([])
+  const [result, setResult] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = viewType === "balance" ? 5 : 10
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
 
   function extractMonthYearFromInvoice(invoice) {
-    const invoiceDate = invoice.createdAt.toDate(); // Convert Firebase timestamp to JavaScript Date
-    const month = invoiceDate.getMonth() + 1; // Adding 1 because getMonth() is zero-based
-    const year = invoiceDate.getFullYear();
-
-    return { month, year };
+    const invoiceDate = invoice.createdAt.toDate()
+    const month = invoiceDate.getMonth() + 1
+    const year = invoiceDate.getFullYear()
+    return { month, year }
   }
 
   function getUniqueMonthsAndYears(invoices) {
-    const uniqueMonthsAndYears = [];
-
+    const uniqueMonthsAndYears = []
     invoices.forEach((invoice) => {
-      const { month, year } = extractMonthYearFromInvoice(invoice);
-      const exists = uniqueMonthsAndYears.some(
-        (item) => item.month === month && item.year === year
-      );
-      if (!exists) uniqueMonthsAndYears.push({ month, year });
-    });
+      const { month, year } = extractMonthYearFromInvoice(invoice)
+      const exists = uniqueMonthsAndYears.some((item) => item.month === month && item.year === year)
+      if (!exists) uniqueMonthsAndYears.push({ month, year })
+    })
 
     uniqueMonthsAndYears.sort((a, b) => {
-      if (a.year !== b.year) return b.year - a.year;
-      else return b.month - a.month;
-    });
+      if (a.year !== b.year) return b.year - a.year
+      else return b.month - a.month
+    })
 
-    return uniqueMonthsAndYears;
+    return uniqueMonthsAndYears
   }
 
   const calculateMonthlyInvoice = (invoices, month, year) => {
     const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = invoice.createdAt.toDate();
-      return (
-        invoiceDate.getMonth() === month - 1 &&
-        invoiceDate.getFullYear() === year
-      );
-    });
+      const invoiceDate = invoice.createdAt.toDate()
+      return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
+    })
 
-    const totalAmount = filteredInvoices.reduce(
-      (total, invoice) => total + parseInt(invoice.amount),
-      0
-    );
-
-    return totalAmount;
-  };
+    return filteredInvoices.reduce((total, invoice) => total + Number.parseInt(invoice.amount), 0)
+  }
 
   const provideMonthlyInvoice = (invoices, month, year) => {
-    const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = invoice.createdAt.toDate();
-      return (
-        invoiceDate.getMonth() === month - 1 &&
-        invoiceDate.getFullYear() === year
-      );
-    });
-
-    return filteredInvoices.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
-  };
+    return invoices
+      .filter((invoice) => {
+        const invoiceDate = invoice.createdAt.toDate()
+        return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
+      })
+      .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate())
+  }
 
   function formatDisplayDateTime(timestamp) {
-    let date;
+    let date
     if (timestamp instanceof Date) {
-      date = timestamp;
+      date = timestamp
     } else if (timestamp && typeof timestamp.toDate === "function") {
-      date = timestamp.toDate();
+      date = timestamp.toDate()
     } else {
-      return "";
+      return ""
     }
 
     const options = {
-      year: "numeric", month: "short", day: "2-digit",
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: true,
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    }
+    return new Intl.DateTimeFormat("en-US", options).format(date)
   }
 
   function formatDate(inputDate) {
-    const options = { day: 'numeric', month: 'short', year: 'numeric' };
-    const dateObject = new Date(inputDate);
-    const formattedDate = dateObject.toLocaleDateString('en-GB', options);
-    const [day, month, year] = formattedDate.split(' ');
-
-    return `${day}\n${month}\n${year}`;
+    const options = { day: "numeric", month: "short", year: "numeric" }
+    const dateObject = new Date(inputDate)
+    const formattedDate = dateObject.toLocaleDateString("en-GB", options)
+    const [day, month, year] = formattedDate.split(" ")
+    return `${day}\n${month}\n${year}`
   }
 
   function formatTimeTo12Hour(time24) {
-    const [hour, minute] = time24.split(':');
-    let hourNum = parseInt(hour, 10);
-    const period = hourNum >= 12 ? 'PM' : 'AM';
-    hourNum = hourNum % 12 || 12;
-    return `${hourNum}:${minute} ${period}`;
+    const [hour, minute] = time24.split(":")
+    let hourNum = Number.parseInt(hour, 10)
+    const period = hourNum >= 12 ? "PM" : "AM"
+    hourNum = hourNum % 12 || 12
+    return `${hourNum}:${minute} ${period}`
   }
 
   useEffect(() => {
     async function fetchUserData() {
-        try{
-      const userDocRef = doc(db, "userList", studentId);
-      const userData = await getDoc(userDocRef);
-      setBalanceHistory(userData.data()?.balanceHistory);
-    } catch(e){
+      try {
+        const userDocRef = doc(db, "userList", studentId)
+        const userData = await getDoc(userDocRef)
+        setBalanceHistory(userData.data()?.balanceHistory)
+      } catch (e) {
         toast.error("Error fetching balance")
+      }
     }
-    }
-    fetchUserData();
-  }, []);
+    fetchUserData()
+  }, [])
 
   useEffect(() => {
-    if(balanceHistory?.length > 0){
-    setResult(getUniqueMonthsAndYears(balanceHistory || []));
+    if (balanceHistory?.length > 0) {
+      setResult(getUniqueMonthsAndYears(balanceHistory || []))
     }
-  }, [balanceHistory]);
+  }, [balanceHistory])
 
-  // Calculate the classes to display based on current page
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentClasses = studentData.classes.slice(indexOfFirstItem, indexOfLastItem);
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentClasses = studentData.classes.slice(indexOfFirstItem, indexOfLastItem)
 
-  // Handle page change
   const handlePageChange = (event, value) => {
-    setCurrentPage(value);
-  };
+    setCurrentPage(value)
+  }
 
-  return (
-    <div>
-      <div style={{background: '#eee', padding: '1rem', borderRadius: '10px'}}>
-        <h5 style={{fontWeight: 'bolder', flex: 1, textAlign: 'center'}}> Balance History </h5>
-        {result.map((item) => (
-          <Accordion
-            style={{ borderRadius: "5px", background: "rgba(255,255,255,0.2)" }}
-            key={`${item.month}-${item.year}`}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              <div
-                style={{
-                  flex: 1,
-                  justifyContent: "space-between",
-                  display: "flex",
-                  fontSize: "large",
-                  fontWeight: "bold",
-                }}
-              >
+  if (viewType === "classes") {
+    return (
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Classes Taken - {studentData.studentName}</h2>
+        <div className="space-y-3">
+          {currentClasses.map((classInfo) => (
+            <div className="p-4 bg-white border border-gray-200 rounded-lg" key={classInfo.id}>
+              <div className="grid grid-cols-3 gap-4">
                 <div>
-                  {months[item?.month - 1]} {item?.year}
+                  <span className="text-sm text-gray-500">Subject:</span>
+                  <div className="font-medium">{classInfo.subject}</div>
                 </div>
-
                 <div>
-                  £{" "}
-                  {calculateMonthlyInvoice(
-                    balanceHistory,
-                    item?.month,
-                    item?.year
-                  )}
+                  <span className="text-sm text-gray-500">Date:</span>
+                  <div className="font-medium">{formatDate(classInfo.sessionInfo.date)}</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-500">Time:</span>
+                  <div className="font-medium">{formatTimeTo12Hour(classInfo.sessionInfo.time)}</div>
                 </div>
               </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              {provideMonthlyInvoice(
-                balanceHistory,
-                item?.month,
-                item?.year
-              ).map((item, index) => (
-                <div
-                  style={{
-                    padding: "10px",
-                    borderTop: index !== 0 ? "2px solid #ccc" : "none",
-                    fontSize: "medium",
-                  }}
-                  key={index}
-                >
-                  <div
-                    style={{
-                      flex: 1,
-                      justifyContent: "space-between",
-                      display: "flex",
-                    }}
-                  >
-                    <span style={{ fontWeight: "bold" }}>
-                      Amount: £ {item?.amount}
-                    </span>
-                    <span>{formatDisplayDateTime(item?.createdAt)}</span>
-                  </div>
-                </div>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </div>
-      <div style={{background: '#eee', padding: '1rem', borderRadius: '10px', marginTop: '1rem'}}>
-        <h5 style={{fontWeight: 'bolder', flex: 1, textAlign: 'center'}}> Classes Taken </h5>
-        <div>
-          {currentClasses.map((classInfo) => (
-            <div style={{padding: '10px', borderRadius: '10px', background: '#fff', marginTop: '5px'}} key={classInfo.id}>
-              Subject: {classInfo.subject}<br/>
-              Date: {formatDate(classInfo.sessionInfo.date)}<br/>
-              Time: {formatTimeTo12Hour(classInfo.sessionInfo.time)}
             </div>
           ))}
         </div>
-        <Pagination
-          count={Math.ceil(studentData.classes.length / itemsPerPage)}
-          page={currentPage}
-          onChange={handlePageChange}
-          style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}
-        />
+
+        {studentData.classes.length > itemsPerPage && (
+          <div className="mt-4 flex justify-center">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handlePageChange(null, Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="px-3 py-1">
+                Page {currentPage} of {Math.ceil(studentData.classes.length / itemsPerPage)}
+              </span>
+              <button
+                onClick={() =>
+                  handlePageChange(
+                    null,
+                    Math.min(Math.ceil(studentData.classes.length / itemsPerPage), currentPage + 1),
+                  )
+                }
+                disabled={currentPage === Math.ceil(studentData.classes.length / itemsPerPage)}
+                className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    )
+  }
+
+  if (viewType === "balance") {
+    return (
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Balance History - {studentData.studentName}</h2>
+        <div className="space-y-4">
+          {result.map((item) => (
+            <div key={`${item.month}-${item.year}`} className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="flex justify-between items-center p-4 bg-gray-50">
+                <span className="font-medium">
+                  {months[item?.month - 1]} {item?.year}
+                </span>
+                <span className="font-bold">£ {calculateMonthlyInvoice(balanceHistory, item?.month, item?.year)}</span>
+              </div>
+              <div className="p-4 space-y-3">
+                {provideMonthlyInvoice(balanceHistory, item?.month, item?.year).map((item, index) => (
+                  <div
+                    className="flex justify-between items-center p-3 bg-white border border-gray-100 rounded-md"
+                    key={index}
+                  >
+                    <span className="font-medium">Amount: £ {item?.amount}</span>
+                    <span className="text-sm text-gray-500">{formatDisplayDateTime(item?.createdAt)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return null
 }

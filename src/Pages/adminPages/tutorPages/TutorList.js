@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 
 import { db } from "../../../firebase";
 import {
   collection,
-  doc,
-  getDocs,
   query,
   onSnapshot,
   where,
-  updateDoc,
 } from "firebase/firestore";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,15 +13,12 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
-export function TutorList({selectedTutor, setSelectedTutor}) {
-
+export function TutorList({ selectedTutor, setSelectedTutor }) {
   const [students, setStudents] = useState([]);
-
   const [selected, setSelected] = useState({});
-
-
+  const [searchedStudents, setSearchedStudents] = useState(students);
 
   const fetchData = async () => {
     try {
@@ -36,19 +30,18 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
         setStudents(tutorData);
         setSearchedStudents(tutorData);
 
-
         if (selected) {
           const updatedTutor = tutorData.find(
             (tutor) => tutor.userId === selected.userId
           );
           if (updatedTutor) {
             setSelectedTutor(updatedTutor);
-            setSelected(updatedTutor)
+            setSelected(updatedTutor);
           }
         }
       });
 
-      return unsubscribe; // Return the unsubscribe function to stop listening when the component unmounts
+      return unsubscribe;
     } catch (e) {
       console.error("Error fetching data:", e);
     }
@@ -56,15 +49,10 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
 
   useEffect(() => {
     const unsubscribe = fetchData();
-
-    // Cleanup function to unsubscribe when the component unmounts
     return () => {
       unsubscribe();
     };
   }, []);
-  
-
-  const [searchedStudents, setSearchedStudents] = useState(students);
 
   function handleSearch(e) {
     const searchedData = e.target.value.toLowerCase();
@@ -84,7 +72,6 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
     }
   }
 
-  // PAST LESSONS PAGINATION
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -98,65 +85,40 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
 
   return (
     <div
-    style={{
-      marginTop: "0px",
-      flex: 1,
-      height: "max-content",
-      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-      background: 'rgba(255,255,255, 0.5)',
-      backdropFilter: 'blur(4px)', // Adjust the blur intensity as needed
-      WebkitBackdropFilter: 'blur(4px)', // For Safari support,
-      padding: '10px',
-      borderRadius: '10px', 
-      marginBottom: '10px'
-    }}
+      className="mt-0 flex-1 h-max shadow-lg bg-white/50 backdrop-blur-md p-2.5 rounded-lg mb-2.5"
     >
-      <h2 style={{ textAlign: "left" }}>Tutors</h2>
+      <h2 className="text-left">Tutors</h2>
 
-      {students.length !== 0 &&
-      <div
-        style={{
-          marginBottom: "10px",
-          marginTop: "20px",
-          display: "flex",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          borderBottom: "2px solid #ccc",
-        }}
-      >
-        <FontAwesomeIcon
-          style={{ marginLeft: "10px", marginRight: "10px" }}
-          icon={faMagnifyingGlass}
-        />
-        <input
-          onChange={handleSearch}
-          placeholder="Search via Name / Email / User ID"
-          style={{ border: "none", flex: 1, outline: "none", background: 'transparent' }}
-          defaultValue=""
-        />
-      </div>
-      }
+      {students.length !== 0 && (
+        <div className="my-5 flex flex-1 justify-center items-center border-b-2 border-gray-300">
+          <FontAwesomeIcon className="mx-2.5" icon={faMagnifyingGlass} />
+          <input
+            onChange={handleSearch}
+            placeholder="Search via Name / Email / User ID"
+            className="border-none flex-1 outline-none bg-transparent"
+            defaultValue=""
+          />
+        </div>
+      )}
 
       {displayedSessions.map((student, index) => (
         <div
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderTop: index !== 0 ? "2px solid #ccc" : 'none',
-          }}
+          className={`flex-1 p-2.5 ${
+            index !== 0 ? "border-t-2 border-gray-300" : ""
+          }`}
           key={index}
         >
-          <div style={{ fontWeight: "bold" }}>{student?.userName}</div>
+          <div className="font-bold">{student?.userName}</div>
           <div>Email: {student?.email}</div>
           <div>User ID: {student?.userId}</div>
 
-          <Button variant="outlined"
+          <Button
+            variant="outlined"
             onClick={() => {
               setSelectedTutor(student);
-              setSelected(student)
+              setSelected(student);
             }}
-            style={{flex: 1, marginBottom: '5px', marginTop: '5px', width: '100%'}}
+            className="flex-1 mb-1.5 mt-1.5 w-full"
           >
             SELECT
           </Button>
@@ -164,16 +126,7 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
       ))}
 
       {searchedStudents?.length > itemsPerPage && (
-        <div
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-            marginTop: "20px",
-            marginBottom: "10px",
-          }}
-        >
+        <div className="flex-1 flex items-center justify-center mt-5 mb-2.5">
           <Stack spacing={2}>
             <Pagination
               count={Math.ceil(students?.length / itemsPerPage)}
@@ -185,18 +138,10 @@ export function TutorList({selectedTutor, setSelectedTutor}) {
       )}
 
       {searchedStudents.length === 0 && (
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            color: "#ccc",
-            fontSize: "1.5rem",
-          }}
-        >
+        <div className="flex-1 text-center text-gray-300 text-2xl">
           No Tutors
         </div>
       )}
-
     </div>
   );
 }
