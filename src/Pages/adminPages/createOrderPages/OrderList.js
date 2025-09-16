@@ -261,7 +261,7 @@ export function OrderList() {
               {/* Right Side Info and Actions */}
               <div className="flex-shrink-0 text-right">
                 <div className="mb-4">
-                  <div className="text-sm text-gray-700 mb-1">Required by Student Nome</div>
+                  <div className="text-sm text-gray-700 mb-1">Required by {item?.studentName}</div>
                   <div className="text-sm font-medium text-gray-900">Hourly Rate(USD): ${item?.tutorHourlyRate}</div>
                 </div>
 
