@@ -41,6 +41,7 @@ export default function ManageLinks() {
   const [invoicePrice, setInvoicePrice] = useState("")
   const [showModal, setShowModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [link, setLink] = useState({})
   const [newHourlyRate, setNewHourlyRate] = useState(0)
   const [showInvoicesModal, setShowInvoicesModal] = useState(false)
@@ -214,6 +215,25 @@ export default function ManageLinks() {
   useEffect(() => {
     fetchData();
   }, []);
+
+
+  const handleDeactivate = async (linkId) => {
+    try {
+      setLoading(true);
+      const docRef = doc(collection(db, "Linked"), linkId);
+
+      await updateDoc(docRef, {
+        studentDeactivated: true,
+      });
+
+      toast.success("Student deactivated successfully");
+      setShowDeleteModal(false);
+    } catch (error) {
+      toast.error("Error deactivating student:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (linkId, linkData) => {
     try {
@@ -520,7 +540,7 @@ export default function ManageLinks() {
                         <FontAwesomeIcon icon={faSuitcase} className="text-blue-600 text-lg" />
                         <span className="text-lg font-semibold text-gray-800">{link?.subject}</span>
                       </div>
-                      {!link?.studentDeactivated && (
+                      {!link?.studentDeactivated ? (
                         <Button
                           sx={{
                             fontSize: "12px",
@@ -529,21 +549,63 @@ export default function ManageLinks() {
                             borderRadius: "4px",
                             padding: "10px",
                             fontWeight: "600",
-                            color: '#A81E1E',
-                            backgroundColor: '#A81E1E0D',
-                            border: '1px solid #A81E1E',
-                            '&:hover': {
-                              color: '#A81E1E',
-                              backgroundColor: '#A81E1E0D',
-                              border: '1px solid #A81E1E',
+                            color: "#A81E1E",
+                            backgroundColor: "#A81E1E0D",
+                            border: "1px solid #A81E1E",
+                            "&:hover": {
+                              color: "#A81E1E",
+                              backgroundColor: "#A81E1E0D",
+                              border: "1px solid #A81E1E",
                             },
                           }}
                           variant="outlined"
-
-                          onClick={() => handleDeleteInvoiceClick(link)}
+                          onClick={() => {
+                            setSelectedLink(link);
+                            setShowDeactivateModal(true);   // 👈 new modal state
+                          }}
                         >
                           Deactivate
                         </Button>
+                      ) : (
+                        (
+                          <div
+                            onClick={() => {
+                              setSelectedLink(link);
+                              setShowDeleteModal(true); // 👈 still opens delete modal
+                            }}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "6px",
+                              cursor: "pointer",
+                              border: "1px solid #E5E7EB",
+                              backgroundColor: "#F9FAFB",
+                              transition: "background-color 0.2s ease",
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F3F4F6")}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F9FAFB")}
+                          >
+                            <svg
+                              width="20"
+                              height="22"
+                              viewBox="0 0 20 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1"
+                                stroke="#28303F"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        )
+
                       )}
                     </div>
 
@@ -706,7 +768,7 @@ export default function ManageLinks() {
                       </Button>
                     </div>
                   </div>
-                
+
 
                   <CustomModal open={showReactivateModal} onClose={() => setShowReactivateModal(false)}>
                     <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
@@ -895,17 +957,61 @@ export default function ManageLinks() {
                     </div>
                   </CustomModal>
 
-
-
-                  <CustomModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                  <CustomModal open={showDeactivateModal} onClose={() => setShowDeactivateModal(false)}>
                     <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-                      Deactivate
+                      Deactivate Student
                     </h2>
 
                     <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
                     <p className="text-lg text-center font-light text-[#16151C] mb-12">
                       Are you sure you want to deactivate this student?
+                    </p>
+
+                    <div className="flex gap-3 justify-end">
+                      <Button
+                        onClick={() => setShowDeactivateModal(false)}
+                        variant="outlined"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          borderColor: "#A2A1A833",
+                          fontSize: "16px",
+                          fontWeight: 300,
+                          color: "#16151C",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        disabled={loading}
+                        variant="contained"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          backgroundColor: "#4071B6",
+                          fontSize: "20px",
+                          fontWeight: 300,
+                          color: "#FFFFFF",
+                        }}
+                        onClick={() => handleDeactivate(selectedLink.id)}
+                      >
+                        {loading ? "Deactivating" : "Yes"}
+                      </Button>
+                    </div>
+                  </CustomModal>
+
+                  <CustomModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                    <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+                      Delete Link
+                    </h2>
+
+                    <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+                    <p className="text-lg text-center font-light text-[#16151C] mb-12">
+                      Are you sure you want to permanently delete this link?
                     </p>
 
                     <div className="flex gap-3 justify-end">
@@ -938,31 +1044,31 @@ export default function ManageLinks() {
                         }}
                         onClick={handleDeleteModalSubmit}
                       >
-                        {loading ? "Deactivating" : "Yes"}
+                        {loading ? "Deleting..." : "Delete"}
                       </Button>
                     </div>
                   </CustomModal>
                 </>
               )}
             </div>
-            
+
           </div>
           {currentSearched?.length > itemsPerPage && (
-  <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white">
-    <div className="text-sm text-gray-700">
-      Showing {startIndex + 1} to {Math.min(endIndex, currentSearched.length)} out of {currentSearched.length} records
-    </div>
-    <Stack spacing={2}>
-      <Pagination
-        count={Math.ceil(currentSearched?.length / itemsPerPage)}
-        page={currentPage}
-        onChange={handleChangePage}
-        color="primary"
-        size="small"
-      />
-    </Stack>
-  </div>
-)}
+            <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white">
+              <div className="text-sm text-gray-700">
+                Showing {startIndex + 1} to {Math.min(endIndex, currentSearched.length)} out of {currentSearched.length} records
+              </div>
+              <Stack spacing={2}>
+                <Pagination
+                  count={Math.ceil(currentSearched?.length / itemsPerPage)}
+                  page={currentPage}
+                  onChange={handleChangePage}
+                  color="primary"
+                  size="small"
+                />
+              </Stack>
+            </div>
+          )}
 
         </div>
       </div>
