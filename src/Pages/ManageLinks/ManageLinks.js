@@ -18,18 +18,20 @@ import { MyContext } from "../../Context/MyContext"
 import { useNavigate } from "react-router-dom"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass, faBook, faSuitcase } from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faBook, faSuitcase, faRepeat } from "@fortawesome/free-solid-svg-icons"
 
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import ViewInvoices from "./ViewInvoices"
 
-import { MenuItem, Select, Button ,TextField,Modal} from "@mui/material"
+import { MenuItem, Select, Button, TextField, Modal } from "@mui/material"
 import { useTopHeading } from "../../Components/Layout"
 import { TopHeadingProvider } from "../../Components/Layout"
 
 import toast from "react-hot-toast"
 import CustomModal from "../../Components/CustomModal/CustomModal";
+import manage_links from "../../assets/icons/manage_links.png";
+import Divider from "@mui/material/Divider"
 
 export default function ManageLinks() {
   const [links, setLinks] = useState([])
@@ -51,6 +53,8 @@ export default function ManageLinks() {
   const [creditsForSelectedStudent, setCreditsForSelectedStudent] = useState(0)
   const [fetchingCredits, setFetchingCredits] = useState(false)
   const [loading, setLoading] = useState(false)
+
+
 
   const { setFirstMessage, setSecondMessage } = useTopHeading()
 
@@ -109,6 +113,14 @@ export default function ManageLinks() {
     }
   }, [active]);
 
+  useEffect(() => {
+    if (currentData.length > 0) {
+      setLink(currentData[0]);
+    } else {
+      setLink({});
+    }
+  }, [currentData]);
+
   function handleSearch(e) {
     const searchedData = e.target.value.toLowerCase();
 
@@ -132,8 +144,7 @@ export default function ManageLinks() {
   }
 
   const handleViewInvoicesClick = (link) => {
-    setSelectedLink(link);
-    setShowInvoicesModal(true);
+    navigate(`/links/invoices/${link.id}`, { state: { link } });
   };
 
   const handleMarkAsPaid = async (invoice) => {
@@ -388,355 +399,424 @@ export default function ManageLinks() {
   const endIndex = startIndex + itemsPerPage;
   const displayedSessions = currentSearched?.slice(startIndex, endIndex);
 
-return (
-  <TopHeadingProvider firstMessage="Manage Links" secondMessage="Show all managed links">
-    <div className="min-h-screen p-6">
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex flex-col md:flex-row md:items-stretch md:space-x-4 mb-6">
-          <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 flex-1">
-            <FontAwesomeIcon className="text-gray-500 mr-2" icon={faMagnifyingGlass} />
-            <input
-              onChange={handleSearch}
-              placeholder="Search via Student Or Teacher Name / Email / User ID / Link ID"
-              className="flex-1 bg-transparent border-none outline-none text-sm"
-            />
-          </div>
-          <div className="w-full md:w-48">
-            <Select
-              value={active}
-              onChange={handleActiveChange}
-              fullWidth
-              size="small"
-              className="bg-white h-full"
-              sx={{
-                height: "100%",
-                ".MuiSelect-select": {
-                  display: "flex",
-                  alignItems: "center",
-                  py: 0,
-                },
-              }}
-            >
-              <MenuItem value={"Active Links"}>Active Links</MenuItem>
-              <MenuItem value={"Deactivated Links"}>Deactivated Links</MenuItem>
-            </Select>
-          </div>
-        </div>
+  return (
+    <TopHeadingProvider firstMessage="Manage Links" secondMessage="Show all managed links">
+      <div className="min-h-screen p-6">
+        <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-7">
+          <div className="flex flex-col md:flex-row md:items-stretch md:space-x-4 mb-6">
+            <div className="flex items-center border border-[#A2A1A81A] rounded-[10px] px-3 py-2 flex-1 h-[50px]">
+              <FontAwesomeIcon className="text-gray-500 mr-2" icon={faMagnifyingGlass} />
+              <input
+                onChange={handleSearch}
+                placeholder="Search"
+                className="flex-1 bg-transparent border-none outline-none text-sm"
+              />
+            </div>
+            <div className="w-full md:w-48">
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={() =>
+                  setActive(active === "Active Links" ? "Deactivated Links" : "Active Links")
+                }
+                sx={{
+                  color: "#4071B6",
+                  backgroundColor: "#4071B60D",
+                  border: "1px solid #4071B6",
+                  height: "50px",
+                  borderRadius: "10px",
+                  padding: 0,
+                  "&:hover": {
+                    color: "#4071B6",
+                    backgroundColor: "#4071B60D",
+                    border: "1px solid #4071B6",
+                  },
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  {active === "Active Links" ? "Deactivated Links" : "Active Links"}
+                  <FontAwesomeIcon icon={faRepeat} className="text-blue-600 text-lg" />
+                </span>
+              </Button>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            {displayedSessions.map((item, index) => (
-              <div className="p-4 border rounded-lg shadow-sm bg-white mb-4" key={index}>
-                <div className="flex items-center mb-3">
-                  <FontAwesomeIcon icon={faBook} className="text-blue-500 mr-2" />
-                  <span className="font-semibold text-gray-800">{item?.subject}</span>
-                </div>
-                <div className="flex justify-between items-stretch">
-                  <div className="flex flex-col text-sm text-gray-700 space-y-1">
-                    <div>
-                      <span className="font-medium">Subscription:</span> #{item?.id}
-                    </div>
-                    <div>
-                      <span className="font-medium">Student:</span> {item?.studentName}
-                    </div>
-                    <div>
-                      <span className="font-medium">Tutor:</span> {item?.teacherName}
-                    </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              {displayedSessions.map((item, index) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg mb-4  ${link?.id === item?.id ? "bg-[#4071B60D] border-1 border-[#4071B6]" : "bg-[#A2A1A80D]"
+                    }`}
+
+                >
+                  <div className="flex items-center mb-3">
+                    <FontAwesomeIcon icon={faBook} className="text-blue-500 mr-2" />
+                    <span className="font-semibold text-[#16151C]">{item?.subject}</span>
                   </div>
-                  <Button
-                    sx={{
-                      color:'#4071B6',
-                      backgroundColor:'#4071B60D',
-                      border: '1px solid #4071B6',
-                      '&:hover': {
-                        color:'#4071B6',
-                        backgroundColor:'#4071B60D',
-                        border: '1px solid #4071B6', 
-                      },
-                    }}
-                    variant="outlined"
-                    size="small"
-                    onClick={() => setLink(item)}
-                    className="h-full ml-4"
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </div>
-            ))}
-            {currentSearched?.length > itemsPerPage && (
-              <div className="flex justify-center items-center mt-5 mb-2">
-                <Stack spacing={2}>
-                  <Pagination
-                    count={Math.ceil(currentSearched?.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handleChangePage}
-                  />
-                </Stack>
-              </div>
-            )}
-            {currentSearched.length === 0 && (
-              <div className="flex-1 text-center text-gray-400 text-2xl">No Students</div>
-            )}
-          </div>
-
-          <div>
-            {Object.values(link).length === 0 ? (
-              <div className="text-center py-20 text-gray-400">
-                <div className="text-2xl font-light">No Details Available</div>
-                <div className="text-sm mt-2">Select a link to show details</div>
-              </div>
-            ) : (
-              <>
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <div className="flex items-center space-x-2">
-                      <FontAwesomeIcon icon={faSuitcase} className="text-blue-600 text-lg" />
-                      <span className="text-lg font-semibold text-gray-800">{link?.subject}</span>
+                  <div className="flex justify-between items-end">
+                    <div className="flex flex-col text-sm text-[#16151C] space-y-1">
+                      <div className="flex">
+                        <span className="font-light w-28">Subscription:</span>
+                        <span className="font-medium">#{item?.id}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light w-28">Student:</span>
+                        <span className="font-medium">{item?.studentName}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light w-28">Tutor:</span>
+                        <span className="font-medium">{item?.teacherName}</span>
+                      </div>
                     </div>
-                    {link?.studentDeactivated ? (
-                      <Button
-                        variant="contained"
-                        color="success"
-                        size="small"
-                        onClick={() => {
-                          setSelectedLink(link);
-                          setShowReactivateModal(true);
-                        }}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Reactivate
-                      </Button>
-                    ) : (
+
+                    {link?.id !== item?.id && (
                       <Button
                         sx={{
-                          color:'#A81E1E',
-                          backgroundColor:'#A81E1E0D',
-                          border: '1px solid #A81E1E',
-                          '&:hover': {
-                            color:'#A81E1E',
-                            backgroundColor:'#A81E1E0D',
-                            border: '1px solid #A81E1E', 
+                          fontSize: "12px",
+                          width: "100px",
+                          height: "40px",
+                          borderRadius: "8px",
+                          padding: 0,
+                          fontWeight: "600",
+                          color: "#4071B6",
+                          backgroundColor: "#4071B60D",
+                          border: "1px solid #4071B6",
+                          "&:hover": {
+                            color: "#4071B6",
+                            backgroundColor: "#4071B60D",
+                            border: "1px solid #4071B6",
                           },
                         }}
                         variant="outlined"
-                        size="small"
-                        onClick={() => handleDeleteInvoiceClick(link)}
-                        className="w-[100px] h-[32px]"
+                        onClick={() => setLink(item)}
+                        className="self-end"
                       >
-                        Deactivate
+                        View Details
                       </Button>
                     )}
                   </div>
 
-                  <div className="space-y-4 text-sm text-gray-700">
-                    <div className="flex">
-                      <span className="font-semibold w-40">Subscription:</span>
-                      <span className="text-gray-900">#{link?.id}</span>
+                </div>
+              ))}
+
+              {currentSearched.length === 0 && (
+                <div className="flex-1 text-center text-gray-400 text-2xl">No Students</div>
+              )}
+            </div>
+
+            <div>
+              {Object.values(link).length === 0 ? (
+                <div className="text-center py-20 text-gray-400">
+                  <div className="text-2xl font-light">No Details Available</div>
+                  <div className="text-sm mt-2">Select a link to show details</div>
+                </div>
+              ) : (
+                <>
+                  <div className="bg-[#A2A1A80D] rounded-lg px-6 py-4 h-[518px]">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="flex items-center space-x-2">
+                        <FontAwesomeIcon icon={faSuitcase} className="text-blue-600 text-lg" />
+                        <span className="text-lg font-semibold text-gray-800">{link?.subject}</span>
+                      </div>
+                      {!link?.studentDeactivated && (
+                        <Button
+                          sx={{
+                            fontSize: "12px",
+                            width: "120px",
+                            height: "32px",
+                            borderRadius: "4px",
+                            padding: "10px",
+                            fontWeight: "600",
+                            color: '#A81E1E',
+                            backgroundColor: '#A81E1E0D',
+                            border: '1px solid #A81E1E',
+                            '&:hover': {
+                              color: '#A81E1E',
+                              backgroundColor: '#A81E1E0D',
+                              border: '1px solid #A81E1E',
+                            },
+                          }}
+                          variant="outlined"
+
+                          onClick={() => handleDeleteInvoiceClick(link)}
+                        >
+                          Deactivate
+                        </Button>
+                      )}
                     </div>
-                    
-                    <div className="h-2" />
-                    
-                    <div className="flex">
-                      <span className="font-semibold w-40">Student:</span>
-                      <span className="text-gray-900">{link?.studentName}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-semibold w-40">Email:</span>
-                      <span className="text-gray-900">{link?.studentEmail}</span>
-                    </div>
-                    
-                    <div className="h-2" />
-                    
-                    <div className="flex">
-                      <span className="font-semibold w-40">Tutor:</span>
-                      <span className="text-gray-900">{link?.teacherName}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-semibold w-40">Email:</span>
-                      <span className="text-gray-900">{link?.teacherEmail || "N/A"}</span>
-                    </div>
-                    
-                    <div className="h-2" />
-                    
-                    <div className="flex">
-                      <span className="font-semibold w-40">Start Date:</span>
-                      <span className="text-gray-900">
-                        {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-semibold w-40">Credits:</span>
-                      <span className="text-gray-900">
-                        {fetchingCredits
-                          ? "Fetching..."
-                          : calculateHoursLeft(
+
+                    <div className="space-y-1 text-sm text-gray-700">
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Subscription:</span>
+                        <span className="text-[#16151C] font-medium">#{link?.id}</span>
+                      </div>
+
+                      <div className="h-5" />
+
+                      <div className="flex ">
+                        <span className="font-light text-sm w-40">Student:</span>
+                        <span className="text-[#16151C] font-medium">{link?.studentName}</span>
+                      </div>
+                      <div className="flex ">
+                        <span className="font-light text-sm w-40">Email:</span>
+                        <span className="text-[#16151C] font-medium">{link?.studentEmail}</span>
+                      </div>
+
+                      <div className="h-5" />
+
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Tutor:</span>
+                        <span className="text-[#16151C] font-medium">{link?.teacherName}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Email:</span>
+                        <span className="text-[#16151C] font-medium">{link?.teacherEmail || "N/A"}</span>
+                      </div>
+
+                      <div className="h-5" />
+
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Start Date:</span>
+                        <span className="text-[#16151C] font-medium">
+                          {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Credits:</span>
+                        <span className="text-[#16151C] font-medium">
+                          {fetchingCredits
+                            ? "Fetching..."
+                            : calculateHoursLeft(
                               convertToGBP(link?.price),
                               creditsForSelectedStudent
                             )?.toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-semibold w-40">Hourly Rate (USD):</span>
-                      <span className="text-gray-900">${link?.price}</span>
-                    </div>
-                    <div className="flex">
-                      <span className="font-semibold w-40">Tutor Hourly Rate (USD):</span>
-                      <span className="text-gray-900">${link?.tutorHourlyRate}</span>
-                    </div>
-                    
-                    <div className="h-2" />
-                    
-                    <div className="flex">
-                      <span className="font-semibold w-40">Balance (GBP):</span>
-                      <span className="text-gray-900">
-                        {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
-                      </span>
-                    </div>
-                  </div>
+                        </span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Hourly Rate (USD):</span>
+                        <span className="text-[#16151C] font-medium">${link?.price}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="font-light text-sm  w-40">Tutor Hourly Rate (USD):</span>
+                        <span className="text-[#16151C] font-medium">${link?.tutorHourlyRate}</span>
+                      </div>
 
-                  <div className="grid grid-cols-3 gap-3 mt-6">
-                    <Button
-                      sx={{
-                        color:'#F49342',
-                        backgroundColor:'#F493420D',
-                        border: '1px solid #F49342',
-                        fontSize: '12px',
-                        '&:hover': {
-                          color:'#F49342',
-                          backgroundColor:'#F493420D',
-                          border: '1px solid #F49342', 
-                          fontSize: '12px',
-                        },
-                      }}
-                      variant="outlined"
-                      onClick={() => {
-                        setSelectedLink(link);
-                        setRemoveBalance(true);
-                      }}
-                      className="h-11 w-[135px] h-[40px] text-[12px] rounded-[8px]"
-                    >
-                      Remove Credits
-                    </Button>
-                    <Button
-                      sx={{
-                        color:'#3FC28A',
-                        backgroundColor:'#3FC28A0D',
-                        border: '1px solid #3FC28A',
-                        fontSize: '12px',
-                        '&:hover': {
-                          color:'#3FC28A',
-                          backgroundColor:'#3FC28A0D',
-                          border: '1px solid #3FC28A',
-                          fontSize: '12px', 
-                        },
-                      }}
-                      variant="outlined"
-                      onClick={() => handleGenerateInvoiceClick(link)}
-                      className="h-11 w-[135px] h-[40px] text-[12px] rounded-[8px]"
-                    >
-                      Add Credits
-                    </Button>
-                    <Button
-                      sx={{
-                        color:'#4071B6',
-                        backgroundColor:'#4071B60D',
-                        border: '1px solid #4071B6',
-                        fontSize: '12px',
-                        '&:hover': {
-                          color:'#4071B6',
-                          backgroundColor:'#4071B60D',
-                          border: '1px solid #4071B6',
-                          fontSize: '12px', 
-                        },
-                      }}
-                      variant="outlined"
-                      onClick={() => handleViewInvoicesClick(link)}
-                      className="h-11 w-[135px] h-[40px] rounded-[8px]"
-                    >
-                      View Invoice
-                    </Button>
-                  </div>
-                </div>
+                      <div className="h-5" />
 
-                <Modal open={showInvoicesModal}>
-                  <CustomModal>
-                    <ViewInvoices data={selectedLink} setShowInvoicesModal={setShowInvoicesModal} />
-                  </CustomModal>
-                </Modal>
+                      <div className="flex">
+                        <span className="font-light text-sm w-40">Balance (GBP):</span>
+                        <span className="text-[#16151C] font-medium">
+                          {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
+                        </span>
+                      </div>
+                    </div>
 
-                <Modal open={showReactivateModal}>
-                  <CustomModal>
-                    <h2>Reactivate Student</h2>
-                    <div className="mt-4 flex flex-col space-y-2">
+                    <div className="grid grid-cols-3 gap-3 mt-6">
                       <Button
+                        sx={{
+                          color: '#F49342',
+                          backgroundColor: '#F493420D',
+                          border: '1px solid #F49342',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          '&:hover': {
+                            color: '#F49342',
+                            backgroundColor: '#F493420D',
+                            border: '1px solid #F49342',
+                            fontSize: '12px',
+                          },
+                        }}
                         variant="outlined"
+                        onClick={() => {
+                          setSelectedLink(link);
+                          setRemoveBalance(true);
+                        }}
+                        className=" w-[135px] h-[40px] rounded-[8px]"
+                      >
+                        Remove Credits
+                      </Button>
+                      {link?.studentDeactivated ? (
+                        <Button
+                          variant="outlined"
+                          color="success"
+                          sx={{
+                            color: '#3FC28A',
+                            backgroundColor: '#3FC28A0D',
+                            border: '1px solid #3FC28A',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            '&:hover': {
+                              color: '#3FC28A',
+                              backgroundColor: '#3FC28A0D',
+                              border: '1px solid #3FC28A',
+                              fontSize: '12px',
+                            },
+                          }}
+                          onClick={() => {
+                            setSelectedLink(link);
+                            setShowReactivateModal(true);
+                          }}
+                          className="w-[135px] h-[40px] rounded-[8px]"
+                        >
+                          Reactivate
+                        </Button>
+                      ) : (
+                        <Button
+                          sx={{
+                            color: '#3FC28A',
+                            backgroundColor: '#3FC28A0D',
+                            border: '1px solid #3FC28A',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            '&:hover': {
+                              color: '#3FC28A',
+                              backgroundColor: '#3FC28A0D',
+                              border: '1px solid #3FC28A',
+                              fontSize: '12px',
+                            },
+                          }}
+                          variant="outlined"
+                          onClick={() => handleGenerateInvoiceClick(link)}
+                          className="w-[135px] h-[40px] rounded-[8px]"
+                        >
+                          Add Credits
+                        </Button>
+                      )}
+                      <Button
+                        sx={{
+                          color: '#4071B6',
+                          backgroundColor: '#4071B60D',
+                          border: '1px solid #4071B6',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          '&:hover': {
+                            color: '#4071B6',
+                            backgroundColor: '#4071B60D',
+                            border: '1px solid #4071B6',
+                            fontSize: '12px',
+                          },
+                        }}
+                        variant="outlined"
+                        onClick={() => handleViewInvoicesClick(link)}
+                        className="w-[135px] h-[40px] rounded-[8px]"
+                      >
+                        View Invoice
+                      </Button>
+                    </div>
+                  </div>
+                
+
+                  <CustomModal open={showReactivateModal} onClose={() => setShowReactivateModal(false)}>
+                    <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+                      Reactivate Student
+                    </h2>
+
+                    <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+                    <p className="text-lg text-center font-light text-[#16151C] mb-12">
+                      Are you sure you want to reactivate this student?
+                    </p>
+                    <div className="flex gap-3 justify-end">
+                      <Button
                         onClick={() => setShowReactivateModal(false)}
+                        variant="outlined"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          borderColor: "#A2A1A833",
+                          fontSize: "16px",
+                          fontWeight: 300,
+                          color: "#16151C",
+                        }}
                       >
                         Close
                       </Button>
                       <Button
                         variant="contained"
-                        color="success"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          backgroundColor: "#4071B6",
+                          fontSize: "20px",
+                          fontWeight: 300,
+                          color: "#FFFFFF",
+                        }}
                         onClick={() => reactivateStudent(selectedLink)}
                       >
                         Reactivate
                       </Button>
                     </div>
                   </CustomModal>
-                </Modal>
 
-                <Modal open={showHourlyRateModal}>
-                  <CustomModal>
-                    <h2>Enter New Hourly Rate</h2>
-                    <div className="flex items-center mt-4">
-                      <span className="font-bold text-xl mr-2">£</span>
-                      <input
-                        type="number"
-                        value={newHourlyRate}
-                        onChange={(e) => setNewHourlyRate(e.target.value)}
-                        placeholder="Enter New Hourly Rate"
-                        className="w-full p-2 border rounded-lg"
-                        min={0}
-                      />
-                    </div>
-                    <div className="flex justify-end mt-4 space-x-2">
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => setShowHourlyRateModal(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => hourlyRateUpdate(selectedLink)}
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </CustomModal>
-                </Modal>
 
-                <Modal open={showModal}>
-                  <CustomModal>
-                    <h2>Enter Balance Amount</h2>
+
+                  <Modal open={showHourlyRateModal}>
+                    <CustomModal>
+                      <h2>Enter New Hourly Rate</h2>
+                      <div className="flex items-center mt-4">
+                        <span className="font-bold text-xl mr-2">£</span>
+                        <input
+                          type="number"
+                          value={newHourlyRate}
+                          onChange={(e) => setNewHourlyRate(e.target.value)}
+                          placeholder="Enter New Hourly Rate"
+                          className="w-full p-2 border rounded-lg"
+                          min={0}
+                        />
+                      </div>
+                      <div className="flex justify-end mt-4 space-x-2">
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => setShowHourlyRateModal(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="success"
+                          onClick={() => hourlyRateUpdate(selectedLink)}
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </CustomModal>
+                  </Modal>
+
+                  <CustomModal open={showModal} onClose={() => setShowModal(false)}>
+                    <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+                      Enter Balance Amount
+                    </h2>
+
+                    <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
                     <TextField
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
                       label="Enter Amount in GBP"
                       fullWidth
-                      className="mb-4"
+                      sx={{ mb: 7 }}
                     />
-                    <div className="flex justify-end space-x-2">
+
+                    <div className="flex gap-3 justify-end">
                       <Button
-                        variant="outlined"
-                        color="error"
                         onClick={() => {
-                          setInvoicePrice(0);
-                          setShowModal(false);
+                          setInvoicePrice(0)
+                          setShowModal(false)
+                        }}
+                        variant="outlined"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          borderColor: "#A2A1A833",
+                          fontSize: "16px",
+                          fontWeight: 300,
+                          color: "#16151C",
                         }}
                       >
                         Cancel
@@ -744,33 +824,54 @@ return (
                       <Button
                         disabled={loading}
                         variant="contained"
-                        color="success"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          backgroundColor: "#4071B6",
+                          fontSize: "20px",
+                          fontWeight: 300,
+                          color: "#FFFFFF",
+                        }}
                         onClick={handleModalSubmit}
                       >
                         {loading ? "Submitting" : "Submit"}
                       </Button>
                     </div>
                   </CustomModal>
-                </Modal>
 
-                <Modal open={removeBalance}>
-                  <CustomModal>
-                    <h2>Enter Balance Amount to Remove</h2>
+
+                  <CustomModal open={removeBalance} onClose={() => setRemoveBalance(false)}>
+                    <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+                      Remove Balance
+                    </h2>
+
+                    <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
                     <TextField
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
                       label="Enter Amount in GBP"
                       fullWidth
-                      className="mb-4"
+                      sx={{ mb: 7 }}
                     />
-                    <div className="flex justify-end space-x-2">
+
+                    <div className="flex gap-3 justify-end">
                       <Button
-                        variant="outlined"
-                        color="error"
                         onClick={() => {
-                          setInvoicePrice(0);
-                          setRemoveBalance(false);
+                          setInvoicePrice(0)
+                          setRemoveBalance(false)
+                        }}
+                        variant="outlined"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          borderColor: "#A2A1A833",
+                          fontSize: "16px",
+                          fontWeight: 300,
+                          color: "#16151C",
                         }}
                       >
                         Cancel
@@ -778,39 +879,93 @@ return (
                       <Button
                         disabled={loading}
                         variant="contained"
-                        color="success"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          backgroundColor: "#4071B6",
+                          fontSize: "20px",
+                          fontWeight: 300,
+                          color: "#FFFFFF",
+                        }}
                         onClick={handleRemoveBalanceModalSubmit}
                       >
                         {loading ? "Submitting" : "Submit"}
                       </Button>
                     </div>
                   </CustomModal>
-                </Modal>
 
-                <Modal open={showDeleteModal}>
-                  <CustomModal>
-                    <h2>Are you sure you want to delete this link?</h2>
-                    <div className="flex justify-end space-x-2 mt-4">
-                      <Button variant="outlined" onClick={() => setShowDeleteModal(false)}>
+
+
+                  <CustomModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                    <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+                      Deactivate
+                    </h2>
+
+                    <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+                    <p className="text-lg text-center font-light text-[#16151C] mb-12">
+                      Are you sure you want to deactivate this student?
+                    </p>
+
+                    <div className="flex gap-3 justify-end">
+                      <Button
+                        onClick={() => setShowDeleteModal(false)}
+                        variant="outlined"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          borderColor: "#A2A1A833",
+                          fontSize: "16px",
+                          fontWeight: 300,
+                          color: "#16151C",
+                        }}
+                      >
                         Cancel
                       </Button>
                       <Button
                         disabled={loading}
                         variant="contained"
-                        color="error"
+                        sx={{
+                          width: 166,
+                          height: 50,
+                          borderRadius: "10px",
+                          backgroundColor: "#4071B6",
+                          fontSize: "20px",
+                          fontWeight: 300,
+                          color: "#FFFFFF",
+                        }}
                         onClick={handleDeleteModalSubmit}
                       >
-                        {loading ? "Deleting" : "Delete"}
+                        {loading ? "Deactivating" : "Yes"}
                       </Button>
                     </div>
                   </CustomModal>
-                </Modal>
-              </>
-            )}
+                </>
+              )}
+            </div>
+            
           </div>
+          {currentSearched?.length > itemsPerPage && (
+  <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white">
+    <div className="text-sm text-gray-700">
+      Showing {startIndex + 1} to {Math.min(endIndex, currentSearched.length)} out of {currentSearched.length} records
+    </div>
+    <Stack spacing={2}>
+      <Pagination
+        count={Math.ceil(currentSearched?.length / itemsPerPage)}
+        page={currentPage}
+        onChange={handleChangePage}
+        color="primary"
+        size="small"
+      />
+    </Stack>
+  </div>
+)}
+
         </div>
       </div>
-    </div>
-  </TopHeadingProvider>
-)
+    </TopHeadingProvider>
+  )
 }

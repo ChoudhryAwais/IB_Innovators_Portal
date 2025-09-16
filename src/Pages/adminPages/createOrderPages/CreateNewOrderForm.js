@@ -1,111 +1,72 @@
-import React, { useState, useContext } from "react";
-import { MyContext } from "../../../Context/MyContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+"use client"
 
-import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { db } from "../../../firebase";
-import emailjs from "emailjs-com";
-import toast from "react-hot-toast";
+import { useState, useContext } from "react"
+import { MyContext } from "../../../Context/MyContext"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGraduationCap } from "@fortawesome/free-solid-svg-icons"
 
-import {
-  Autocomplete,
-  Box,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  FormControl,
-  Button,
-} from "@mui/material";
-import CustomModal from "../../../Components/CustomModal/CustomModal";
-import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate";
+import { collection, addDoc, doc, updateDoc, query, where, getDocs } from "firebase/firestore"
+import { db } from "../../../firebase"
+import emailjs from "emailjs-com"
+import toast from "react-hot-toast"
 
-const graduationYears = [
-  "2021",
-  "2022",
-  "2023",
-  "2024",
-  "2025",
-  "2026",
-  "2027",
-  "2028",
-  "2029",
-  "2030",
-  "2031",
-];
+import { Autocomplete, Box, MenuItem, Select, TextField, FormControl, Button } from "@mui/material"
+import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
+
+const graduationYears = ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"]
 
 export function CreateNewOrderForm({ item, handleClose }) {
-  const { userDetails, subjectsArray } = useContext(MyContext);
+  const { userDetails, subjectsArray } = useContext(MyContext)
 
-  const [slotRequired, setSlotRequired] = useState([]);
-  const [subject, setSubject] = useState("");
+  const [slotRequired, setSlotRequired] = useState([])
+  const [subject, setSubject] = useState("")
+  const [tutorTier, setTutorTier] = useState("")
+  const [yearOfGraduation, setYearOfGraduation] = useState("")
+  const [timeZone, setTimeZone] = useState("GMT")
+  const [requestedHours, setRequestedHours] = useState("")
+  const [gradePredicted, setGradePredicted] = useState("")
+  const [gradeAimed, setGradeAimed] = useState("")
+  const [startDate, setStartDate] = useState("Immediately")
+  const [country, setCountry] = useState("")
+  const [countryObject, setCountryObject] = useState(null)
+  const [gmt, setGmt] = useState("")
+  const [session, setSession] = useState("")
 
-  const [yearOfGraduation, setYearOfGraduation] = useState("");
-  const [timeZone, setTimeZone] = useState("GMT");
-  const [requestedHours, setRequestedHours] = useState("");
-  const [tutorTier, setTutorTier] = useState("");
-  const [gradePredicted, setGradePredicted] = useState("");
-  const [gradeAimed, setGradeAimed] = useState("");
-  const [startDate, setStartDate] = useState("Immediately");
-  const [country, setCountry] = useState("");
-  const [countryObject, setCountryObject] = useState(null);
-  const [gmt, setGmt] = useState("");
-  const [session, setSession] = useState("");
+  const [startDateType, setStartDateType] = useState("")
+  const [customStartDate, setCustomStartDate] = useState("")
 
-  const [startDateType, setStartDateType] = useState("");
-  const [customStartDate, setCustomStartDate] = useState("");
+  const [tutorHourlyRate, setTutorHourlyRate] = useState(null)
+  const [price, setPrice] = useState(null)
 
-  const [tutorHourlyRate, setTutorHourlyRate] = useState(null);
-  const [price, setPrice] = useState(null);
-
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false)
 
   const handleStartDateTypeChange = (e) => {
-    setStartDateType(e.target.value);
+    setStartDateType(e.target.value)
 
     if (e.target.value !== "Other") {
-      setStartDate("Immediately");
+      setStartDate("Immediately")
     } else if (e.target.value !== "Other") {
-      setCustomStartDate("");
-      setStartDate("");
+      setCustomStartDate("")
+      setStartDate("")
     }
-  };
+  }
 
   const handleCustomStartDateChange = (e) => {
-    setCustomStartDate(e.target.value);
-    setStartDate(e.target.value);
-  };
+    setCustomStartDate(e.target.value)
+    setStartDate(e.target.value)
+  }
 
   const handleSlotClick = (day, time) => {
-    const slot = `${day}-${time}`;
+    const slot = `${day}-${time}`
     setSlotRequired((prevSelectedSlots) =>
-      prevSelectedSlots.includes(slot)
-        ? prevSelectedSlots.filter((s) => s !== slot)
-        : [...prevSelectedSlots, slot]
-    );
-  };
+      prevSelectedSlots.includes(slot) ? prevSelectedSlots.filter((s) => s !== slot) : [...prevSelectedSlots, slot],
+    )
+  }
 
-  const isSelected = (day, time) => slotRequired.includes(`${day}-${time}`);
+  const isSelected = (day, time) => slotRequired.includes(`${day}-${time}`)
 
-  const timePeriods = ["Before 12PM", "12PM - 3PM", "3PM - 6PM", "After 6PM"];
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+  const timePeriods = ["Before 12PM", "12PM - 3PM", "3PM - 6PM", "After 6PM"]
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
   async function submittingForm() {
     if (
@@ -123,12 +84,12 @@ export function CreateNewOrderForm({ item, handleClose }) {
       gmt === "" ||
       session === ""
     ) {
-      toast.error("Please Fill All Details");
-      return;
+      toast.error("Please Fill All Details")
+      return
     }
 
     try {
-      setSubmitting(true);
+      setSubmitting(true)
       const details = {
         subject,
         studentName: item?.userName,
@@ -145,34 +106,34 @@ export function CreateNewOrderForm({ item, handleClose }) {
         tutorHourlyRate,
         price,
         createdOn: new Date(),
-      };
+      }
 
-      const userListRef = collection(db, "orders");
-      const docRef = await addDoc(userListRef, details);
-      const docId = docRef.id;
-      await updateDoc(doc(db, "orders", docId), { id: docId });
+      const userListRef = collection(db, "orders")
+      const docRef = await addDoc(userListRef, details)
+      const docId = docRef.id
+      await updateDoc(doc(db, "orders", docId), { id: docId })
 
-      handleClose(false);
+      handleClose(false)
 
       const checkTeacherEligibility = (teacher) => {
         const filteredSubjects = Object.entries(teacher.subjects)
           .filter(([_, value]) => value === true)
-          .map(([subject]) => subject);
-        return filteredSubjects.includes(subject);
-      };
+          .map(([subject]) => subject)
+        return filteredSubjects.includes(subject)
+      }
 
-      const userListRefSecond = collection(db, "userList");
-      const q = query(userListRefSecond, where("type", "==", "teacher"));
+      const userListRefSecond = collection(db, "userList")
+      const q = query(userListRefSecond, where("type", "==", "teacher"))
 
-      const querySnapshot = await getDocs(q);
-      const teachersData = querySnapshot.docs.map((doc) => doc.data());
+      const querySnapshot = await getDocs(q)
+      const teachersData = querySnapshot.docs.map((doc) => doc.data())
       const eligibleTeacherEmails = teachersData
         .filter((teacher) => checkTeacherEligibility(teacher, subject))
-        .map(({ email, userId }) => ({ email, userId }));
+        .map(({ email, userId }) => ({ email, userId }))
 
-      const serviceId = process.env.REACT_APP_EMAILSERVICEID;
-      const templateId = process.env.REACT_APP_EMAILTEMPLATEID;
-      const userId = process.env.REACT_APP_EMAILUSERID;
+      const serviceId = process.env.REACT_APP_EMAILSERVICEID
+      const templateId = process.env.REACT_APP_EMAILTEMPLATEID
+      const userId = process.env.REACT_APP_EMAILUSERID
 
       eligibleTeacherEmails.forEach((e) => {
         const emailTemplate = getCourseRequestedEmailTemplate(
@@ -181,8 +142,8 @@ export function CreateNewOrderForm({ item, handleClose }) {
           yearOfGraduation,
           country,
           startDate,
-          `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e?.userId}`
-        );
+          `https://portal.ibinnovators.com/jobOpenings/${docId}?gimeg02j0i3jrg03i43g0n=${e?.userId}`,
+        )
 
         const emailParams = {
           from_name: "IBInnovators",
@@ -190,285 +151,361 @@ export function CreateNewOrderForm({ item, handleClose }) {
           send_to: e.email,
           subject: `New Job Available for ${subject}`,
           message: emailTemplate,
-        };
+        }
 
         emailjs
           .send(serviceId, templateId, emailParams, userId)
           .then(() => console.log("Email sent successfully"))
-          .catch((error) => console.error("Error sending email:", error));
-      });
+          .catch((error) => console.error("Error sending email:", error))
+      })
 
-      toast.success("Job created successfully");
+      toast.success("Job created successfully")
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Error Submitting Form");
+      console.error("Error submitting form:", error)
+      toast.error("Error Submitting Form")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
   }
 
   return (
-    <CustomModal>
-      <div className="flex-1">
-        <h2 className="text-xl font-bold">JOB CREATION FORM</h2>
+    <div className="w-4xl mx-auto">
+      <div className="">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Create Job</h1>
 
-        {/* STUDENT INFO */}
-        <div>
-          <div className="text-gray-600 font-bold text-base">Student</div>
-          <div className="flex flex-wrap items-center gap-4">
-            <div>
-              <FontAwesomeIcon
-                className="ml-2 text-2xl"
-                icon={faGraduationCap}
-              />
-            </div>
-            <div>
-              <b>{item?.userName}</b>
-              <br />
-              {item?.email}
-            </div>
+        {/* Student Info Section */}
+        <div className="flex items-start gap-4 mb-6">
+          {/* Image */}
+          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+            <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
           </div>
-        </div>
 
-        {/* TIME TABLE */}
-        <div className="flex-1 mt-8 overflow-auto">
-          <h2 className="text-left mb-2 text-lg font-semibold">
-            Choose Time Required
-          </h2>
+          {/* Info */}
+          <div className="grid grid-cols-2 gap-y-1 gap-x-4">
+            <div className="font-medium text-gray-900">Student Name:</div>
+            <div className="font-semibold text-gray-900">{item?.userName}</div>
 
-          <div className="flex gap-2 justify-between min-w-[600px]">
-            <div className="flex flex-col gap-2 flex-1">
-              <div className="flex-1 min-h-10 p-1 text-center flex items-center"></div>
-              {timePeriods.map((time) => (
-                <div
-                  key={time}
-                  className="flex-1 min-h-10 p-1 text-center flex items-center"
-                >
-                  {time}
-                </div>
-              ))}
-            </div>
-
-            {days.map((day) => (
-              <div key={day} className="flex flex-col gap-2 flex-1">
-                <div className="flex-1 min-h-10 p-1 text-center flex items-center justify-center">
-                  {day.slice(0, 3)}
-                </div>
-                {timePeriods.map((time) => (
-                  <div
-                    key={time}
-                    onClick={() => handleSlotClick(day, time)}
-                    className={`flex-1 min-h-10 p-1 text-center flex items-center select-none transition-all duration-500 cursor-pointer ${
-                      isSelected(day, time)
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-300"
-                    }`}
-                  ></div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ADDITIONAL INFO */}
-        <div className="flex-1 mt-8">
-          <h2 className="text-left mb-2 text-lg font-semibold">
-            Additional Information
-          </h2>
-          <div className="flex flex-col gap-3 mt-5">
-            {/* Requested Subject */}
-            <div className="flex-1">
-              <FormControl fullWidth>
-                <InputLabel>Choose Required Subject *</InputLabel>
-                <Select
-                  value={subject}
-                  required
-                  onChange={(e) => setSubject(e.target.value)}
-                >
-                  {subjectsArray?.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-            {/* Country */}
-            <div>
-              <Autocomplete
-                id="country-select-demo"
-                options={countries}
-                className="flex-1 min-w-[300px]"
-                value={countryObject}
-                onChange={(item, newValue) => {
-                  setCountry(newValue?.label);
-                  setCountryObject(newValue);
-                }}
-                autoHighlight
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    {...props}
-                  >
-                    <img
-                      className="w-5 object-contain mr-2"
-                      loading="lazy"
-                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                      alt=""
-                    />
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Choose your country"
-                    required
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: "new-password",
-                    }}
-                  />
-                )}
-              />
-            </div>
-
-            {/* Timezone */}
-            <div className="flex-1">
-              <FormControl fullWidth>
-                <InputLabel>Select TimeZone *</InputLabel>
-                <Select
-                  value={gmt}
-                  onChange={(e) => setGmt(e.target.value)}
-                >
-                  {timezones.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-            {/* Session */}
-            <div className="flex-1">
-              <FormControl fullWidth>
-                <InputLabel>Choose Session *</InputLabel>
-                <Select
-                  value={session}
-                  required
-                  onChange={(e) => setSession(e.target.value)}
-                >
-                  <MenuItem value={"May Session"}>May Session</MenuItem>
-                  <MenuItem value={"November Session"}>
-                    November Session
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-
-            {/* Year of Graduation */}
-            <div>
-              <FormControl fullWidth>
-                <InputLabel>Year of Graduation *</InputLabel>
-                <Select
-                  value={yearOfGraduation}
-                  required
-                  onChange={(e) => setYearOfGraduation(e.target.value)}
-                >
-                  {graduationYears?.map((item) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-            {/* Requested Hours */}
-            <div>
-              <TextField
-                label="Requested Hours"
-                required
-                fullWidth
-                value={requestedHours}
-                onChange={(e) => setRequestedHours(e.target.value)}
-              />
-            </div>
-
-            {/* Start Date */}
-            <div>
-              <FormControl fullWidth>
-                <InputLabel>Start Date *</InputLabel>
-                <Select
-                  required
-                  value={startDateType}
-                  onChange={handleStartDateTypeChange}
-                >
-                  <MenuItem value="Immediately">Immediately</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                </Select>
-              </FormControl>
-
-              {startDateType === "Other" && (
-                <TextField
-                  type="date"
-                  required
-                  value={customStartDate}
-                  onChange={handleCustomStartDateChange}
-                  fullWidth
-                  className="my-2"
-                />
-              )}
-            </div>
-
-            {/* Hourly Rate */}
-            <TextField
-              type="number"
-              label="Tutor Hourly Rate (USD)"
-              value={tutorHourlyRate}
-              onChange={(e) => setTutorHourlyRate(e.target.value)}
-              required
-              fullWidth
-            />
-
-            {/* Price */}
-            <TextField
-              type="number"
-              label="Hourly Price charged to Student (USD)"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-              fullWidth
-            />
+            <div className="text-gray-600">Email:</div>
+            <div className="text-gray-900">{item?.email}</div>
           </div>
         </div>
       </div>
 
-      {/* Footer Buttons */}
-      <div className="flex justify-end mt-5 gap-3">
+      <div className="mb-8">
+        {/* Heading + Legends in one row */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Select your Timing Slots</h2>
+          <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-gray-600">Selected by Tutor</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <span className="text-gray-600">Selected by Student</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
+              <span className="text-gray-600">Tutor and student selected same slot</span>
+            </div>
+          </div>
+        </div>
+
+
+        {/* Time Slots Grid */}
+        <div className="rounded-lg overflow-hidden bg-[#A2A1A80D]">
+          <div className="grid grid-cols-8 ">
+            <div className="p-3 font-medium text-gray-700 text-left">Time & Day</div>
+            {days.map((day) => (
+              <div
+                key={day}
+                className="p-3 font-medium text-gray-700 text-center"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+
+          {timePeriods.map((time, timeIndex) => (
+            <div key={time} className="grid grid-cols-8">
+              <div className="p-3 text-gray-700 text-left">
+                {time.replace("PM", " pm").replace("AM", " am")}
+              </div>
+              {days.map((day) => (
+                <div
+                  key={day}
+                  className="p-2 flex justify-center items-center"
+                >
+                  <div
+                    onClick={() => handleSlotClick(day, time)}
+                    className={`w-6 h-6 border-2 rounded cursor-pointer transition-all duration-200 ${isSelected(day, time)
+                        ? "bg-blue-500 border-blue-500"
+                        : "bg-white hover:border-gray-400"
+                      }`}
+                  >
+                    {isSelected(day, time) && (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Additional Information</h2>
+
+        {/* Row 1: Subject & Tutor Tier */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+            <FormControl fullWidth size="small">
+              <Select
+                value={subject}
+                required
+                onChange={(e) => setSubject(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Subject</span>
+                </MenuItem>
+                {subjectsArray?.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tutor Tier</label>
+            <FormControl fullWidth size="small">
+              <Select
+                value={tutorTier}
+                onChange={(e) => setTutorTier(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Tier</span>
+                </MenuItem>
+                <MenuItem value="Tier 1">Tier 1</MenuItem>
+                <MenuItem value="Tier 2">Tier 2</MenuItem>
+                <MenuItem value="Tier 3">Tier 3</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
+
+        {/* Row 2: Requested Hours, Session, Year of Graduation, Country */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          {/** All selects have fixed width 245px **/}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Requested Hours</label>
+            <FormControl size="small" className="h-14 w-[245px]">
+              <Select
+                value={requestedHours}
+                onChange={(e) => setRequestedHours(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Hours</span>
+                </MenuItem>
+                <MenuItem value="1">1 Hour</MenuItem>
+                <MenuItem value="2">2 Hours</MenuItem>
+                <MenuItem value="3">3 Hours</MenuItem>
+                <MenuItem value="4">4 Hours</MenuItem>
+                <MenuItem value="5">5 Hours</MenuItem>
+                <MenuItem value="10">10 Hours</MenuItem>
+                <MenuItem value="15">15 Hours</MenuItem>
+                <MenuItem value="20">20 Hours</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Session</label>
+            <FormControl size="small" className="h-14 w-[245px]">
+              <Select
+                value={session}
+                required
+                onChange={(e) => setSession(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Session</span>
+                </MenuItem>
+                <MenuItem value="May Session">May Session</MenuItem>
+                <MenuItem value="November Session">November Session</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Year of Graduation</label>
+            <FormControl size="small" className="h-14 w-[245px]">
+              <Select
+                value={yearOfGraduation}
+                required
+                onChange={(e) => setYearOfGraduation(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Year</span>
+                </MenuItem>
+                {graduationYears?.map((item) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <Autocomplete
+              id="country-select-demo"
+              options={countries}
+              value={countryObject}
+              onChange={(item, newValue) => {
+                setCountry(newValue?.label)
+                setCountryObject(newValue)
+              }}
+              autoHighlight
+              getOptionLabel={(option) => option.label}
+              renderOption={(props, option) => (
+                <Box component="li" sx={{ "& > img": { mr: 2, flexShrink: 0 } }} {...props}>
+                  <img
+                    className="w-5 object-contain mr-2"
+                    loading="lazy"
+                    srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                    alt=""
+                  />
+                  {option.label}
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Country"
+                  required
+                  size="small"
+                  className="h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: { height: 56 },
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Row 3: Time Zone, Start Date, Tutor Hourly Rate */}
+        <div className="flex gap-3 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
+            <FormControl size="small" className="h-14 w-[245px]">
+              <Select value={gmt} onChange={(e) => setGmt(e.target.value)} displayEmpty className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]" sx={{ height: 56 }}>
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Time</span>
+                </MenuItem>
+                {timezones.map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <FormControl size="small" className="h-14 w-[245px]">
+              <Select
+                required
+                value={startDateType}
+                onChange={handleStartDateTypeChange}
+                displayEmpty
+                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                sx={{ height: 56 }}
+              >
+                <MenuItem value="" disabled>
+                  <span className="text-gray-400">Date</span>
+                </MenuItem>
+                <MenuItem value="Immediately">Immediately</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+              </Select>
+            </FormControl>
+            {startDateType === "Other" && (
+              <TextField
+                type="date"
+                required
+                value={customStartDate}
+                onChange={handleCustomStartDateChange}
+                size="small"
+                className="mt-2 h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                InputProps={{ sx: { height: 56 } }}
+              />
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tutor Hourly Rate (USD)*</label>
+            <div className="relative w-[245px]">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <TextField
+                type="number"
+                placeholder="Tutor Rate"
+                value={tutorHourlyRate}
+                onChange={(e) => setTutorHourlyRate(e.target.value)}
+                required
+                size="small"
+                className="pl-8 h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                InputProps={{ sx: { paddingLeft: "2rem", height: 56 } }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="flex justify-end gap-3 pt-4">
         <Button
           disabled={submitting}
           variant="outlined"
-          color="error"
           onClick={() => handleClose(false)}
+          className="px-6 py-2 text-gray-600 border-gray-300 hover:bg-gray-50"
         >
-          CANCEL
+          Cancel
         </Button>
         <Button
           disabled={submitting}
           variant="contained"
           onClick={submittingForm}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700"
         >
-          {submitting ? "Submitting" : "SUBMIT"}
+          {submitting ? "Creating..." : "Create Job"}
         </Button>
       </div>
-    </CustomModal>
-  );
+    </div>
+  )
 }
 
 const countries = [
@@ -894,7 +931,7 @@ const countries = [
   { code: "ZA", label: "South Africa", phone: "27" },
   { code: "ZM", label: "Zambia", phone: "260" },
   { code: "ZW", label: "Zimbabwe", phone: "263" },
-];
+]
 
 const timezones = [
   "GMT-12:00",
@@ -931,4 +968,4 @@ const timezones = [
   "GMT+12:00",
   "GMT+13:00",
   "GMT+14:00",
-];
+]

@@ -1,10 +1,11 @@
 "use client"
 
 import React, { useState, useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { MyContext } from "../../../Context/MyContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
-import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore"
+import { deleteDoc, doc } from "firebase/firestore"
 import { db } from "../../../firebase"
 
 import Pagination from "@mui/material/Pagination"
@@ -17,8 +18,9 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Slide from "@mui/material/Slide"
-import { Modal } from "@mui/material"
-import { ViewApplicants } from "./ViewApplicants"
+import CustomModal from "../../../Components/CustomModal/CustomModal";
+import Divider from "@mui/material/Divider"
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -26,76 +28,95 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export function OrderList() {
   const { userDetails } = useContext(MyContext)
+  const navigate = useNavigate()
   const [data, setData] = useState([])
   const [searchedData, setSearchedData] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [selectedItem, setSelectedItem] = useState({})
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState("")
 
   useEffect(() => {
-  const mockOrders = [
-    {
-      id: "ORD1001",
-      studentName: "Alice Johnson",
-      subject: "Mathematics",
-      country: "USA",
-      tutorHourlyRate: 25,
-      studentInformation: { email: "alice.johnson@example.com" },
-    },
-    {
-      id: "ORD1002",
-      studentName: "Mohammed Ali",
-      subject: "Physics",
-      country: "Pakistan",
-      tutorHourlyRate: 30,
-      studentInformation: { email: "mohammed.ali@example.com" },
-    },
-    {
-      id: "ORD1003",
-      studentName: "Sophie Lee",
-      subject: "Biology",
-      country: "UK",
-      tutorHourlyRate: 28,
-      studentInformation: { email: "sophie.lee@example.com" },
-    },
-    {
-      id: "ORD1004",
-      studentName: "Carlos Martinez",
-      subject: "Chemistry",
-      country: "Canada",
-      tutorHourlyRate: 32,
-      studentInformation: { email: "carlos.martinez@example.com" },
-    },
-    {
-      id: "ORD1005",
-      studentName: "Priya Sharma",
-      subject: "English Literature",
-      country: "India",
-      tutorHourlyRate: 22,
-      studentInformation: { email: "priya.sharma@example.com" },
-    },
-    {
-      id: "ORD1006",
-      studentName: "David Brown",
-      subject: "Computer Science",
-      country: "Australia",
-      tutorHourlyRate: 35,
-      studentInformation: { email: "david.brown@example.com" },
-    },
-    {
-      id: "ORD1006",
-      studentName: "David Brown",
-      subject: "Computer Science",
-      country: "Australia",
-      tutorHourlyRate: 35,
-      studentInformation: { email: "david.brown@example.com" },
-    },
-  ]
+    const mockOrders = [
+      {
+        id: "ORD1001",
+        studentName: "Alice Johnson",
+        subject: "Mathematics",
+        country: "USA",
+        tutorHourlyRate: 25,
+        yearOfGraduation: "2024",
+        timeZone: "EST",
+        studentInformation: { email: "alice.johnson@example.com" },
+        applicants: [
+          {
+            tutorDetails: {
+              userName: "John Smith",
+              email: "john.smith@example.com",
+              userId: "tutor1",
+            },
+            supportingInformation: "I have 5 years of experience teaching mathematics.",
+          },
+          {
+              tutorDetails: {
+                userName: "Dr. Emily Chen",
+                email: "emily.chen@example.com",
+                userId: "tutor3",
+              },
+              supportingInformation: "Physics professor with 10 years of teaching experience.",
+            },
+        ],
+      },
+      {
+        id: "ORD1002",
+        studentName: "Mohammed Ali",
+        subject: "Physics",
+        country: "Pakistan",
+        tutorHourlyRate: 30,
+        studentInformation: { email: "mohammed.ali@example.com" },
+      },
+      {
+        id: "ORD1003",
+        studentName: "Sophie Lee",
+        subject: "Biology",
+        country: "UK",
+        tutorHourlyRate: 28,
+        studentInformation: { email: "sophie.lee@example.com" },
+      },
+      {
+        id: "ORD1004",
+        studentName: "Carlos Martinez",
+        subject: "Chemistry",
+        country: "Canada",
+        tutorHourlyRate: 32,
+        studentInformation: { email: "carlos.martinez@example.com" },
+      },
+      {
+        id: "ORD1005",
+        studentName: "Priya Sharma",
+        subject: "English Literature",
+        country: "India",
+        tutorHourlyRate: 22,
+        studentInformation: { email: "priya.sharma@example.com" },
+      },
+      {
+        id: "ORD1006",
+        studentName: "David Brown",
+        subject: "Computer Science",
+        country: "Australia",
+        tutorHourlyRate: 35,
+        studentInformation: { email: "david.brown@example.com" },
+      },
+      {
+        id: "ORD1007",
+        studentName: "George Abbot",
+        subject: "Humanities",
+        country: "America",
+        tutorHourlyRate: 20,
+        studentInformation: { email: "george.abbot@example.com" },
+      },
+    ]
 
-  setData(mockOrders)
-  setSearchedData(mockOrders)
-}, [])
+    setData(mockOrders)
+    setSearchedData(mockOrders)
+  }, [])
 
   // Fetch orders
   // const fetchData = () => {
@@ -153,7 +174,19 @@ export function OrderList() {
   const endIndex = startIndex + itemsPerPage
   const displayedSessions = searchedData?.slice(startIndex, endIndex)
 
-  const closingModal = (val) => setShowModal(val)
+  // Navigation function to replace modal opening
+  const handleViewApplicants = (clickedOrderId) => {
+    const index = searchedData.findIndex(order => order.id === clickedOrderId);
+    const pageOfClickedOrder = Math.floor(index / itemsPerPage) + 1;
+
+    navigate("/applicantsList", {
+      state: {
+        orders: searchedData,
+        expandedOrderId: clickedOrderId,
+        currentPage: pageOfClickedOrder
+      },
+    });
+  };
 
   // 🔥 Delete Logic
   const handleDeleteClick = (id) => {
@@ -175,7 +208,7 @@ export function OrderList() {
   }
 
   return (
-    <div className="flex-1 p-6 bg-gray-50 min-h-screen">
+    <div className="flex-1 min-h-screen">
       {data.length !== 0 && (
         <div className="relative mb-6">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -184,7 +217,7 @@ export function OrderList() {
           <input
             onChange={handleSearch}
             placeholder="Search by name/email"
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
+            className="w-full h-[50px] pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
             defaultValue=""
           />
         </div>
@@ -192,7 +225,7 @@ export function OrderList() {
 
       <div className="space-y-4">
         {displayedSessions.map((item, index) => (
-          <div key={item?.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div key={item?.id} className="bg-white border-b border-gray-200 p-6">
             <div className="flex items-start space-x-4">
               {/* Profile Picture */}
               <div className="flex-shrink-0">
@@ -241,10 +274,7 @@ export function OrderList() {
                     Delete
                   </button>
                   <button
-                    onClick={() => {
-                      setShowModal(true)
-                      setSelectedItem(item)
-                    }}
+                    onClick={() => handleViewApplicants(item.id)}
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                   >
                     View Applicants
@@ -257,7 +287,7 @@ export function OrderList() {
       </div>
 
       {searchedData?.length > itemsPerPage && (
-        <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white border border-gray-200 rounded-lg">
+        <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white ">
           <div className="text-sm text-gray-700">
             Showing {startIndex + 1} to {Math.min(endIndex, searchedData.length)} out of {searchedData.length} records
           </div>
@@ -275,36 +305,56 @@ export function OrderList() {
 
       {searchedData?.length === 0 && <div className="flex-1 text-center text-gray-400 text-xl py-12">No Orders</div>}
 
-      <Modal
-        open={showModal}
-        TransitionComponent={Transition}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <ViewApplicants item={selectedItem} handleClose={closingModal} />
-      </Modal>
-
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setDeleteDialogOpen(false)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Delete Order?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Are you sure you want to delete this order? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <Button color="error" onClick={confirmDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CustomModal open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+  {/* Title */}
+  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+    Delete Order?
+  </h2>
+
+  {/* Divider */}
+  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+  {/* Message */}
+  <p className="text-lg text-center font-light text-[#16151C] mb-12">
+    Are you sure you want to delete this order? This action cannot be undone.
+  </p>
+
+  {/* Actions */}
+  <div className="flex gap-3 justify-end">
+    <Button
+      onClick={() => setDeleteDialogOpen(false)}
+      variant="outlined"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        borderColor: "#A2A1A833",
+        fontSize: "16px",
+        fontWeight: 300,
+        color: "#16151C",
+      }}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="contained"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        backgroundColor: "#4071B6", // blue for delete action
+        fontSize: "20px",
+        fontWeight: 300,
+        color: "#FFFFFF",
+      }}
+      onClick={confirmDelete}
+    >
+       "Delete"
+    </Button>
+  </div>
+</CustomModal>
+
     </div>
   )
 }

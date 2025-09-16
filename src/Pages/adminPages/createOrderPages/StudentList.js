@@ -12,6 +12,8 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import { CreateOrderForm } from "./CreateOrderForm"
+import CustomModal from "../../../Components/CustomModal/CustomModal";
+import Divider from "@mui/material/Divider"
 
 export function StudentList() {
   const { userDetails } = useContext(MyContext)
@@ -176,7 +178,7 @@ export function StudentList() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-gray-50 min-h-screen">
+    <div className="flex flex-col flex-1 min-h-screen">
       {students.length !== 0 && (
         <div className="mb-6 relative">
           <div className="relative">
@@ -187,7 +189,7 @@ export function StudentList() {
             <input
               onChange={handleSearch}
               placeholder="Search by name/email"
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full h-[50px] pl-10 pr-4 py-3 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               defaultValue=""
             />
           </div>
@@ -196,7 +198,7 @@ export function StudentList() {
 
       <div className="space-y-4">
         {displayedSessions.map((student, index) => (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6" key={index}>
+          <div className="bg-white border-b border-gray-200 p-6" key={index}>
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
                 <img
@@ -251,12 +253,11 @@ export function StudentList() {
       </div>
 
       {searchedStudents?.length > itemsPerPage && (
-        <div className="flex justify-center mt-8 mb-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600 mr-4">
+        <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white "> 
+            <div className="text-sm text-gray-600 ">
               Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length}{" "}
               records
-            </span>
+            </div>
             <Stack spacing={2}>
               <Pagination
                 count={Math.ceil(searchedStudents?.length / itemsPerPage)}
@@ -266,7 +267,6 @@ export function StudentList() {
                 size="medium"
               />
             </Stack>
-          </div>
         </div>
       )}
 
@@ -276,39 +276,73 @@ export function StudentList() {
         </div>
       )}
 
-      <Modal open={showModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
+      {/* <Modal open={showModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
         <CreateOrderForm item={selectedStudent} handleClose={setShowModal} />
-      </Modal>
+      </Modal> */}
+      <CustomModal
+              open={showModal}
+              onClose={setShowModal}
+              PaperProps={{
+                sx: {
+                  width: "1080px",  
+                  height: "auto",
+                  maxWidth: "95vw",  
+                  maxHeight: "90vh",
+                },
+              }}
+            >
+              <CreateOrderForm item={selectedStudent} handleClose={setShowModal} />
+            </CustomModal>
 
-      <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 300,
-            bgcolor: "background.paper",
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Confirm Deletion
-          </Typography>
-          <Typography sx={{ mb: 2 }}>Are you sure you want to delete this student request?</Typography>
-          <Box display="flex" justifyContent="space-between">
-            <Button variant="outlined" onClick={() => setDeleteModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="contained" color="error" onClick={handleDelete}>
-              Delete
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+      <CustomModal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+  {/* Title */}
+  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+    Confirm Deletion
+  </h2>
+
+  {/* Divider */}
+  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+  {/* Message */}
+  <p className="text-lg text-center font-light text-[#16151C] mb-12">
+    Are you sure you want to delete this student request?
+  </p>
+
+  {/* Actions */}
+  <div className="flex gap-3 justify-end">
+    <Button
+      onClick={() => setDeleteModalOpen(false)}
+      variant="outlined"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        borderColor: "#A2A1A833",
+        fontSize: "16px",
+        fontWeight: 300,
+        color: "#16151C",
+      }}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="contained"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        backgroundColor: "#4071B6",
+        fontSize: "20px",
+        fontWeight: 300,
+        color: "#FFFFFF",
+      }}
+      onClick={handleDelete}
+    >
+      Delete
+    </Button>
+  </div>
+</CustomModal>
+
     </div>
   )
 }

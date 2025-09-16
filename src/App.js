@@ -20,6 +20,7 @@ import Blogs from "./Pages/Blogs/Blogs";
 import EditBlog from "./Pages/Blogs/EditBlog";
 
 import ManageLinks from "./Pages/ManageLinks/ManageLinks";
+import ViewInvoices from "./Pages/ManageLinks/ViewInvoices";
 
 import TeacherCourses from "./Pages/teacherPages/TeacherCourses";
 import MyStudents from "./Pages/teacherPages/MyStudents";
@@ -30,6 +31,8 @@ import ProfileAndFinance from "./Pages/teacherPages/profileAndFinance/ProfileAnd
 import { SupportAndTraining } from "./Pages/SupportAndTraining/SupportAndTraining";
 import { Notifications } from "./Pages/Notifications/Notifications";
 import { CreateOrder } from "./Pages/adminPages/CreateOrder";
+import {ApplicationsList} from "./Pages/adminPages/createOrderPages/ApplicationsList" //inserted view applicants
+
 import ContactUsForm from "./Pages/contactUsForm/ContactUsForm";
 import RequestCoursesForm from "./Pages/requestCoursesForm/RequestCoursesForm";
 import RevisionCoursesForm from "./Pages/revisionCourseForm/RevisionCoursesForm";
@@ -52,6 +55,7 @@ import Loader from "./Pages/Login/Loader/Loader";
 import UpcomingCourseForm from "./Pages/upcomingCourseForm/UpcomingCourseForm";
 import {CourseTabs} from "./Pages/coursesTabbed/CourseTabs" //inserted coursesTabb
 import {ManageSubjects} from "./Pages/adminPages/tutorPages/ManageSubjects"
+
 
 function App() {
   const { isUserLoggedIn, userType, loading } = useContext(MyContext);
@@ -103,10 +107,12 @@ function App() {
                   <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
                   <Route path="/signup" element={<SignUpOnly />} />
                   <Route path="/links" element={<ManageLinks />} />
+                  <Route path="/links/invoices/:id" element={<ViewInvoices />} />
                   <Route path="/contactUsForms" element={<ContactUsForm />} />
                   {/* <Route path="/requestCourseForm" element={<RequestCoursesForm />} />
                   <Route path="/revisionCoursesForm" element={<RevisionCoursesForm />} /> */}
                   <Route path="/jobsAndRequests" element={<CreateOrder />} />
+                  <Route path="/applicantsList" element={<ApplicationsList />} />
                   <Route path="/subjects" element={<ManageSubjects />} />
 
                   

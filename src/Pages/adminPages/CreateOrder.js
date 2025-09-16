@@ -69,18 +69,19 @@ export const CreateOrder = () => {
   }
 
   return (
-    <TopHeadingProvider>
-      <div className="min-h-screen p-6">
+  <TopHeadingProvider>
+    <div className="min-h-screen p-6">
       <div className="mr-[10px] mb-5 pt-0">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-4">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white rounded-lg border border-gray-200">
+          {/* Tabs header */}
+          <div className="flex border-b border-gray-200 mx-4">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
                   activeTab === tab.id
-                    ? "text-blue-600 border-blue-600 bg-blue-50"
+                    ? "text-blue-600 border-blue-600 "
                     : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -89,11 +90,12 @@ export const CreateOrder = () => {
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="tab-content">{renderTabContent()}</div>
+          {/* Tab content directly attached */}
+          <div className="p-4">{renderTabContent()}</div>
+        </div>
       </div>
-      </div>
-    </TopHeadingProvider>
-  )
+    </div>
+  </TopHeadingProvider>
+)
 }

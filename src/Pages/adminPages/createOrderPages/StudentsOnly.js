@@ -13,6 +13,8 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import { CreateNewOrderForm } from "./CreateNewOrderForm"
+import CustomModal from "../../../Components/CustomModal/CustomModal";
+
 
 export function StudentsOnly() {
   const { userDetails } = useContext(MyContext)
@@ -84,7 +86,7 @@ export function StudentsOnly() {
   const displayedSessions = searchedStudents?.slice(startIndex, endIndex)
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div>
       {students.length !== 0 && (
         <div className="relative mb-6">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -93,7 +95,7 @@ export function StudentsOnly() {
           <input
             onChange={handleSearch}
             placeholder="Search by name/email"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full h-[50px] pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
             defaultValue=""
           />
         </div>
@@ -102,7 +104,7 @@ export function StudentsOnly() {
       <div className="space-y-4">
         {displayedSessions.map((student, index) => (
           <div
-            className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:shadow-md transition-shadow"
+            className="bg-white border-b border-gray-200  p-4 flex items-center justify-between hover:shadow-md transition-shadow"
             key={index}
           >
             <div className="flex items-center space-x-4 flex-1">
@@ -145,7 +147,7 @@ export function StudentsOnly() {
       </div>
 
       {searchedStudents?.length > itemsPerPage && (
-        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between mt-6 pt-4 border-gray-200">
           <div className="text-sm text-gray-500">
             Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length}{" "}
             records
@@ -163,9 +165,20 @@ export function StudentsOnly() {
 
       {searchedStudents.length === 0 && <div className="text-center text-gray-400 text-xl py-12">No Students</div>}
 
-      <Modal open={showModal} aria-labelledby="parent-modal-title" aria-describedby="parent-modal-description">
+      <CustomModal
+        open={showModal}
+        onClose={closingModal}
+        PaperProps={{
+          sx: {
+            width: "1080px",    // override only here
+            height: "auto",
+            maxWidth: "95vw",  // responsive
+            maxHeight: "90vh", // scroll if needed
+          },
+        }}
+      >
         <CreateNewOrderForm item={selectedStudent} handleClose={closingModal} />
-      </Modal>
+      </CustomModal>
     </div>
   )
 }
