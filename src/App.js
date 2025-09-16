@@ -40,6 +40,7 @@ import RevisionCoursesForm from "./Pages/revisionCourseForm/RevisionCoursesForm"
 import { Toaster } from "react-hot-toast";
 import { TutorPages } from "./Pages/adminPages/tutorPages/TutorPages";
 import TutorDetail from "./Pages/adminPages/tutorPages/TutorDetail"; //inserted tutor Detail
+import {EditProfile} from "./Pages/adminPages/tutorPages/profileAndFinance/EditProfile"; //inserted edit profile
 import MySubscriptions from "./Pages/studentPages/mySubscriptions/MySubscriptions";
 import NewCourses from "./Pages/studentPages/newCourses/NewCourses";
 import ProfileAndFinanceStudent from "./Pages/studentPages/profileAndFinance/ProfileAndFinanceStudent";
@@ -105,6 +106,7 @@ function App() {
                   <Route path="/tutorForms" element={<TutorForm />} />
                   <Route path="/tutorsAndSubjects" element={<TutorPages />} />
                   <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
+                  <Route path="/tutorsAndSubjects/:tutorId/edit" element={<EditProfile />} />
                   <Route path="/signup" element={<SignUpOnly />} />
                   <Route path="/links" element={<ManageLinks />} />
                   <Route path="/links/invoices/:id" element={<ViewInvoices />} />

@@ -5,9 +5,10 @@ export function YourSupport({ userDetails, userId }) {
   const subjectInString = `${Object.entries(userDetails?.subjects || {}).map(([subject]) => `${subject}`)}`
 
   return (
-    <div className="bg-white p-6 rounded-lg">
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-gray-700 mb-4">Subjects you are cleared to tutor in</h3>
+    <div className="bg-white  rounded-lg ">
+      <div className="mb-8 border-b border-gray-200">
+        <h3 className="text-lg font-medium text-gray-500 mb-4">DBS Certificates</h3>
+        <h3 className="text-lg font-medium text-gray-700 ">Subjects you are cleared to tutor in</h3>
         <p className="text-gray-900 mb-6 leading-relaxed">
           Business Management (HL),Computer science (HL),Design technology (SL),Chemistry (HL),Biology (SL),Computer
           science (SL),Chemistry (SL),Digital Societies (SL),Biology (HL),Business Management (SL),Digital Societies
@@ -19,7 +20,7 @@ export function YourSupport({ userDetails, userId }) {
         </p>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-500 mb-4">DBS Certificates</h3>
         <p className="text-gray-900 mb-4 leading-relaxed">
           DBS Certificates are issued by the UK Government to demonstrate that you have not been barred from working
@@ -28,7 +29,7 @@ export function YourSupport({ userDetails, userId }) {
         <p className="text-gray-900 mb-6">Did you have enhanced DBS Certificate issued in last two years? No</p>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-8 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-500 mb-4">DBS Certificates</h3>
         <p className="text-gray-900 mb-4 leading-relaxed">
           DBS Certificates are issued by the UK Government to demonstrate that you have not been barred from working
@@ -46,10 +47,10 @@ export function YourSupport({ userDetails, userId }) {
       </div>
 
       {/* Keep existing components for functionality */}
-      <div className="mt-8 space-y-6">
+      {/* <div className="mt-8 space-y-6">
         <DBSCertificates userDetails={userDetails} userId={userId} />
         <YourStyleAndExperience userDetails={userDetails} userId={userId} />
-      </div>
+      </div> */}
     </div>
   )
 }

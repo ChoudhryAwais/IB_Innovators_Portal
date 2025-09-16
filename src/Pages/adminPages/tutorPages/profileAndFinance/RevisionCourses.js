@@ -70,8 +70,8 @@ export function RevisionCourses({ userDetails, userId }) {
         <p className="text-gray-700 mb-2">I'm interested in teaching a revision course</p>
 
         {wantToTeachRevisionCourse ? (
-          <p className="text-green-600 font-semibold">
-            <span className="text-green-500">Yes,</span> I am able to teach them at the moment.
+          <p className="font-semibold">
+            <span className="text-green-600">Yes,</span> I am able to teach them at the moment.
           </p>
         ) : (
           <p className="text-gray-600 font-semibold">No, I am unable to teach them at the moment.</p>
