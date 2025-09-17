@@ -4,6 +4,17 @@ import { useEffect, useState } from "react"
 import { db } from "../../../../firebase"
 import { collection, query, where, onSnapshot, getDoc, doc, updateDoc } from "firebase/firestore"
 import { toast } from "react-hot-toast"
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Avatar,
+  Button,
+  Box,
+  Grid,
+} from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 export default function TeacherInvoices({ userDetails, userId }) {
   const [invoices, setInvoices] = useState([])
@@ -18,9 +29,9 @@ export default function TeacherInvoices({ userDetails, userId }) {
         const paidInvoices = []
         snapshot.forEach((doc) => {
           const data = doc.data()
-          ;(data.invoices || []).forEach((invoice) => {
-            paidInvoices.push({ ...invoice, linkId: doc.id })
-          })
+            ; (data.invoices || []).forEach((invoice) => {
+              paidInvoices.push({ ...invoice, linkId: doc.id })
+            })
         })
         setInvoices(paidInvoices)
       })
@@ -131,7 +142,7 @@ export default function TeacherInvoices({ userDetails, userId }) {
   }
 
   return (
-    <div className="p-6">
+    <div className="">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Payments Details</h1>
 
       <div className="space-y-4">
@@ -141,95 +152,166 @@ export default function TeacherInvoices({ userDetails, userId }) {
           const monthlyInvoices = provideMonthlyInvoice(invoices, item?.month, item?.year)
 
           return (
-            <div key={monthKey} className="border border-gray-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleMonth(monthKey)}
-                className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors"
+            <Accordion
+              key={monthKey}
+              className="overflow-hidden"
+              sx={{
+                "&:before": { display: "none" },
+                boxShadow: "none",
+                border: "1px solid #A2A1A833",
+                borderRadius: "12px !important",
+                overflow: "hidden",
+                backgroundColor: "#A2A1A80D",
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
+                aria-controls={`panel-${monthKey}-content`}
+                id={`panel-${monthKey}`}
+                className="px-6 py-4 hover:bg-gray-50"
+                sx={{
+                  minHeight: "72px !important", // collapsed height
+                  maxHeight: "72px",
+                  "&.Mui-expanded": {
+                    minHeight: "72px !important",
+                    maxHeight: "72px",
+                    maxHeight: "72px",
+                    "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
+                      color: "#4071B6",
+                    },
+                  },
+                  "& .MuiAccordionSummary-content": {
+                    margin: 0,
+                    my: 0,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                  "& .MuiAccordionSummary-content.Mui-expanded": {
+                    margin: 0,
+                    my: 0,
+                  },
+                  "& .MuiAccordionSummary-expandIconWrapper": {
+                    marginLeft: "16px",
+                    color: "#4071B6"
+                  },
+                }}
               >
-                <span className="text-lg font-medium text-gray-900">
-                  {months[item?.month - 1]} {item?.year} Detail View
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-gray-900">
+                <div className="flex w-full justify-between items-center summary-text" >
+                  <div className="text-lg font-light ">
+                    {months[item?.month - 1]} {item?.year} Detail View
+                  </div>
+                  <div className="text-2xl font-semibold ">
                     $ {calculateMonthlyInvoice(invoices, item?.month, item?.year)}
-                  </span>
-                  <svg
-                    className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              </button>
-
-              {isExpanded && (
-                <div className="border-t border-gray-200 bg-gray-50">
-                  <div className="p-4">
-                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                      <div className="grid grid-cols-5 gap-4 p-4 bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-600">
-                        <div>Student Name</div>
-                        <div>Subject</div>
-                        <div>Date/Time</div>
-                        <div>Amount</div>
-                        <div>Session Status</div>
-                      </div>
-
-                      {monthlyInvoices.map((inv, idx) => (
-                        <div
-                          key={inv.id}
-                          className="grid grid-cols-5 gap-4 p-4 border-b border-gray-100 last:border-b-0 items-center"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-medium text-gray-600">
-                                {inv?.studentName?.charAt(0) || "S"}
-                              </span>
-                            </div>
-                            <span className="font-medium text-gray-900">{inv?.studentName}</span>
-                          </div>
-
-                          <div className="text-gray-900">{inv?.subject}</div>
-
-                          <div className="text-gray-600 text-sm">
-                            <div>{inv?.sessionInfo?.date}</div>
-                            <div>{convertToAMPM(inv?.sessionInfo?.time)}</div>
-                          </div>
-
-                          <div className="font-bold text-gray-900">$ {inv?.sessionInfo?.tutorHourlyRate}</div>
-
-                          <div>
-                            {inv?.status === "Pending" ? (
-                              <button
-                                onClick={() => handleApproveSession(inv?.linkId, inv?.id)}
-                                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
-                              >
-                                Approve Session
-                              </button>
-                            ) : (
-                              <div className="flex items-center gap-2 text-green-600">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                  <path
-                                    fillRule="evenodd"
-                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                    clipRule="evenodd"
-                                  />
-                                </svg>
-                                <span className="text-sm font-medium">Approved</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </AccordionSummary>
+
+              <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
+                <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
+                  {/* Header Row */}
+                  <Grid
+                    container
+                    sx={{
+                      backgroundColor: "#f9fafb",
+                      borderBottom: "1px solid #e5e7eb",
+                      fontWeight: 500,
+                      color: "#4b5563",
+                      p: 1.5,
+                    }}
+                  >
+                    <Grid item xs={2.6}>
+                      Student Name
+                    </Grid>
+                    <Grid item xs={2.6}>
+                      Subject
+                    </Grid>
+                    <Grid item xs={2.5}>
+                      Date/Time
+                    </Grid>
+                    <Grid item xs={1.9}>
+                      Amount
+                    </Grid>
+                    <Grid item xs={2.4}>
+                      Session Status
+                    </Grid>
+                  </Grid>
+
+                  {/* Data Rows */}
+                  {monthlyInvoices.map((inv) => (
+                    <Grid
+                      container
+                      key={inv.id}
+                      alignItems="center"
+                      sx={{
+                        borderBottom: "1px solid #A2A1A81A",
+                        p: 1.5,
+                        // "&:last-child": { borderBottom: "none" },
+                      }}
+                    >
+                      {/* Student */}
+                      <Grid item xs={2.6} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Avatar sx={{ width: 32, height: 32, bgcolor: "#d1d5db", fontSize: 12 }}>
+                          {inv?.studentName?.charAt(0) || "S"}
+                        </Avatar>
+                        <div className="font-medium text-gray-900">{inv?.studentName}</div>
+                      </Grid>
+
+                      {/* Subject */}
+                      <Grid item xs={2.6}>
+                        <div className="text-gray-900">{inv?.subject}</div>
+                      </Grid>
+
+                      {/* Date/Time */}
+                      <Grid item xs={2.6}>
+                        <div className="text-sm text-gray-600">{inv?.sessionInfo?.date}</div>
+                        <div className="text-sm text-gray-600">{convertToAMPM(inv?.sessionInfo?.time)}</div>
+                      </Grid>
+
+                      {/* Amount */}
+                      <Grid item xs={1.7}>
+                        <div className="font-bold text-gray-900">$ {inv?.sessionInfo?.tutorHourlyRate}</div>
+                      </Grid>
+
+                      {/* Status */}
+                      <Grid item xs={2.5}>
+                        {inv?.status === "Pending" ? (
+                          <Button
+                            variant="contained"
+                            size="small"
+                            sx={{
+                              backgroundColor: "#4071B6",
+                              "&:hover": { backgroundColor: "#305a91" },
+                              textTransform: "none",
+                            }}
+                            onClick={() => handleApproveSession(inv?.linkId, inv?.id)}
+                          >
+                            Approve Session
+                          </Button>
+                        ) : (
+                          <div className="flex items-center gap-2 text-green-600">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-sm font-medium">Approved</span>
+                          </div>
+                        )}
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
           )
         })}
 

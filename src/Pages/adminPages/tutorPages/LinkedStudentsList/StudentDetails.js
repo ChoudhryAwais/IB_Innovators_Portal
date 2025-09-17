@@ -4,68 +4,81 @@ import { useEffect, useState } from "react"
 import { getDoc, doc } from "firebase/firestore"
 import { db } from "../../../../firebase"
 import { toast } from "react-hot-toast"
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  Grid,
+} from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 export default function StudentDetails({ studentData, studentId, viewType }) {
   const [balanceHistory, setBalanceHistory] = useState([])
-  const [result, setResult] = useState([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = viewType === "balance" ? 5 : 10
+  const [balanceMonths, setBalanceMonths] = useState([])
+  const [classMonths, setClassMonths] = useState([])
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ]
+
+  // ---------- Utilities ----------
+  function extractMonthYearFromDate(dateValue) {
+    const date = new Date(dateValue)
+    return { month: date.getMonth() + 1, year: date.getFullYear() }
+  }
 
   function extractMonthYearFromInvoice(invoice) {
     const invoiceDate = invoice.createdAt.toDate()
-    const month = invoiceDate.getMonth() + 1
-    const year = invoiceDate.getFullYear()
-    return { month, year }
+    return { month: invoiceDate.getMonth() + 1, year: invoiceDate.getFullYear() }
   }
 
-  function getUniqueMonthsAndYears(invoices) {
-    const uniqueMonthsAndYears = []
+  function getUniqueMonthsAndYearsFromInvoices(invoices) {
+    const unique = []
     invoices.forEach((invoice) => {
       const { month, year } = extractMonthYearFromInvoice(invoice)
-      const exists = uniqueMonthsAndYears.some((item) => item.month === month && item.year === year)
-      if (!exists) uniqueMonthsAndYears.push({ month, year })
+      if (!unique.some((i) => i.month === month && i.year === year)) {
+        unique.push({ month, year })
+      }
     })
-
-    uniqueMonthsAndYears.sort((a, b) => {
-      if (a.year !== b.year) return b.year - a.year
-      else return b.month - a.month
-    })
-
-    return uniqueMonthsAndYears
+    unique.sort((a, b) => (a.year !== b.year ? b.year - a.year : b.month - a.month))
+    return unique
   }
 
-  const calculateMonthlyInvoice = (invoices, month, year) => {
-    const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = invoice.createdAt.toDate()
-      return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
+  function getUniqueMonthsAndYearsFromClasses(classes) {
+    const unique = []
+    classes.forEach((cls) => {
+      const { month, year } = extractMonthYearFromDate(cls.sessionInfo.date)
+      if (!unique.some((i) => i.month === month && i.year === year)) {
+        unique.push({ month, year })
+      }
     })
-
-    return filteredInvoices.reduce((total, invoice) => total + Number.parseInt(invoice.amount), 0)
+    unique.sort((a, b) => (a.year !== b.year ? b.year - a.year : b.month - a.month))
+    return unique
   }
 
-  const provideMonthlyInvoice = (invoices, month, year) => {
-    return invoices
+  const filterInvoicesByMonth = (invoices, month, year) =>
+    invoices
       .filter((invoice) => {
-        const invoiceDate = invoice.createdAt.toDate()
-        return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
+        const d = invoice.createdAt.toDate()
+        return d.getMonth() === month - 1 && d.getFullYear() === year
       })
       .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate())
-  }
+
+  const filterClassesByMonth = (classes, month, year) =>
+    classes
+      .filter((cls) => {
+        const d = new Date(cls.sessionInfo.date)
+        return d.getMonth() === month - 1 && d.getFullYear() === year
+      })
+      .sort((a, b) => new Date(b.sessionInfo.date) - new Date(a.sessionInfo.date))
+
+  const calculateMonthlyInvoice = (invoices, month, year) =>
+    filterInvoicesByMonth(invoices, month, year).reduce(
+      (total, inv) => total + Number.parseInt(inv.amount),
+      0
+    )
 
   function formatDisplayDateTime(timestamp) {
     let date
@@ -76,14 +89,9 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
     } else {
       return ""
     }
-
     const options = {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
+      year: "numeric", month: "short", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
       hour12: true,
     }
     return new Intl.DateTimeFormat("en-US", options).format(date)
@@ -91,10 +99,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
 
   function formatDate(inputDate) {
     const options = { day: "numeric", month: "short", year: "numeric" }
-    const dateObject = new Date(inputDate)
-    const formattedDate = dateObject.toLocaleDateString("en-GB", options)
-    const [day, month, year] = formattedDate.split(" ")
-    return `${day}\n${month}\n${year}`
+    return new Date(inputDate).toLocaleDateString("en-GB", options)
   }
 
   function formatTimeTo12Hour(time24) {
@@ -105,117 +110,148 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
     return `${hourNum}:${minute} ${period}`
   }
 
+  // ---------- Fetch ----------
   useEffect(() => {
     async function fetchUserData() {
       try {
         const userDocRef = doc(db, "userList", studentId)
         const userData = await getDoc(userDocRef)
-        setBalanceHistory(userData.data()?.balanceHistory)
+        setBalanceHistory(userData.data()?.balanceHistory || [])
       } catch (e) {
         toast.error("Error fetching balance")
       }
     }
     fetchUserData()
-  }, [])
+  }, [studentId])
 
   useEffect(() => {
-    if (balanceHistory?.length > 0) {
-      setResult(getUniqueMonthsAndYears(balanceHistory || []))
+    if (balanceHistory.length > 0) {
+      setBalanceMonths(getUniqueMonthsAndYearsFromInvoices(balanceHistory))
     }
   }, [balanceHistory])
 
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentClasses = studentData.classes.slice(indexOfFirstItem, indexOfLastItem)
+  useEffect(() => {
+    if (studentData?.classes?.length > 0) {
+      setClassMonths(getUniqueMonthsAndYearsFromClasses(studentData.classes))
+    }
+  }, [studentData])
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value)
-  }
-
+  // ---------- Render ----------
   if (viewType === "classes") {
     return (
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Classes Taken - {studentData.studentName}</h2>
-        <div className="space-y-3">
-          {currentClasses.map((classInfo) => (
-            <div className="p-4 bg-white border border-gray-200 rounded-lg" key={classInfo.id}>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <span className="text-sm text-gray-500">Subject:</span>
-                  <div className="font-medium">{classInfo.subject}</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500">Date:</span>
-                  <div className="font-medium">{formatDate(classInfo.sessionInfo.date)}</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-500">Time:</span>
-                  <div className="font-medium">{formatTimeTo12Hour(classInfo.sessionInfo.time)}</div>
+      <div className="space-y-4">
+        {classMonths.map((item, index) => (
+          <Accordion
+            key={index}
+            className="overflow-hidden"
+            sx={{
+              "&:before": { display: "none" },
+              boxShadow: "none",
+              border: "1px solid #A2A1A833",
+              borderRadius: "12px !important",
+              overflow: "hidden",
+              backgroundColor: "#A2A1A80D",
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
+              aria-controls={`panel-class-${index}-content`}
+              id={`panel-class-${index}`}
+              className="px-6 py-4 hover:bg-gray-50"
+              sx={{
+                minHeight: "72px !important",
+                maxHeight: "72px",
+                "&.Mui-expanded": { minHeight: "72px !important", maxHeight: "72px" },
+                "& .MuiAccordionSummary-content": { margin: 0, my: 0 },
+              }}
+            >
+              <div className="flex w-full justify-between items-center summary-text">
+                <div className="text-lg font-light">
+                  {months[item.month - 1]} {item.year} Classes
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            </AccordionSummary>
 
-        {studentData.classes.length > itemsPerPage && (
-          <div className="mt-4 flex justify-center">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handlePageChange(null, Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="px-3 py-1">
-                Page {currentPage} of {Math.ceil(studentData.classes.length / itemsPerPage)}
-              </span>
-              <button
-                onClick={() =>
-                  handlePageChange(
-                    null,
-                    Math.min(Math.ceil(studentData.classes.length / itemsPerPage), currentPage + 1),
-                  )
-                }
-                disabled={currentPage === Math.ceil(studentData.classes.length / itemsPerPage)}
-                className="px-3 py-1 border border-gray-300 rounded-md disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+            <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
+              <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
+                {/* Header */}
+                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 500, color: "#4b5563", p: 1.5 }}>
+                  <Grid item xs={4}>Date</Grid>
+                  <Grid item xs={4}>Time</Grid>
+                  <Grid item xs={4}>Subject</Grid>
+                </Grid>
+                {/* Rows */}
+                {filterClassesByMonth(studentData.classes, item.month, item.year).map((cls, idx) => (
+                  <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
+                    <Grid item xs={4}><div className="text-sm text-gray-600">{formatDate(cls.sessionInfo.date)}</div></Grid>
+                    <Grid item xs={4}><div className="text-sm text-gray-600">{formatTimeTo12Hour(cls.sessionInfo.time)}</div></Grid>
+                    <Grid item xs={4}><div className="font-medium text-gray-900">{cls.subject}</div></Grid>
+                  </Grid>
+                ))}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </div>
     )
   }
 
   if (viewType === "balance") {
     return (
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Balance History - {studentData.studentName}</h2>
-        <div className="space-y-4">
-          {result.map((item) => (
-            <div key={`${item.month}-${item.year}`} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div className="flex justify-between items-center p-4 bg-gray-50">
-                <span className="font-medium">
-                  {months[item?.month - 1]} {item?.year}
-                </span>
-                <span className="font-bold">£ {calculateMonthlyInvoice(balanceHistory, item?.month, item?.year)}</span>
+      <div className="space-y-4">
+        {balanceMonths.map((item, index) => (
+          <Accordion
+            key={index}
+            className="overflow-hidden"
+            sx={{
+              "&:before": { display: "none" },
+              boxShadow: "none",
+              border: "1px solid #A2A1A833",
+              borderRadius: "12px !important",
+              overflow: "hidden",
+              backgroundColor: "#A2A1A80D",
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
+              aria-controls={`panel-balance-${index}-content`}
+              id={`panel-balance-${index}`}
+              className="px-6 py-4 hover:bg-gray-50"
+              sx={{ minHeight: "72px !important", maxHeight: "72px" }}
+            >
+              <div className="flex w-full justify-between items-center summary-text">
+                <div className="text-lg font-light">
+                  {months[item.month - 1]} {item.year} Balance Details
+                </div>
+                <div className="text-2xl font-semibold">
+                  $ {calculateMonthlyInvoice(balanceHistory, item.month, item.year)}
+                </div>
               </div>
-              <div className="p-4 space-y-3">
-                {provideMonthlyInvoice(balanceHistory, item?.month, item?.year).map((item, index) => (
-                  <div
-                    className="flex justify-between items-center p-3 bg-white border border-gray-100 rounded-md"
-                    key={index}
-                  >
-                    <span className="font-medium">Amount: £ {item?.amount}</span>
-                    <span className="text-sm text-gray-500">{formatDisplayDateTime(item?.createdAt)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+            </AccordionSummary>
+
+            <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
+              <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
+                {/* Header */}
+                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 500, color: "#4b5563", p: 1.5 }}>
+                  <Grid item xs={4}>Date</Grid>
+                  <Grid item xs={4}>Time</Grid>
+                  <Grid item xs={4}>Amount</Grid>
+                </Grid>
+                {/* Rows */}
+                {filterInvoicesByMonth(balanceHistory, item.month, item.year).map((inv, idx) => {
+                  const dateObj = inv.createdAt.toDate()
+                  return (
+                    <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
+                      <Grid item xs={4}><div className="text-sm text-gray-600">{formatDate(dateObj)}</div></Grid>
+                      <Grid item xs={4}><div className="text-sm text-gray-600">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
+                      <Grid item xs={4}><div className="font-medium">$ {inv.amount}</div></Grid>
+                    </Grid>
+                  )
+                })}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </div>
     )
   }

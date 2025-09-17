@@ -12,12 +12,21 @@ import { EditYourSupport } from "./editProfilePages/EditYourSupport"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Box from "@mui/material/Box"
+import { TopHeadingProvider, useTopHeading } from "../../../../Components/Layout"
+
 
 export function EditProfile() {
   const { tutorId } = useParams()
   const [curr, setCurr] = useState("Personal Information")
   const [userDetails, setUserDetails] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
+  useEffect(() => {
+    setFirstMessage("Tutors Edit Profile")
+    setSecondMessage(`Show Tutors /${userDetails?.userName || ""} / Edit Profile`)
+  }, [setFirstMessage, setSecondMessage])
+
 
   useEffect(() => {
     async function fetchTutor() {
@@ -58,7 +67,9 @@ export function EditProfile() {
   }
 
   return (
-    <div className="h-full">
+    <TopHeadingProvider>
+    <div className="h-full p-6 ">
+      <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-3">
       {/* Tabs header */}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
@@ -108,6 +119,8 @@ export function EditProfile() {
           <EditYourSupport userDetails={userDetails} userId={tutorId} />
         )}
       </div>
+      </div>
     </div>
+    </TopHeadingProvider>
   )
 }

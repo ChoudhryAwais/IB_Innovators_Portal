@@ -228,7 +228,7 @@ export function ContactInformation({ userDetails, userId }) {
               Address
             </label>
             <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-              2464 Royal Ln. Mesa, New Jersey
+              {userDetails?.address || "Not added"}
             </div>
           </div>
 
@@ -239,7 +239,7 @@ export function ContactInformation({ userDetails, userId }) {
             </label>
             {editing === false ? (
               <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.zip || "35624"}
+                {userDetails?.zip || "Not added"}
               </div>
             ) : (
               <input

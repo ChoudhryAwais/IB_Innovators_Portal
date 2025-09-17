@@ -141,8 +141,8 @@ export default function LoginForm() {
             value={loginData.email}
             onChange={handleEmailInput}
             onBlur={handleEmailBlur}
-            className={`w-full px-4 py-3 border rounded-lg bg-gray-50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-              emailError ? "border-red-500 bg-red-50" : "border-gray-200"
+            className={`w-full h-[62px] px-4 py-3 border-[1.12px] rounded-lg  text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+              emailError ? "border-red-500 bg-red-50" : "border-[#4071B6]"
             }`}
           />
           {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
@@ -159,8 +159,8 @@ export default function LoginForm() {
               value={loginData.password}
               onChange={handlePasswordInput}
               onBlur={handlePasswordBlur}
-              className={`w-full px-4 py-3 pr-12 border rounded-lg bg-gray-50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                passwordError ? "border-red-500 bg-red-50" : "border-gray-200"
+              className={`w-full px-4 py-3 pr-12 border-[1.12px] rounded-lg  text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                passwordError ? "border-red-500 bg-red-50" : "border-[#4071B6]"
               }`}
             />
             <button
@@ -201,7 +201,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full bg-[#4071B6] hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
       >
         {loading ? (
           <>

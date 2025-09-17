@@ -50,8 +50,8 @@ export function EditEducation({ userDetails, userId }) {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg">
-      <div className="space-y-6">
+    <div className="bg-white rounded-lg">
+      <div className="space-y-4">
         <EditEducationHistory data={educationHistory} setData={setEducationHistory} />
         <EditProfileIBForm data={ibForm} setData={setIbForm} />
         <EditProfileYourIBDPSubjects data={ibdpSubjects} setData={setIbdpSubjects} />

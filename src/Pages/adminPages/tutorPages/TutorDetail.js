@@ -143,12 +143,12 @@ const TutorDetail = () => {
                   </svg>
                 }
                 sx={{
-                  backgroundColor: "#fff",
+                  backgroundColor: "#4071B60D",
                   borderColor: "primary.main",
                   color: "primary.main",
                   textTransform: "none",
                   "&:hover": {
-                    backgroundColor: "#f0f7ff",
+                    backgroundColor: "#4071b62a",
                   },
                 }}
                   onClick={() => navigate(`/tutorsAndSubjects/${tutorId}/edit`)}   

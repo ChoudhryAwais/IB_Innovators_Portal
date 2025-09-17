@@ -11,39 +11,48 @@ export function EditContactInformation({ userDetails, userId }) {
   const [state, setState] = useState(userDetails?.state || "")
   const [postal, setPostal] = useState(userDetails?.zip || "")
   const [phone, setPhone] = useState(userDetails?.phone || "")
+  const [email, setEmail] = useState(userDetails?.email || "")
+  const [dob, setDob] = useState(userDetails?.dob || "")
+  const [gender, setGender] = useState(userDetails?.gender || "")
+  const [address, setAddress] = useState(userDetails?.address || "")
 
   const [savingDetails, setSavingDetails] = useState(false)
 
   async function savingChanges() {
-    if (name !== "" && city !== "" && state !== "" && postal !== "") {
-      setSavingDetails(true)
-      try {
-        const details = {
-          userName: name,
-          city,
-          state,
-          zip: postal,
-          phone,
-        }
+    if (!name || !city || !state || !postal || !phone || !email || !dob || !gender || !address) {
+      alert("Please fill all fields")
+      return
+    }
 
-        const userListRef = collection(db, "userList")
-        const q = query(userListRef, where("userId", "==", userId))
-        const querySnapshot = await getDocs(q)
-
-        if (!querySnapshot.empty) {
-          const docRef = querySnapshot.docs[0].ref
-          await updateDoc(docRef, details)
-        }
-
-        setSavingDetails(false)
-        alert("Profile updated successfully!")
-      } catch (e) {
-        console.error("Error saving changes:", e)
-        alert("Error saving changes. Please try again")
-        setSavingDetails(false)
+    setSavingDetails(true)
+    try {
+      const details = {
+        userName: name,
+        city,
+        state,
+        zip: postal,
+        phone,
+        email,
+        dob,
+        gender,
+        address,
       }
-    } else {
-      alert("Please Fill All Fields")
+
+      const userListRef = collection(db, "userList")
+      const q = query(userListRef, where("userId", "==", userId))
+      const querySnapshot = await getDocs(q)
+
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref
+        await updateDoc(docRef, details)
+      }
+
+      setSavingDetails(false)
+      alert("Profile updated successfully!")
+    } catch (e) {
+      console.error("Error saving changes:", e)
+      alert("Error saving changes. Please try again")
+      setSavingDetails(false)
     }
   }
 
@@ -70,36 +79,16 @@ export function EditContactInformation({ userDetails, userId }) {
         {/* Profile Details Grid */}
         <div className="w-full">
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-            {/* First Name */}
+            {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
-                First Name
+                Full Name
               </label>
               <input
                 type="text"
-                value={name?.split(" ")[0] || ""}
-                onChange={(e) => {
-                  const lastName = name?.split(" ").slice(1).join(" ") || ""
-                  setName(e.target.value + (lastName ? " " + lastName : ""))
-                }}
-                placeholder="Enter First Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-500 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                value={name?.split(" ").slice(1).join(" ") || ""}
-                onChange={(e) => {
-                  const firstName = name?.split(" ")[0] || ""
-                  setName(firstName + (e.target.value ? " " + e.target.value : ""))
-                }}
-                placeholder="Enter Last Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter Full Name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -118,34 +107,48 @@ export function EditContactInformation({ userDetails, userId }) {
               />
             </div>
 
-            {/* Email Address (read-only) */}
+            {/* Email Address */}
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Email Address
               </label>
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.email || "tutor@example.com"}
-              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter Email Address"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
-            {/* Date of Birth (read-only for now) */}
+            {/* Date of Birth */}
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Date of Birth
               </label>
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.dob || "July 01, 1995"}
-              </div>
+              <input
+                type="date"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
-            {/* Gender (read-only for now) */}
+            {/* Gender */}
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Gender
               </label>
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.gender || "Male"}
-              </div>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
             {/* City */}
@@ -176,14 +179,18 @@ export function EditContactInformation({ userDetails, userId }) {
               />
             </div>
 
-            {/* Address (static for now) */}
+            {/* Address */}
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">
                 Address
               </label>
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.address || "2464 Royal Ln. Mesa, New Jersey"}
-              </div>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Enter Address"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
             {/* Zip Code */}

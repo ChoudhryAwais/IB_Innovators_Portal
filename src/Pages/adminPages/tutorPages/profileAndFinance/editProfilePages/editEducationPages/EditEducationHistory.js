@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import Button from "@mui/material/Button"
 
 export function EditEducationHistory({ data, setData }) {
   const [addingNewRecord, setAddingNewRecord] = useState(false)
@@ -13,20 +14,19 @@ export function EditEducationHistory({ data, setData }) {
     grade: "",
   })
 
-  const removeEducationRecord = (id) => {
-    const updatedRecords = data.filter((record) => record.id !== id)
-    setData(updatedRecords)
-  }
-
   const handleInputChange = (field, value) => {
     setNewRecord({ ...newRecord, [field]: value })
   }
 
+  const removeEducationRecord = (id) => {
+    setData(data.filter((record) => record.id !== id))
+  }
+
   const renderEducationRecords = () => {
     return data.map((record) => (
-      <div key={record.id} className="flex-1 mb-5 border-b border-gray-200 pb-4">
-        <div className="flex flex-wrap flex-1 gap-6">
-          <div className="flex-1">
+      <div key={record.id} className="mb-5 border-b border-gray-200 pb-4">
+        <div className="grid grid-cols-2 gap-6">
+          <div>
             <div className="text-xs">Qualification Title</div>
             <input
               type="text"
@@ -41,8 +41,7 @@ export function EditEducationHistory({ data, setData }) {
               className="w-full border p-1 rounded"
             />
           </div>
-
-          <div className="flex-1">
+          <div>
             <div className="text-xs">Year of Graduation</div>
             <input
               type="text"
@@ -59,8 +58,8 @@ export function EditEducationHistory({ data, setData }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap flex-1 gap-6 mt-3">
-          <div className="flex-1">
+        <div className="grid grid-cols-2 gap-6 mt-3">
+          <div>
             <div className="text-xs">University</div>
             <input
               type="text"
@@ -75,8 +74,7 @@ export function EditEducationHistory({ data, setData }) {
               className="w-full border p-1 rounded"
             />
           </div>
-
-          <div className="flex-1">
+          <div>
             <div className="text-xs">Grade (Or in progress)</div>
             <input
               type="text"
@@ -92,22 +90,15 @@ export function EditEducationHistory({ data, setData }) {
             />
           </div>
         </div>
-
-        <button
-          className="mt-3 px-2 py-1 bg-red-600 text-white rounded"
-          onClick={() => removeEducationRecord(record.id)}
-        >
-          Remove Record
-        </button>
       </div>
     ))
   }
 
   const renderNewRecordInputs = () => {
     return (
-      <div key={newRecord.id} className="flex-1 mb-5">
-        <div className="flex flex-wrap flex-1 gap-6">
-          <div className="flex-1">
+      <div className="mb-5 mt-4">
+        <div className="grid grid-cols-2 gap-6">
+          <div>
             <div className="text-xs">Qualification Title</div>
             <input
               type="text"
@@ -117,7 +108,7 @@ export function EditEducationHistory({ data, setData }) {
             />
           </div>
 
-          <div className="flex-1">
+          <div>
             <div className="text-xs">Year of Graduation</div>
             <input
               type="text"
@@ -128,8 +119,8 @@ export function EditEducationHistory({ data, setData }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap flex-1 gap-6 mt-3">
-          <div className="flex-1">
+        <div className="grid grid-cols-2 gap-6 mt-3">
+          <div>
             <div className="text-xs">University</div>
             <input
               type="text"
@@ -139,7 +130,7 @@ export function EditEducationHistory({ data, setData }) {
             />
           </div>
 
-          <div className="flex-1">
+          <div>
             <div className="text-xs">Grade (Or in progress)</div>
             <input
               type="text"
@@ -150,15 +141,17 @@ export function EditEducationHistory({ data, setData }) {
           </div>
         </div>
 
-        <div className="flex flex-1 gap-2 mt-4">
-          <button
-            className="px-3 py-1 bg-gray-500 text-white rounded"
+        <div className="flex gap-2 mt-4">
+          <Button
+            variant="outlined"
+            color="inherit"
             onClick={() => setAddingNewRecord(false)}
           >
             Cancel
-          </button>
-          <button
-            className="px-3 py-1 bg-green-600 text-white rounded"
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
             onClick={() => {
               const newId = Math.floor(1000000000 + Math.random() * 9000000000)
               setData([...data, { ...newRecord, id: newId }])
@@ -173,34 +166,41 @@ export function EditEducationHistory({ data, setData }) {
             }}
           >
             Add
-          </button>
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="pb-2.5 border-b border-gray-300">
-      <div className="flex flex-1 justify-between items-center flex-wrap mb-5">
-        <div className="text-left text-2xl font-bold">Education History</div>
+    <div className="">
+      {/* Header row */}
+      <div className="flex justify-between items-start ">
+        <div className="w-full text-left text-2xl font-bold">
+          Education History
+          {/* Fields can start immediately below the heading */}
+          <div className="mt-4">
+            {data.length !== 0 && renderEducationRecords()}
+            {addingNewRecord && renderNewRecordInputs()}
+            {data.length === 0 && !addingNewRecord && (
+              <div className="text-gray-500 mb-4 text-xl">No Educational History</div>
+            )}
+          </div>
+        </div>
+
+        {/* Add button top-right */}
+        {!addingNewRecord && (
+          <div className=" w-80 flex justify-end">
+            <Button
+              sx={{ padding: "10px" }}
+              variant="outlined"
+              onClick={() => setAddingNewRecord(true)}
+            >
+              Add New Record
+            </Button>
+          </div>
+        )}
       </div>
-
-      {data.length !== 0 ? (
-        renderEducationRecords()
-      ) : (
-        <div className="mb-2.5">No Educational History</div>
-      )}
-
-      {addingNewRecord ? (
-        renderNewRecordInputs()
-      ) : (
-        <button
-          className="px-3 py-1 border border-gray-400 rounded"
-          onClick={() => setAddingNewRecord(true)}
-        >
-          Add New Record
-        </button>
-      )}
     </div>
   )
 }

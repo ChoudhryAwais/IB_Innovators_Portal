@@ -204,17 +204,17 @@ export function AddSubjectsApplication({ userDetails, userId }) {
   return (
     <>
       {/* Approved Subjects */}
-      <div className="bg-white p-6 rounded-lg">
-        <div className="text-left text-2xl font-bold mb-6">Approved Subjects</div>
+      <div className="bg-white rounded-lg">
+        <div className="text-left text-2xl font-bold mb-6">Subjects</div>
 
         <div className="w-full">
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-2">
             {Object.keys(userDetails?.subjects ? userDetails?.subjects : {})
               .sort((a, b) => a.localeCompare(b))
               .map((subject, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex justify-between items-center p-2 hover:bg-gray-50"
                 >
                   <label className="flex items-center cursor-pointer">
                     <input
@@ -225,7 +225,7 @@ export function AddSubjectsApplication({ userDetails, userId }) {
                     />
                     <span className="text-gray-900">{subject}</span>
                   </label>
-                  <button onClick={() => handleDelete(subject)} className="text-red-500 hover:text-red-700 p-1">
+                  {/* <button onClick={() => handleDelete(subject)} className="text-red-500 hover:text-red-700 p-1">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -234,23 +234,46 @@ export function AddSubjectsApplication({ userDetails, userId }) {
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                       />
                     </svg>
-                  </button>
+                  </button> */}
                 </div>
               ))}
           </div>
 
           <div className="flex justify-end items-center gap-3 mt-6">
             {enrolledSubmitting ? (
-              <button className="bg-green-600 text-white px-4 py-2 rounded-lg opacity-50 cursor-not-allowed">
+              <Button
+                variant="contained"
+                disabled
+                sx={{
+                  backgroundColor: "#4071B6",
+                  color: "#fff",
+                  width: "152px",
+                  height: "50px",
+                  "&.Mui-disabled": {
+                    backgroundColor: "#4071B6",
+                    color: "#fff",
+                    opacity: 0.5,
+                  },
+                }}
+              >
                 SAVING...
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
+                variant="contained"
                 onClick={saveEnrolledSubjects}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                sx={{
+                  backgroundColor: "#4071B6",
+                  color: "#fff",
+                  width: "152px",
+                  height: "50px",
+                  "&:hover": {
+                    backgroundColor: "#305a91",
+                  },
+                }}
               >
                 SAVE
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -284,24 +307,34 @@ export function AddSubjectsApplication({ userDetails, userId }) {
                 </div>
 
                 <div className="flex justify-end items-center gap-3 mt-4">
-                  <button
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "#4071B6",
+                    }}
                     onClick={() => {
                       setSelectedLink(item)
                       setDeleteSessionModal(true)
                     }}
-                    className="border border-red-500 text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors"
                   >
                     DELETE
-                  </button>
-                  <button
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "#4071B6",
+                    }}
                     onClick={() => {
                       setShowModal(true)
                       setSelectedLink(item)
                     }}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
                   >
                     ADD SUBJECT
-                  </button>
+                  </Button>
+
                 </div>
               </div>
             ))}
