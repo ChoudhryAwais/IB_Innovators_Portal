@@ -11,8 +11,8 @@ export function EditProfileIBForm({ data, setData }) {
   }
 
   return (
-    <div className="pb-5 border-b border-gray-300 mt-0">
-      <div className="text-left text-2xl font-bold mb-5">
+    <div className="pb-3 border-b border-gray-300">
+      <div className="text-left text-xl font-bold mb-3">
         International Baccalaureate
       </div>
 
@@ -20,8 +20,8 @@ export function EditProfileIBForm({ data, setData }) {
       <div className="grid grid-cols-2 gap-2">
         {/* IB Diploma */}
         <div>
-          <p className="mb-4">
-            <span className="text-sm">Did you complete IB Diploma?</span>
+          <p className="mb-2 border-b border-gray-200 pb-2">
+            <span className="text-sm text-[#A2A1A8] font-light">Did you complete IB Diploma?</span>
             <br />
             <div>
               <label className="mr-16">
@@ -46,8 +46,8 @@ export function EditProfileIBForm({ data, setData }) {
 
         {/* IB MYP */}
         <div>
-          <p className="mb-4">
-            <span className="text-sm">Did you complete IB MYP?</span>
+          <p className="mb-2 border-b border-gray-200 pb-2">
+            <span className="text-sm text-[#A2A1A8] font-light">Did you complete IB MYP?</span>
             <br />
             <div>
               <label className="mr-16">
@@ -72,8 +72,8 @@ export function EditProfileIBForm({ data, setData }) {
 
         {/* IB PYP */}
         <div>
-          <p className="mb-4">
-            <span className="text-sm">Did you complete IB PYP?</span>
+          <p className="mb-1">
+            <span className="text-sm text-[#A2A1A8] font-light">Did you complete IB PYP?</span>
             <br />
             <div>
               <label className="mr-16">

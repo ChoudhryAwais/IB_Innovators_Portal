@@ -15,6 +15,7 @@ import LoadingButton from "@mui/lab/LoadingButton"
 import SaveIcon from "@mui/icons-material/Save"
 import { MyContext } from "../../../Context/MyContext"
 import toast from "react-hot-toast"
+import Checkbox from "@mui/material/Checkbox";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -217,13 +218,21 @@ export function AddSubjectsApplication({ userDetails, userId }) {
                   className="flex justify-between items-center p-2 hover:bg-gray-50"
                 >
                   <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={subjectsToTeach[subject]}
-                      onChange={() => handleChange(subject)}
-                      className="mr-3 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-gray-900">{subject}</span>
+                    <Checkbox
+              checked={subjectsToTeach[subject]}
+              onChange={() => handleChange(subject)}
+              sx={{
+
+                color: "#A2A1A833",              // unchecked border color
+                "&.Mui-checked": {
+                  color: "#4071B6",            // checked color
+                },
+                "& .MuiSvgIcon-root": {        // ensures icon is 20x20
+                  fontSize: 26,
+                },
+              }}
+            />
+                    <span className="text-gray-900 ml-2">{subject}</span>
                   </label>
                   {/* <button onClick={() => handleDelete(subject)} className="text-red-500 hover:text-red-700 p-1">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

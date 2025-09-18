@@ -2,6 +2,9 @@
 
 import React, { useState } from "react"
 import Button from "@mui/material/Button"
+import Divider from "@mui/material/Divider"
+import TextField from "@mui/material/TextField"
+import CustomModal from "../../../../../../Components/CustomModal/CustomModal.js" // adjust path
 
 export function EditProfileYourIBDPSubjects({ data = [], setData }) {
   const [newRecord, setNewRecord] = useState({
@@ -11,22 +14,41 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
     level: "",
   })
   const [addingNewRecord, setAddingNewRecord] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleInputChange = (field, value) => {
     setNewRecord({ ...newRecord, [field]: value })
   }
 
-  const removeSubject = (id) => {
-    const updated = data.filter((record) => record.id !== id)
-    setData(updated)
+  const handleModalSubmit = () => {
+    if (!newRecord.subject || !newRecord.level) {
+      alert("Please fill subject and level before adding")
+      return
+    }
+    setLoading(true)
+    setTimeout(() => {
+      const newId = Math.floor(1000000000 + Math.random() * 9000000000)
+      setData([...data, { ...newRecord, id: newId }])
+      setNewRecord({
+        id: null,
+        subject: "",
+        score: "",
+        level: "",
+      })
+      setAddingNewRecord(false)
+      setLoading(false)
+    }, 500)
   }
 
   const renderIBDPSubjects = () =>
     data.map((record) => (
-      <div key={record.id} className="mb-5 border-b border-gray-200 pb-4">
+      <div
+        key={record.id}
+        className="mb-3 border-b border-gray-200 pb-9 last:border-b-0 last:pb-0"
+      >
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <div className="text-xs">Subject</div>
+            <div className="text-xs text-[#A2A1A8] font-light">Subject</div>
             <input
               type="text"
               value={record.subject}
@@ -37,12 +59,12 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
                   )
                 )
               }
-              className="w-full border p-1 rounded"
+              className="w-full border-b p-1"
             />
           </div>
 
           <div>
-            <div className="text-xs">Score</div>
+            <div className="text-xs text-[#A2A1A8] font-light">Score</div>
             <input
               type="text"
               value={record.score}
@@ -53,14 +75,14 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
                   )
                 )
               }
-              className="w-full border p-1 rounded"
+              className="w-full border-b p-1"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6 mt-3">
           <div>
-            <div className="text-xs">Level</div>
+            <div className="text-xs text-[#A2A1A8] font-light">Level</div>
             <input
               type="text"
               value={record.level}
@@ -71,103 +93,23 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
                   )
                 )
               }
-              className="w-full border p-1 rounded"
+              className="w-full border-b p-1"
             />
           </div>
         </div>
-
-        {/* <Button
-          variant="contained"
-          color="error"
-          size="small"
-          sx={{ mt: 2 }}
-          onClick={() => removeSubject(record.id)}
-        >
-          Remove Subject
-        </Button> */}
       </div>
     ))
-
-  const renderNewRecordInputs = () => (
-    <div className="mb-5 mt-4">
-      <div className="grid grid-cols-2 gap-6">
-        <div>
-          <div className="text-xs">Subject</div>
-          <input
-            type="text"
-            value={newRecord.subject}
-            onChange={(e) => handleInputChange("subject", e.target.value)}
-            className="border p-1 w-full rounded"
-          />
-        </div>
-
-        <div>
-          <div className="text-xs">Score</div>
-          <input
-            type="text"
-            value={newRecord.score}
-            onChange={(e) => handleInputChange("score", e.target.value)}
-            className="border p-1 w-full rounded"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6 mt-3">
-        <div>
-          <div className="text-xs">Level</div>
-          <input
-            type="text"
-            value={newRecord.level}
-            onChange={(e) => handleInputChange("level", e.target.value)}
-            className="border p-1 w-full rounded"
-          />
-        </div>
-      </div>
-
-      <div className="flex gap-2 mt-4">
-        <Button
-          variant="outlined"
-          color="inherit"
-          onClick={() => setAddingNewRecord(false)}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            if (!newRecord.subject || !newRecord.level) {
-              alert("Please fill subject and level before adding")
-              return
-            }
-            const newId = Math.floor(1000000000 + Math.random() * 9000000000)
-            setData([...data, { ...newRecord, id: newId }])
-            setNewRecord({
-              id: null,
-              subject: "",
-              score: "",
-              level: "",
-            })
-            setAddingNewRecord(false)
-          }}
-        >
-          Add
-        </Button>
-      </div>
-    </div>
-  )
 
   return (
     <div className="pb-2.5 border-b border-gray-300">
       {/* Header row */}
       <div className="flex justify-between items-start">
-        <div className="w-full text-left text-2xl font-bold">
+        <div className="w-full text-left text-xl font-bold mb-3">
           Your IBDP Subjects
           <div className="mt-4">
             {renderIBDPSubjects()}
-            {addingNewRecord && renderNewRecordInputs()}
             {data.length === 0 && !addingNewRecord && (
-              <div className="text-gray-500 text-xl mb-4">No IBDP Subjects</div>
+              <div className="text-[#A2A1A8] text-lg mb-3">No IBDP Subjects</div>
             )}
           </div>
         </div>
@@ -185,6 +127,119 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
           </div>
         )}
       </div>
+
+      {/* Modal for Adding New Subject */}
+      <CustomModal
+        open={addingNewRecord}
+        onClose={() => setAddingNewRecord(false)}
+        PaperProps={{
+          sx: {
+            width: "90vw",
+            maxWidth: "740px",
+            height: "auto",
+            maxHeight: "90vh",
+            overflow: "auto",
+            borderRadius: "16px",
+          },
+        }}
+      >
+        <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+          Your IBDP Subject
+        </h2>
+
+        <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+        {/* Fields stacked vertically */}
+        <p className="text-sm text-[#6B7280] mb-1">Subject</p>
+        <TextField
+          type="text"
+          value={newRecord.subject}
+          onChange={(e) => handleInputChange("subject", e.target.value)}
+          placeholder="Enter details"
+          fullWidth
+          sx={{
+            mb: 4,
+            "& .MuiInputBase-input::placeholder": {
+              color: "black",
+              opacity: 1, // make sure it's fully visible
+            },
+            "& .MuiInputBase-input:focus::placeholder": {
+              color: "grey", // switch to grey when focused
+            },
+          }}
+        />
+        <p className="text-sm text-[#6B7280] mb-1">Score</p>
+        <TextField
+          type="text"
+          value={newRecord.score}
+          onChange={(e) => handleInputChange("score", e.target.value)}
+          placeholder="Enter details"
+          fullWidth
+          sx={{
+            mb: 4,
+            "& .MuiInputBase-input::placeholder": {
+              color: "black",
+              opacity: 1, // make sure it's fully visible
+            },
+            "& .MuiInputBase-input:focus::placeholder": {
+              color: "grey", // switch to grey when focused
+            },
+          }}
+        />
+        <p className="text-sm text-[#6B7280] mb-1">Level</p>
+        <TextField
+          type="text"
+          value={newRecord.level}
+          onChange={(e) => handleInputChange("level", e.target.value)}
+          placeholder="Enter details"
+          fullWidth
+          sx={{
+            mb: 4,
+            "& .MuiInputBase-input::placeholder": {
+              color: "black",
+              opacity: 1, // make sure it's fully visible
+            },
+            "& .MuiInputBase-input:focus::placeholder": {
+              color: "grey", // switch to grey when focused
+            },
+          }}
+        />
+
+        {/* Buttons */}
+        <div className="flex gap-3 justify-end mt-6">
+          <Button
+            onClick={() => setAddingNewRecord(false)}
+            variant="outlined"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              borderColor: "#A2A1A833",
+              fontSize: "16px",
+              fontWeight: 300,
+              color: "#16151C",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            disabled={loading}
+            variant="contained"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6",
+              fontSize: "20px",
+              fontWeight: 300,
+              color: "#FFFFFF",
+            }}
+            onClick={handleModalSubmit}
+          >
+            {loading ? "Submitting" : "Add"}
+          </Button>
+        </div>
+      </CustomModal>
     </div>
   )
 }

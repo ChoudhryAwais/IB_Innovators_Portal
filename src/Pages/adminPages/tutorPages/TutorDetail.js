@@ -164,7 +164,7 @@ const TutorDetail = () => {
               <div className="space-y-0">
                 <button
                   onClick={() => setActiveTab("profile")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "profile" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "profile" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -180,7 +180,7 @@ const TutorDetail = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("subjects")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium  ${activeTab === "subjects" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium  ${activeTab === "subjects" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ const TutorDetail = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("payments")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "payments" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "payments" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ const TutorDetail = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("students")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "students" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "students" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">

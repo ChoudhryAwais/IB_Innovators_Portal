@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { db } from "../../../../../firebase"
-import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
+import { collection, getDocs, query, where, updateDoc} from "firebase/firestore"
+
 
 import { EditEducationHistory } from "./editEducationPages/EditEducationHistory"
 import { EditProfileIBForm } from "./editEducationPages/EditProfileIBForm"
@@ -15,8 +16,28 @@ export function EditEducation({ userDetails, userId }) {
   const [educationHistory, setEducationHistory] = useState(userDetails?.educationRecords || [])
   const [ibdpSubjects, setIbdpSubjects] = useState(userDetails?.ibdpSubjects || [])
   const [ibForm, setIbForm] = useState(userDetails?.ibForm || [])
-  const [additionalInfo, setAdditionalInfo] = useState(userDetails?.additionalInfo || [])
-  const [teachingExperience, setTeachingExperience] = useState(userDetails?.teachingExperience || [])
+  const [profileAdditionalIBInfo, setProfileAdditionalIBInfo] = useState(
+   userDetails?.profileAdditionalIBInfo || {
+     tokGrade: "",
+     totalIbScore: "",
+     eeSubjectArea: "",
+     secondEeSubjectArea: "",
+     yourIbSchool: "",
+     additionalInfo: "",
+   }
+ )
+  
+  // ✅ use professionalTeachingExperience consistently
+  const [professionalTeachingExperience, setProfessionalTeachingExperience] = useState(
+    userDetails?.professionalTeachingExperience || {
+      professionalIBTeacherExperience: null,
+      actedAsIBExaminer: null,
+      detailSubjectsAndPapersModerated: "",
+      supportingStudentWithSpecialNeeds: null,
+      explainSENExperience: "",
+      otherEducationalProgrammes: "",
+    }
+  )
 
   const [saving, setSaving] = useState(false)
 
@@ -27,8 +48,8 @@ export function EditEducation({ userDetails, userId }) {
         educationRecords: educationHistory,
         ibForm,
         ibdpSubjects,
-        additionalInfo,
-        teachingExperience,
+        profileAdditionalIBInfo,
+        professionalTeachingExperience,
       }
 
       const userListRef = collection(db, "userList")
@@ -55,10 +76,10 @@ export function EditEducation({ userDetails, userId }) {
         <EditEducationHistory data={educationHistory} setData={setEducationHistory} />
         <EditProfileIBForm data={ibForm} setData={setIbForm} />
         <EditProfileYourIBDPSubjects data={ibdpSubjects} setData={setIbdpSubjects} />
-        <EditProfileAdditionalIBInfo data={additionalInfo} setData={setAdditionalInfo} />
+        <EditProfileAdditionalIBInfo data={profileAdditionalIBInfo} setData={setProfileAdditionalIBInfo} />
         <EditProfessionalTeachingExperience
-          data={teachingExperience}
-          setData={setTeachingExperience}
+          data={professionalTeachingExperience}
+          setData={setProfessionalTeachingExperience}
         />
       </div>
 

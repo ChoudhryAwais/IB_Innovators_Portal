@@ -11,10 +11,10 @@ export function EditProfileAdditionalIBInfo({ data, setData }) {
   }
 
   return (
-    <div className="">
+    <div className="border-b border-gray-300 pb-5 mt-5">
       {/* Header row (same style/spacing as EditEducationHistory) */}
       <div className="flex justify-between items-start">
-        <div className="w-full text-left text-2xl font-bold">
+        <div className="w-full text-left text-xl font-bold">
           Additional IB Information
 
           {/* Fields container */}
@@ -22,24 +22,24 @@ export function EditProfileAdditionalIBInfo({ data, setData }) {
             {/* TOK & Total IB Score */}
             <div className="grid grid-cols-2 gap-6 mb-4">
               <div>
-                <div className="text-sm">TOK Grade</div>
+                <div className="text-sm text-[#A2A1A8] font-light">TOK Grade</div>
                 <input
                   type="text"
                   value={data?.tokGrade || ""}
                   onChange={(e) => handleChange("tokGrade", e.target.value)}
                   placeholder="Enter TOK Grade"
-                  className="border p-1 rounded w-full"
+                  className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
                 />
               </div>
 
               <div>
-                <div className="text-sm">Total IB Score</div>
+                <div className="text-sm text-[#A2A1A8] font-light">Total IB Score</div>
                 <input
                   type="text"
                   value={data?.totalIbScore || ""}
                   onChange={(e) => handleChange("totalIbScore", e.target.value)}
                   placeholder="Enter Total IB Score"
-                  className="border p-1 rounded w-full"
+                  className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -47,50 +47,50 @@ export function EditProfileAdditionalIBInfo({ data, setData }) {
             {/* EE Subject Areas */}
             <div className="grid grid-cols-2 gap-6 mb-4">
               <div>
-                <div className="text-sm">EE Subject Area</div>
+                <div className="text-sm text-[#A2A1A8] font-light">EE Subject Area</div>
                 <input
                   type="text"
                   value={data?.eeSubjectArea || ""}
                   onChange={(e) => handleChange("eeSubjectArea", e.target.value)}
                   placeholder="Enter EE Subject Area"
-                  className="border p-1 rounded w-full"
+                  className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
                 />
               </div>
 
               <div>
-                <div className="text-sm">2nd EE Subject Area</div>
+                <div className="text-sm text-[#A2A1A8] font-light">2nd EE Subject Area</div>
                 <input
                   type="text"
                   value={data?.secondEeSubjectArea || ""}
                   onChange={(e) => handleChange("secondEeSubjectArea", e.target.value)}
                   placeholder="Enter 2nd EE Subject Area"
-                  className="border p-1 rounded w-full"
+                  className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
                 />
               </div>
             </div>
 
             {/* IB School */}
             <div className="mb-4">
-              <div className="text-sm">Your IB School</div>
+              <div className="text-sm text-[#A2A1A8] font-light">Your IB School</div>
               <input
                 type="text"
                 value={data?.yourIbSchool || ""}
                 onChange={(e) => handleChange("yourIbSchool", e.target.value)}
                 placeholder="Enter Your IB School"
-                className="border p-1 rounded w-full"
+                className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
               />
             </div>
 
             {/* Additional Info */}
             <div>
-              <div className="text-sm">
-                Additional Information about your IB Education
+              <div className="text-sm text-[#A2A1A8] font-light">
+                Additional Information about your IB Education you think we should know about
               </div>
               <textarea
                 value={data?.additionalInfo || ""}
                 onChange={(e) => handleChange("additionalInfo", e.target.value)}
-                placeholder="Enter Additional Information"
-                className="border p-1 rounded w-full min-h-[80px]"
+                placeholder="Write a Note"
+                className="border p-1 w-full min-h-[80px] placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
               />
             </div>
           </div>

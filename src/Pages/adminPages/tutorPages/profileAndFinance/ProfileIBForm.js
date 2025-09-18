@@ -11,9 +11,9 @@ export function ProfileIBForm({ userDetails }) {
         <span className="text-sm">Did you complete IB Diploma?</span>
         <br />
         <span className="font-bold">
-          {userDetails?.ibCompletion?.ibDiploma === true
+          {userDetails?.ibForm?.ibDiploma === true
             ? "Yes"
-            : userDetails?.ibCompletion?.ibDiploma === false
+            : userDetails?.ibForm?.ibDiploma === false
             ? "No"
             : "N/A"}
         </span>
@@ -23,9 +23,9 @@ export function ProfileIBForm({ userDetails }) {
         <span className="text-sm">Did you complete IB MYP?</span>
         <br />
         <span className="font-bold">
-          {userDetails?.ibCompletion?.ibMyp === true
+          {userDetails?.ibForm?.ibMyp === true
             ? "Yes"
-            : userDetails?.ibCompletion?.ibMyp === false
+            : userDetails?.ibForm?.ibMyp === false
             ? "No"
             : "N/A"}
         </span>
@@ -35,9 +35,9 @@ export function ProfileIBForm({ userDetails }) {
         <span className="text-sm">Did you complete IB PYP?</span>
         <br />
         <span className="font-bold">
-          {userDetails?.ibCompletion?.ibPyp === true
+          {userDetails?.ibForm?.ibPyp === true
             ? "Yes"
-            : userDetails?.ibCompletion?.ibPyp === false
+            : userDetails?.ibForm?.ibPyp === false
             ? "No"
             : "N/A"}
         </span>

@@ -11,7 +11,7 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
   }
 
   return (
-    <div className="mt-5 pb-5 border-b border-gray-300">
+    <div className="mt-5 pb-5">
       {/* Header row styled like EditEducationHistory */}
       <div className="flex justify-between items-start">
         {/* Left side: heading + fields */}
@@ -20,8 +20,8 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
           {/* Fields go directly under heading */}
           <div className="mt-4">
             {/* IB World School Teacher */}
-            <div className="mb-2.5">
-              <span className="text-sm">
+            <div className="mb-2.5 border-b border-gray-200 pb-2">
+              <span className="text-sm text-[#A2A1A8] font-light">
                 Do you have experience working professionally as a teacher in an IB World School?
               </span>
               <div>
@@ -47,8 +47,8 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
             </div>
 
             {/* Acted as IB Examiner */}
-            <div className="mb-2.5">
-              <span className="text-sm">Have you ever acted as IB Examiner?</span>
+            <div className="mb-2.5 border-b border-gray-200 pb-2">
+              <span className="text-sm text-[#A2A1A8] font-light">Have you ever acted as IB Examiner?</span>
               <div>
                 <label className="mr-16">
                   <input
@@ -73,7 +73,7 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
 
             {/* Subjects & Papers Moderated */}
             <div className="mb-2.5">
-              <div className="text-sm">
+              <div className="text-sm text-[#A2A1A8] font-light">
                 If yes then please detail subject(s), paper(s), and year moderated
               </div>
               <input
@@ -83,13 +83,13 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
                   handleChange("detailSubjectsAndPapersModerated", e.target.value)
                 }
                 placeholder="Enter details here"
-                className="border border-gray-300 px-2 py-1 rounded w-full"
+                className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
               />
             </div>
 
             {/* SEN Support */}
-            <div className="mb-2.5">
-              <span className="text-sm">
+            <div className="mb-2.5 border-b border-gray-200 pb-2">
+              <span className="text-sm text-[#A2A1A8] font-light">
                 Do you have any experience supporting students with Special Educational Needs (SEN)?
               </span>
               <div>
@@ -116,7 +116,7 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
 
             {/* SEN Details */}
             <div className="mb-2.5">
-              <div className="text-sm">
+              <div className="text-sm text-[#A2A1A8] font-light">
                 If yes then please detail the SENs you've had experience with
               </div>
               <input
@@ -124,19 +124,19 @@ export function EditProfessionalTeachingExperience({ data, setData }) {
                 value={data?.explainSENExperience || ""}
                 onChange={(e) => handleChange("explainSENExperience", e.target.value)}
                 placeholder="Enter details here"
-                className="border border-gray-300 px-2 py-1 rounded w-full"
+                className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
               />
             </div>
 
             {/* Other Educational Programmes */}
             <div className="mb-2.5">
-              <div className="text-sm">Other Educational Programmes</div>
+              <div className="text-sm text-[#A2A1A8] font-light">Other Educational Programmes</div>
               <input
                 type="text"
                 value={data?.otherEducationalProgrammes || ""}
                 onChange={(e) => handleChange("otherEducationalProgrammes", e.target.value)}
                 placeholder="Enter details here"
-                className="border border-gray-300 px-2 py-1 rounded w-full"
+                className="border-b p-1  w-full placeholder:text-lg placeholder:text-[#16151C] focus:placeholder:text-gray-400"
               />
             </div>
           </div>

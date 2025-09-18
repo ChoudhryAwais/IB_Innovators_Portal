@@ -74,11 +74,24 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
       })
       .sort((a, b) => new Date(b.sessionInfo.date) - new Date(a.sessionInfo.date))
 
-  const calculateMonthlyInvoice = (invoices, month, year) =>
-    filterInvoicesByMonth(invoices, month, year).reduce(
-      (total, inv) => total + Number.parseInt(inv.amount),
-      0
-    )
+  //orignal function for calculating the invoice
+  // const calculateMonthlyInvoice = (invoices, month, year) =>
+  //   filterInvoicesByMonth(invoices, month, year).reduce(
+  //     (total, inv) => total + Number.parseInt(inv.amount),
+  //     0
+  //   )
+
+  const calculateMonthlyInvoice = (invoices, month, year) => {
+  const total = filterInvoicesByMonth(invoices, month, year).reduce(
+    (sum, inv) => {
+      const amount = parseFloat(inv.amount) // parse with decimals
+      return sum + (isNaN(amount) ? 0 : amount)
+    },
+    0
+  )
+  return Math.floor(total) // final integer conversion (truncates decimals)
+}
+
 
   function formatDisplayDateTime(timestamp) {
     let date
@@ -140,7 +153,12 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
   if (viewType === "classes") {
     return (
       <div className="space-y-4">
-        {classMonths.map((item, index) => (
+        {classMonths.length === 0 ? (
+        <div className="text-center text-gray-500 py-6">
+          No class record
+        </div>
+      ) : (
+        classMonths.map((item, index) => (
           <Accordion
             key={index}
             className="overflow-hidden"
@@ -159,11 +177,32 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               id={`panel-class-${index}`}
               className="px-6 py-4 hover:bg-gray-50"
               sx={{
-                minHeight: "72px !important",
-                maxHeight: "72px",
-                "&.Mui-expanded": { minHeight: "72px !important", maxHeight: "72px" },
-                "& .MuiAccordionSummary-content": { margin: 0, my: 0 },
-              }}
+                  minHeight: "72px !important", // collapsed height
+                  maxHeight: "72px",
+                  "&.Mui-expanded": {
+                    minHeight: "72px !important",
+                    maxHeight: "72px",
+                    maxHeight: "72px",
+                    "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
+                      color: "#4071B6",
+                    },
+                  },
+                  "& .MuiAccordionSummary-content": {
+                    margin: 0,
+                    my: 0,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                  "& .MuiAccordionSummary-content.Mui-expanded": {
+                    margin: 0,
+                    my: 0,
+                  },
+                  "& .MuiAccordionSummary-expandIconWrapper": {
+                    marginLeft: "16px",
+                    color: "#4071B6"
+                  },
+                }}
             >
               <div className="flex w-full justify-between items-center summary-text">
                 <div className="text-lg font-light">
@@ -191,15 +230,22 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               </Box>
             </AccordionDetails>
           </Accordion>
-        ))}
+        ))
+      )}
       </div>
+      
     )
   }
 
   if (viewType === "balance") {
     return (
       <div className="space-y-4">
-        {balanceMonths.map((item, index) => (
+        {balanceMonths.length === 0 ? (
+        <div className="text-center text-gray-500 py-6">
+          No balance record
+        </div>
+      ) : (
+        balanceMonths.map((item, index) => (
           <Accordion
             key={index}
             className="overflow-hidden"
@@ -217,7 +263,33 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               aria-controls={`panel-balance-${index}-content`}
               id={`panel-balance-${index}`}
               className="px-6 py-4 hover:bg-gray-50"
-              sx={{ minHeight: "72px !important", maxHeight: "72px" }}
+              sx={{
+                  minHeight: "72px !important", // collapsed height
+                  maxHeight: "72px",
+                  "&.Mui-expanded": {
+                    minHeight: "72px !important",
+                    maxHeight: "72px",
+                    maxHeight: "72px",
+                    "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
+                      color: "#4071B6",
+                    },
+                  },
+                  "& .MuiAccordionSummary-content": {
+                    margin: 0,
+                    my: 0,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                  "& .MuiAccordionSummary-content.Mui-expanded": {
+                    margin: 0,
+                    my: 0,
+                  },
+                  "& .MuiAccordionSummary-expandIconWrapper": {
+                    marginLeft: "16px",
+                    color: "#4071B6"
+                  },
+                }}
             >
               <div className="flex w-full justify-between items-center summary-text">
                 <div className="text-lg font-light">
@@ -251,7 +323,8 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               </Box>
             </AccordionDetails>
           </Accordion>
-        ))}
+        ))
+      )}
       </div>
     )
   }

@@ -90,7 +90,7 @@ export const TutorPages = () => {
       <div className=" p-6 min-h-screen">
         <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-7">
           {students.length !== 0 && (
-            <div className="mb-6">
+            <div className="mb-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FontAwesomeIcon className="text-gray-400" icon={faMagnifyingGlass} />
@@ -98,46 +98,64 @@ export const TutorPages = () => {
                 <input
                   onChange={handleSearch}
                   placeholder="Search by name/email"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3  border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   defaultValue=""
                 />
               </div>
             </div>
           )}
 
-          <div className=" overflow-hidden">
+          <div className="overflow-hidden">
             {displayedSessions.map((student, index) => (
               <div
                 key={index}
-                className={"flex items-center p-4  border-b border-gray-200" }
+                className="flex items-stretch p-4 border-b border-gray-200"
               >
-                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                  <FontAwesomeIcon icon={faUser} className="text-gray-600" />
-                </div>
-
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 text-lg">{student?.userName}</h3>
-                  <div className="text-sm text-gray-600 mt-1">
-                    <div className="flex">
-                      <span className="w-24 ">Email: </span><span className="text-gray-800">{student?.email}</span>
+                {/* Info + Button */}
+                <div className="flex justify-between w-full">
+                  {/* Tutor Info */}
+                  <div className="flex-1">
+                    {/* Avatar + Name */}
+                    <div className="flex items-center">
+                      {/* Avatar */}
+                      <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                        <FontAwesomeIcon icon={faUser} className="text-gray-600" />
+                      </div>
+                      {/* Tutor Name aligned with avatar bottom */}
+                      <h3 className="font-semibold text-gray-900 text-lg">
+                        {student?.userName}
+                      </h3>
                     </div>
-                    <div className="flex">
-                      <span className="w-24 ">Tutor ID: </span><span className="text-gray-800">{student?.userId}</span>
+
+                    {/* Email + Tutor ID aligned with tutor name (indented, not under avatar) */}
+                    <div className="text-sm text-gray-600 mt-1 pl-[4rem]">
+                      <div className="flex">
+                        <span className="w-24">Email: </span>
+                        <span className="text-gray-800">{student?.email}</span>
+                      </div>
+                      <div className="flex">
+                        <span className="w-24">Tutor ID: </span>
+                        <span className="text-gray-800">{student?.userId}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <Button
-                  variant="contained"
-                  onClick={() => handleSelectTutor(student)}
-                  className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
-                  style={{ backgroundColor: "#3b82f6", textTransform: "none" }}
-                >
-                  View Details
-                </Button>
+                  {/* Button aligned with Tutor ID */}
+                  <div className="flex items-end">
+                    <Button
+                      variant="contained"
+                      onClick={() => handleSelectTutor(student)}
+                      className="ml-4 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+                      style={{ backgroundColor: "#4071B6", textTransform: "none" }}
+                    >
+                      View Details
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
+
 
           {searchedStudents?.length > itemsPerPage && (
             <div className="mt-6 flex items-center justify-between">
