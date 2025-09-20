@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom"
 import { MyContext } from "../../../Context/MyContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
-import { deleteDoc, doc } from "firebase/firestore"
-import { db } from "../../../firebase"
+import { collection, getDocs, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 
+import { db } from "../../../firebase"
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 
@@ -33,115 +33,32 @@ export function OrderList() {
   const [searchedData, setSearchedData] = useState([])
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState("")
-
-  useEffect(() => {
-    const mockOrders = [
-      {
-        id: "ORD1001",
-        studentName: "Alice Johnson",
-        subject: "Mathematics",
-        country: "USA",
-        tutorHourlyRate: 25,
-        yearOfGraduation: "2024",
-        timeZone: "EST",
-        studentInformation: { email: "alice.johnson@example.com" },
-        applicants: [
-          {
-            tutorDetails: {
-              userName: "John Smith",
-              email: "john.smith@example.com",
-              userId: "tutor1",
-            },
-            supportingInformation: "I have 5 years of experience teaching mathematics.",
-          },
-          {
-              tutorDetails: {
-                userName: "Dr. Emily Chen",
-                email: "emily.chen@example.com",
-                userId: "tutor3",
-              },
-              supportingInformation: "Physics professor with 10 years of teaching experience.",
-            },
-        ],
-      },
-      {
-        id: "ORD1002",
-        studentName: "Mohammed Ali",
-        subject: "Physics",
-        country: "Pakistan",
-        tutorHourlyRate: 30,
-        studentInformation: { email: "mohammed.ali@example.com" },
-      },
-      {
-        id: "ORD1003",
-        studentName: "Sophie Lee",
-        subject: "Biology",
-        country: "UK",
-        tutorHourlyRate: 28,
-        studentInformation: { email: "sophie.lee@example.com" },
-      },
-      {
-        id: "ORD1004",
-        studentName: "Carlos Martinez",
-        subject: "Chemistry",
-        country: "Canada",
-        tutorHourlyRate: 32,
-        studentInformation: { email: "carlos.martinez@example.com" },
-      },
-      {
-        id: "ORD1005",
-        studentName: "Priya Sharma",
-        subject: "English Literature",
-        country: "India",
-        tutorHourlyRate: 22,
-        studentInformation: { email: "priya.sharma@example.com" },
-      },
-      {
-        id: "ORD1006",
-        studentName: "David Brown",
-        subject: "Computer Science",
-        country: "Australia",
-        tutorHourlyRate: 35,
-        studentInformation: { email: "david.brown@example.com" },
-      },
-      {
-        id: "ORD1007",
-        studentName: "George Abbot",
-        subject: "Humanities",
-        country: "America",
-        tutorHourlyRate: 20,
-        studentInformation: { email: "george.abbot@example.com" },
-      },
-    ]
-
-    setData(mockOrders)
-    setSearchedData(mockOrders)
-  }, [])
+  const [selectedItem, setSelectedItem] = useState({});
 
   // Fetch orders
-  // const fetchData = () => {
-  //   try {
-  //     const userListRef = collection(db, "orders")
-  //     const unsubscribe = onSnapshot(query(userListRef, orderBy("createdOn", "desc")), (querySnapshot) => {
-  //       const orderData = querySnapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         ...doc.data(),
-  //       }))
-  //       setData(orderData)
-  //       setSearchedData(orderData)
-  //     })
-  //     return unsubscribe
-  //   } catch (e) {
-  //     console.error("Error fetching data:", e)
-  //   }
-  // }
+  const fetchData = () => {
+    try {
+      const userListRef = collection(db, "orders")
+      const unsubscribe = onSnapshot(query(userListRef, orderBy("createdOn", "desc")), (querySnapshot) => {
+        const orderData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setData(orderData)
+        setSearchedData(orderData)
+      })
+      return unsubscribe
+    } catch (e) {
+      console.error("Error fetching data:", e)
+    }
+  }
 
-  // useEffect(() => {
-  //   const unsubscribe = fetchData()
-  //   return () => {
-  //     unsubscribe()
-  //   }
-  // }, [])
+  useEffect(() => {
+    const unsubscribe = fetchData()
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   function handleSearch(e) {
     const searchedText = e.target.value.toLowerCase()
@@ -176,19 +93,23 @@ export function OrderList() {
 
   // Navigation function to replace modal opening
   const handleViewApplicants = (clickedOrderId) => {
+    // Find index of clicked order in the currently filtered list
     const index = searchedData.findIndex(order => order.id === clickedOrderId);
+
+    // Calculate page number for pagination
     const pageOfClickedOrder = Math.floor(index / itemsPerPage) + 1;
 
+    // Navigate and send full list, selected item, and page number
     navigate("/applicantsList", {
       state: {
-        orders: searchedData,
-        expandedOrderId: clickedOrderId,
-        currentPage: pageOfClickedOrder
-      },
+        orders: searchedData,         // full list
+        expandedOrderId: clickedOrderId, // selected order
+        currentPage: pageOfClickedOrder  // current page of clicked item
+      }
     });
   };
 
-  // 🔥 Delete Logic
+  //  Delete Logic
   const handleDeleteClick = (id) => {
     setDeleteTargetId(id)
     setDeleteDialogOpen(true)
@@ -307,53 +228,53 @@ export function OrderList() {
 
       {/* Delete Confirmation Dialog */}
       <CustomModal open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-  {/* Title */}
-  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-    Delete Order?
-  </h2>
+        {/* Title */}
+        <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+          Delete Order?
+        </h2>
 
-  {/* Divider */}
-  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+        {/* Divider */}
+        <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-  {/* Message */}
-  <p className="text-lg text-center font-light text-[#16151C] mb-12">
-    Are you sure you want to delete this order? This action cannot be undone.
-  </p>
+        {/* Message */}
+        <p className="text-lg text-center font-light text-[#16151C] mb-12">
+          Are you sure you want to delete this order? This action cannot be undone.
+        </p>
 
-  {/* Actions */}
-  <div className="flex gap-3 justify-end">
-    <Button
-      onClick={() => setDeleteDialogOpen(false)}
-      variant="outlined"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        borderColor: "#A2A1A833",
-        fontSize: "16px",
-        fontWeight: 300,
-        color: "#16151C",
-      }}
-    >
-      Cancel
-    </Button>
-    <Button
-      variant="contained"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        backgroundColor: "#4071B6", // blue for delete action
-        fontSize: "20px",
-        fontWeight: 300,
-        color: "#FFFFFF",
-      }}
-      onClick={confirmDelete}
-    >
-       "Delete"
-    </Button>
-  </div>
-</CustomModal>
+        {/* Actions */}
+        <div className="flex gap-3 justify-end">
+          <Button
+            onClick={() => setDeleteDialogOpen(false)}
+            variant="outlined"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              borderColor: "#A2A1A833",
+              fontSize: "16px",
+              fontWeight: 300,
+              color: "#16151C",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6", // blue for delete action
+              fontSize: "20px",
+              fontWeight: 300,
+              color: "#FFFFFF",
+            }}
+            onClick={confirmDelete}
+          >
+            Delete
+          </Button>
+        </div>
+      </CustomModal>
 
     </div>
   )

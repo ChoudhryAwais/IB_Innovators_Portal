@@ -26,115 +26,32 @@ export function StudentList() {
   const [students, setStudents] = useState([])
   const [searchedStudents, setSearchedStudents] = useState([])
 
+  
+  const fetchData = () => {
+    try {
+      const userListRef = collection(db, "studentRequests")
+
+      const unsubscribe = onSnapshot(userListRef, (querySnapshot) => {
+        const studentData = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          docId: doc.id,
+        }))
+        setStudents(studentData)
+        setSearchedStudents(studentData)
+      })
+
+      return unsubscribe
+    } catch (e) {
+      console.error("Error fetching data:", e)
+    }
+  }
+
   useEffect(() => {
-  const mockStudents = [
-    {
-      docId: "STU1001",
-      studentInformation: {
-        userName: "Emma Watson",
-        email: "emma.watson@example.com",
-        userId: "U001",
-      },
-      country: "USA",
-      subject: "Mathematics",
-      yearOfGraduation: 2025,
-      timeZone: "EST",
-      gmt: "GMT-5",
-      session: "Spring",
-      tutorTier: "Gold",
-      credits: 3,
-      requestedHours: 5,
-      startDate: "2025-09-15",
-      slotRequired: ["Monday-Before 12PM", "Wednesday-3PM - 6PM"], // timetable
-    },
-    {
-      docId: "STU1002",
-      studentInformation: {
-        userName: "Ali Raza",
-        email: "ali.raza@example.com",
-        userId: "U002",
-      },
-      country: "Pakistan",
-      subject: "Physics",
-      yearOfGraduation: 2024,
-      timeZone: "PKT",
-      gmt: "GMT+5",
-      session: "Fall",
-      tutorTier: "Silver",
-      credits: 2,
-      requestedHours: 4,
-      startDate: "Other",
-      customStartDate: "2025-10-01",
-      slotRequired: ["Tuesday-12PM - 3PM", "Thursday-After 6PM"],
-    },
-    {
-      docId: "STU1001",
-      studentInformation: {
-        userName: "Emma Watson",
-        email: "emma.watson@example.com",
-        userId: "U001",
-      },
-      country: "USA",
-      subject: "Mathematics",
-      yearOfGraduation: 2025,
-      timeZone: "EST",
-      gmt: "GMT-5",
-      session: "Spring",
-      tutorTier: "Gold",
-      credits: 3,
-      requestedHours: 5,
-      startDate: "2025-09-15",
-      slotRequired: ["Monday-Before 12PM", "Wednesday-3PM - 6PM"], // timetable
-    },
-    {
-      docId: "STU1001",
-      studentInformation: {
-        userName: "Emma Watson",
-        email: "emma.watson@example.com",
-        userId: "U001",
-      },
-      country: "USA",
-      subject: "Mathematics",
-      yearOfGraduation: 2025,
-      timeZone: "EST",
-      gmt: "GMT-5",
-      session: "Spring",
-      tutorTier: "Gold",
-      credits: 3,
-      requestedHours: 5,
-      startDate: "2025-09-15",
-      slotRequired: ["Monday-Before 12PM", "Wednesday-3PM - 6PM"], // timetable
-    },
-  ]
-
-  setStudents(mockStudents)
-  setSearchedStudents(mockStudents)
-}, [])
-  // const fetchData = () => {
-  //   try {
-  //     const userListRef = collection(db, "studentRequests")
-
-  //     const unsubscribe = onSnapshot(userListRef, (querySnapshot) => {
-  //       const studentData = querySnapshot.docs.map((doc) => ({
-  //         ...doc.data(),
-  //         docId: doc.id,
-  //       }))
-  //       setStudents(studentData)
-  //       setSearchedStudents(studentData)
-  //     })
-
-  //     return unsubscribe
-  //   } catch (e) {
-  //     console.error("Error fetching data:", e)
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const unsubscribe = fetchData()
-  //   return () => {
-  //     unsubscribe()
-  //   }
-  // }, [])
+    const unsubscribe = fetchData()
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   function handleSearch(e) {
     const searchedData = e.target.value.toLowerCase()
@@ -253,20 +170,20 @@ export function StudentList() {
       </div>
 
       {searchedStudents?.length > itemsPerPage && (
-        <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white "> 
-            <div className="text-sm text-gray-600 ">
-              Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length}{" "}
-              records
-            </div>
-            <Stack spacing={2}>
-              <Pagination
-                count={Math.ceil(searchedStudents?.length / itemsPerPage)}
-                page={currentPage}
-                onChange={handleChangePage}
-                color="primary"
-                size="medium"
-              />
-            </Stack>
+        <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white ">
+          <div className="text-sm text-gray-600 ">
+            Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length}{" "}
+            records
+          </div>
+          <Stack spacing={2}>
+            <Pagination
+              count={Math.ceil(searchedStudents?.length / itemsPerPage)}
+              page={currentPage}
+              onChange={handleChangePage}
+              color="primary"
+              size="medium"
+            />
+          </Stack>
         </div>
       )}
 
@@ -280,68 +197,71 @@ export function StudentList() {
         <CreateOrderForm item={selectedStudent} handleClose={setShowModal} />
       </Modal> */}
       <CustomModal
-              open={showModal}
-              onClose={setShowModal}
-              PaperProps={{
-                sx: {
-                  width: "1080px",  
-                  height: "auto",
-                  maxWidth: "95vw",  
-                  maxHeight: "90vh",
-                },
-              }}
-            >
-              <CreateOrderForm item={selectedStudent} handleClose={setShowModal} />
-            </CustomModal>
+        open={showModal}
+        onClose={setShowModal}
+        PaperProps={{
+          sx: {
+            width: "1080px",
+            height: "auto",
+            maxWidth: "95vw",
+            maxHeight: "90vh",
+            overflow: "hidden",
+            borderRadius: "10px",
+            padding: 0,
+          },
+        }}
+      >
+        <CreateOrderForm item={selectedStudent} handleClose={setShowModal} />
+      </CustomModal>
 
       <CustomModal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
-  {/* Title */}
-  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-    Confirm Deletion
-  </h2>
+        {/* Title */}
+        <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+          Confirm Deletion
+        </h2>
 
-  {/* Divider */}
-  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+        {/* Divider */}
+        <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-  {/* Message */}
-  <p className="text-lg text-center font-light text-[#16151C] mb-12">
-    Are you sure you want to delete this student request?
-  </p>
+        {/* Message */}
+        <p className="text-lg text-center font-light text-[#16151C] mb-12">
+          Are you sure you want to delete this student request?
+        </p>
 
-  {/* Actions */}
-  <div className="flex gap-3 justify-end">
-    <Button
-      onClick={() => setDeleteModalOpen(false)}
-      variant="outlined"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        borderColor: "#A2A1A833",
-        fontSize: "16px",
-        fontWeight: 300,
-        color: "#16151C",
-      }}
-    >
-      Cancel
-    </Button>
-    <Button
-      variant="contained"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        backgroundColor: "#4071B6",
-        fontSize: "20px",
-        fontWeight: 300,
-        color: "#FFFFFF",
-      }}
-      onClick={handleDelete}
-    >
-      Delete
-    </Button>
-  </div>
-</CustomModal>
+        {/* Actions */}
+        <div className="flex gap-3 justify-end">
+          <Button
+            onClick={() => setDeleteModalOpen(false)}
+            variant="outlined"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              borderColor: "#A2A1A833",
+              fontSize: "16px",
+              fontWeight: 300,
+              color: "#16151C",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6",
+              fontSize: "20px",
+              fontWeight: 300,
+              color: "#FFFFFF",
+            }}
+            onClick={handleDelete}
+          >
+            Delete
+          </Button>
+        </div>
+      </CustomModal>
 
     </div>
   )

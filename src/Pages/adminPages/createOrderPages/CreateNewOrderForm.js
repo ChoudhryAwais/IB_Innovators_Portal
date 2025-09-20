@@ -12,6 +12,7 @@ import toast from "react-hot-toast"
 
 import { Autocomplete, Box, MenuItem, Select, TextField, FormControl, Button } from "@mui/material"
 import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
+import { useEffect } from "react"
 
 const graduationYears = ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"]
 
@@ -112,6 +113,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
       const docRef = await addDoc(userListRef, details)
       const docId = docRef.id
       await updateDoc(doc(db, "orders", docId), { id: docId })
+      console.log("Form submitted successfully!");
 
       handleClose(false)
 
@@ -131,9 +133,9 @@ export function CreateNewOrderForm({ item, handleClose }) {
         .filter((teacher) => checkTeacherEligibility(teacher, subject))
         .map(({ email, userId }) => ({ email, userId }))
 
-      const serviceId = process.env.REACT_APP_EMAILSERVICEID
-      const templateId = process.env.REACT_APP_EMAILTEMPLATEID
-      const userId = process.env.REACT_APP_EMAILUSERID
+      const serviceId = process.env.REACT_APP_EMAILSERVICEID;
+      const templateId = process.env.REACT_APP_EMAILTEMPLATEID;
+      const userId = process.env.REACT_APP_EMAILUSERID;
 
       eligibleTeacherEmails.forEach((e) => {
         const emailTemplate = getCourseRequestedEmailTemplate(
@@ -155,7 +157,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
         emailjs
           .send(serviceId, templateId, emailParams, userId)
-          .then(() => console.log("Email sent successfully"))
+          .then((response) => console.log("Email sent successfully"))
           .catch((error) => console.error("Error sending email:", error))
       })
 
@@ -168,8 +170,21 @@ export function CreateNewOrderForm({ item, handleClose }) {
     }
   }
 
+  //added to bypass price problem
+useEffect(() => {
+  if (tutorHourlyRate && requestedHours) {
+    setPrice(Number(tutorHourlyRate) * Number(requestedHours))
+  } else {
+    setPrice(null)
+  }
+}, [tutorHourlyRate, requestedHours])
+
   return (
-    <div className="w-4xl mx-auto">
+    <div className="w-4xl mx-auto h-full overflow-auto p-6"
+      style={{
+        boxSizing: "border-box",
+      }}
+    >
       <div className="">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Create Job</h1>
 
@@ -239,8 +254,8 @@ export function CreateNewOrderForm({ item, handleClose }) {
                   <div
                     onClick={() => handleSlotClick(day, time)}
                     className={`w-6 h-6 border-2 rounded cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                        ? "bg-blue-500 border-blue-500"
-                        : "bg-white hover:border-gray-400"
+                      ? "bg-blue-500 border-blue-500"
+                      : "bg-white hover:border-gray-400"
                       }`}
                   >
                     {isSelected(day, time) && (
@@ -492,6 +507,21 @@ export function CreateNewOrderForm({ item, handleClose }) {
           variant="outlined"
           onClick={() => handleClose(false)}
           className="px-6 py-2 text-gray-600 border-gray-300 hover:bg-gray-50"
+          sx={{
+            width: 166,
+            height: 50,
+            textTransform: "none",
+            fontSize: "16px",
+            fontWeight: 500,
+            borderRadius: "8px",
+            padding: "12px 32px",
+            color: "#16151C",
+            borderColor: "#D1D5DB",
+            "&:hover": {
+              backgroundColor: "#F9FAFB",
+              borderColor: "#D1D5DB",
+            },
+          }}
         >
           Cancel
         </Button>
@@ -500,6 +530,19 @@ export function CreateNewOrderForm({ item, handleClose }) {
           variant="contained"
           onClick={submittingForm}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700"
+          sx={{
+            width: 166,
+            height: 50,
+            textTransform: "none",
+            fontSize: "16px",
+            fontWeight: 500,
+            borderRadius: "8px",
+            padding: "12px 32px",
+            backgroundColor: "#2563eb",
+            "&:hover": {
+              backgroundColor: "#1d4ed8",
+            },
+          }}
         >
           {submitting ? "Creating..." : "Create Job"}
         </Button>

@@ -8,6 +8,7 @@ import { db } from "../../../firebase"
 import { collection, doc, updateDoc, setDoc, addDoc, deleteDoc } from "firebase/firestore"
 import toast from "react-hot-toast"
 import emailjs from "emailjs-com"
+import getJobNotApprovedEmailTemplate from "../../../Components/getEmailTemplate/getJobNotApprovedEmailTemplate"
 import getTutorSelectedForStudentEmailTemplate from "../../../Components/getEmailTemplate/getTutorSelectedForStudentEmailTemplate"
 import getJobApprovedEmailTemplate from "../../../Components/getEmailTemplate/getJobApprovedEmailTemplate"
 import CustomModal from "../../../Components/CustomModal/CustomModal"
@@ -16,8 +17,8 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogConten
 export default function ViewApplicants({ tutor, order, open, onClose }) {
   const { userDetails } = useContext(MyContext)
   const [loading, setLoading] = useState(false)
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
-
+  // const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+  const tutorApplicants = order?.applicants?.map(app => app?.tutorDetails?.email) || []
   const generatingLink = async () => {
     try {
       setLoading(true)
@@ -93,8 +94,25 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
         message: emailTemplateForSelectedTeacher,
       }
 
+      // UNSELECTED TUTORS ONLY
+      const emailTemplateForNotApprovedTeacher = getJobNotApprovedEmailTemplate(tutor?.tutorDetails?.userName)
+
+      const unselectedTutorEmails = tutorApplicants.filter(email => email !== tutor?.tutorDetails?.email)
+
+      const unselectedTeacherEmailParams = {
+        from_name: "IBInnovators",
+        to_name: "",
+        send_to: unselectedTutorEmails?.join(", "),
+        subject: "Job Application Status Update",
+        message: emailTemplateForNotApprovedTeacher,
+      }
+
       await emailjs.send(serviceId, templateId, studentAndTeacherEmailParams, userId)
       await emailjs.send(serviceId, templateId, selectedTutorEmailParams, userId)
+
+      if (unselectedTutorEmails.length > 0) {
+        await emailjs.send(serviceId, templateId, unselectedTeacherEmailParams, userId)
+      }
 
       toast.success("Link created successfully")
       onClose()
@@ -103,7 +121,7 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
       console.error("Error processing order:", error)
     } finally {
       setLoading(false)
-      setShowConfirmDialog(false)
+      // setShowConfirmDialog(false)
     }
   }
 
@@ -124,12 +142,17 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
             maxWidth: "1000px",
             height: "auto",
             maxHeight: "90vh",
-            overflow: "auto",
-            borderRadius: "16px",
+            overflow: "hidden",
+            borderRadius: "10px",
+            padding: 0,
           },
         }}
       >
-        <div className="">
+        <div className="h-full overflow-auto p-6" // ✅ scrollbar inside modal
+          style={{
+            boxSizing: "border-box",
+          }}
+        >
           <div className="flex flex-col mb-2 pb-4">
             {/* Heading stays left */}
             <h2 className="text-2xl font-bold text-gray-900">View Applicants Details</h2>
@@ -156,7 +179,7 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
 
                 <div className="grid grid-cols-2 gap-y-1 gap-x-16">
                   <div className="text-gray-600">Student Name:</div>
-                  <div className="font-semibold text-gray-900">{order?.studentName}</div>
+                  <div className="font-semibold text-gray-900">{order?.studentInformation?.userName}</div>
 
                   <div className="text-gray-600">Year of Graduation:</div>
                   <div className="font-semibold text-gray-900">{order?.yearOfGraduation}</div>
@@ -270,97 +293,51 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
               onClick={onClose}
               className="px-8 py-3 text-gray-600 border-gray-300 hover:bg-gray-50 rounded-lg"
               sx={{
-                 width: '166px',
+                width: '166px',
                 height: '50px',
                 textTransform: "none",
                 fontSize: "16px",
                 fontWeight: 500,
                 borderRadius: "8px",
                 padding: "12px 32px",
+                color: "#16151C",
+                borderColor: "#D1D5DB",
+                "&:hover": {
+                  backgroundColor: "#F9FAFB",
+                  borderColor: "#D1D5DB",
+                },
               }}
             >
               Cancel
             </Button>
             <Button
-  variant="contained"
-  onClick={generatingLink}
-  disabled={loading}
-  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg"
-  sx={{
-    width: '166px',
-    height: '50px',
-    textTransform: "none",
-    fontSize: "16px",
-    fontWeight: 500,
-    borderRadius: "8px",
-    padding: "12px 32px",
-    backgroundColor: "#2563eb",
-    "&:hover": {
-      backgroundColor: "#1d4ed8",
-    },
-    "&:disabled": {
-      opacity: 0.5,
-    },
-  }}
->
-  {loading ? "Creating Link..." : "Create Link"}
-</Button>
+              variant="contained"
+              onClick={generatingLink}
+              disabled={loading}
+              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg"
+              sx={{
+                width: '166px',
+                height: '50px',
+                textTransform: "none",
+                fontSize: "16px",
+                fontWeight: 500,
+                borderRadius: "8px",
+                padding: "12px 32px",
+                backgroundColor: "#2563eb",
+                "&:hover": {
+                  backgroundColor: "#1d4ed8",
+                },
+                "&:disabled": {
+                  opacity: 0.5,
+                },
+              }}
+            >
+              {loading ? "Creating Link..." : "Create Link"}
+            </Button>
 
           </div>
         </div>
       </CustomModal>
-
-      <Dialog
-        open={showConfirmDialog}
-        onClose={() => setShowConfirmDialog(false)}
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
-            p: 2,
-          },
-        }}
-      >
-        <DialogTitle sx={{ fontWeight: 600, color: "#111827" }}>Confirm Link Creation</DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ color: "#6b7280" }}>
-            Are you sure you want to create a link between {tutor?.tutorDetails?.userName} and {order?.studentName} for{" "}
-            {order?.subject}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ gap: 1 }}>
-          <Button
-            onClick={() => setShowConfirmDialog(false)}
-            disabled={loading}
-            variant="outlined"
-            sx={{
-              color: "#374151",
-              borderColor: "#d1d5db",
-              "&:hover": {
-                bgcolor: "#f9fafb",
-                borderColor: "#d1d5db",
-              },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={generatingLink}
-            disabled={loading}
-            variant="contained"
-            sx={{
-              bgcolor: "#16a34a",
-              "&:hover": {
-                bgcolor: "#15803d",
-              },
-              "&:disabled": {
-                opacity: 0.5,
-              },
-            }}
-          >
-            {loading ? "Creating..." : "Confirm"}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   )
 }

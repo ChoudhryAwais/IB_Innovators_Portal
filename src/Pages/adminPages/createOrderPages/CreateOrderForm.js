@@ -99,6 +99,9 @@ export function CreateOrderForm({ item, handleClose }) {
 
         emailjs
           .send(serviceId, templateId, emailParams, userId)
+          .then((response) => {
+            console.log("Email sent successfully:", response);
+          })
           .catch((err) => console.error("Error sending email:", err))
       })
 
@@ -115,7 +118,11 @@ export function CreateOrderForm({ item, handleClose }) {
   }
 
   return (
-    <div className="w-4xl mx-auto ">
+    <div className="w-4xl mx-auto h-full overflow-auto p-6 pr-7"
+      style={{
+        boxSizing: "border-box",
+      }}
+    >
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
           Order Submission Form <span className="text-gray-500 font-normal">(Course Application)</span>
@@ -178,8 +185,8 @@ export function CreateOrderForm({ item, handleClose }) {
                 >
                   <div
                     className={`w-6 h-6 border-2 rounded cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                        ? "bg-blue-500 border-blue-500"
-                        : "bg-white hover:border-gray-400"
+                      ? "bg-blue-500 border-blue-500"
+                      : "bg-white hover:border-gray-400"
                       }`}
                   >
                     {isSelected(day, time) && (
@@ -370,7 +377,11 @@ export function CreateOrderForm({ item, handleClose }) {
               <input
                 type="number"
                 value={tutorHourlyRate}
-                onChange={(e) => setTutorHourlyRate(e.target.value)}
+                onChange={(e) => {
+                  const rate = parseFloat(e.target.value) || 0
+                  setTutorHourlyRate(rate)
+                  setPrice(rate * (item?.requestedHours || 0))
+                }}
 
                 className="w-full h-14 pl-8 pr-4 border border-[#A2A1A833] rounded-lg bg-white text-gray-900 "
                 placeholder="Tutor Rate"
@@ -386,13 +397,21 @@ export function CreateOrderForm({ item, handleClose }) {
           disabled={submitting}
           variant="outlined"
           onClick={() => handleClose(false)}
-          className="px-8 py-3 text-gray-600 border-gray-300 hover:bg-gray-50 rounded-lg"
+          className="px-8 py-3 rounded-lg"
           sx={{
+            width: 166,
+            height: 50,
             textTransform: "none",
             fontSize: "16px",
             fontWeight: 500,
             borderRadius: "8px",
             padding: "12px 32px",
+            color: "#16151C",
+            borderColor: "#D1D5DB",
+            "&:hover": {
+              backgroundColor: "#F9FAFB",
+              borderColor: "#D1D5DB",
+            },
           }}
         >
           Cancel
@@ -403,6 +422,8 @@ export function CreateOrderForm({ item, handleClose }) {
           onClick={submittingForm}
           className="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg"
           sx={{
+            width: 166,
+            height: 50,
             textTransform: "none",
             fontSize: "16px",
             fontWeight: 500,

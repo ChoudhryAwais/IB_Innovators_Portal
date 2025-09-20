@@ -20,8 +20,6 @@ import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 import Ellipse from "../../../assets/icons/Ellipse 1171.png"
 
 
-
-
 export function ApplicationsList() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -43,64 +41,17 @@ export function ApplicationsList() {
           [location.state.expandedOrderId]: true,
         })
       }
-
+      
+      // Also set selectedOrder directly (optional, but helps for modal context)
+      const selected = location.state.orders.find(
+        (order) => order.id === location.state.expandedOrderId
+      )
+      setSelectedOrder(selected)
+      
       // Set page from OrderList
       if (location.state.currentPage) {
         setCurrentPage(location.state.currentPage)
       }
-    } else {
-      // fallback mock data
-      const mockOrders = [
-        {
-          id: "ORD1001",
-          studentName: "Alice Johnson",
-          subject: "Mathematics",
-          country: "USA",
-          tutorHourlyRate: 25,
-          yearOfGraduation: "2024",
-          timeZone: "EST",
-          studentInformation: {
-            email: "alice.johnson@example.com",
-            userName: "Alice Johnson",
-            userId: "user1",
-          },
-          applicants: [
-            {
-              tutorDetails: {
-                userName: "John Smith",
-                email: "john.smith@example.com",
-                userId: "tutor1",
-              },
-              supportingInformation: "I have 5 years of experience teaching mathematics.",
-            },
-          ],
-        },
-        {
-          id: "ORD1002",
-          studentName: "Mohammed Ali",
-          subject: "Physics",
-          country: "Pakistan",
-          tutorHourlyRate: 30,
-          yearOfGraduation: "2025",
-          timeZone: "PKT",
-          studentInformation: {
-            email: "mohammed.ali@example.com",
-            userName: "Mohammed Ali",
-            userId: "user2",
-          },
-          applicants: [
-            {
-              tutorDetails: {
-                userName: "Dr. Emily Chen",
-                email: "emily.chen@example.com",
-                userId: "tutor3",
-              },
-              supportingInformation: "Physics professor with 10 years of teaching experience.",
-            },
-          ],
-        },
-      ]
-      setOrders(mockOrders)
     }
   }, [location.state])
 
@@ -192,9 +143,9 @@ export function ApplicationsList() {
                 <div className="flex w-full items-center justify-between">
                   {/* Left - Student avatar + info */}
                   <div className="flex items-center space-x-4">
-                      <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg bg-[#A2A1A80D] text-gray-500">
+                    <div className="w-[40px] h-[40px] flex items-center justify-center rounded-lg bg-[#A2A1A80D] text-gray-500">
                       <FontAwesomeIcon icon={faBarsStaggered} className="text-gray-700 text-md" />
-                      </div>
+                    </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">
                         {order.subject}
@@ -264,8 +215,8 @@ export function ApplicationsList() {
                             }}
                           >
                             Details
-                              <img src={Ellipse} alt="icon" className="w-4 h-4 ml-2" />
-                            
+                            <img src={Ellipse} alt="icon" className="w-4 h-4 ml-2" />
+
                           </Button>
                         </div>
                       </div>
@@ -284,21 +235,21 @@ export function ApplicationsList() {
         </div>
 
         {orders.length > itemsPerPage && (
-  <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white">
-    <div className="text-sm text-gray-700">
-      Showing {startIndex + 1} to {Math.min(endIndex, orders.length)} out of {orders.length} records
-    </div>
-    <Stack spacing={2}>
-      <Pagination
-        count={totalPages}
-        page={currentPage}
-        onChange={handleChangePage}
-        color="primary"
-        size="small"
-      />
-    </Stack>
-  </div>
-)}
+          <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white">
+            <div className="text-sm text-gray-700">
+              Showing {startIndex + 1} to {Math.min(endIndex, orders.length)} out of {orders.length} records
+            </div>
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handleChangePage}
+                color="primary"
+                size="small"
+              />
+            </Stack>
+          </div>
+        )}
 
       </div>
 

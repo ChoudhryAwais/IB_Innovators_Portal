@@ -127,7 +127,7 @@ export function StudentsOnly() {
                   </div>
                   <div>
                     <span className="font-medium">Balance:</span> ${" "}
-                    {student?.credits && student?.credits > 0 ? student?.credits?.toFixed(2) : "0.16"}
+                    {student?.credits && student?.credits > 0 ? student?.credits?.toFixed(2) : "N/A"}
                   </div>
                 </div>
               </div>
@@ -174,6 +174,9 @@ export function StudentsOnly() {
             height: "auto",
             maxWidth: "95vw",  // responsive
             maxHeight: "90vh", // scroll if needed
+            overflow: "hidden",
+            borderRadius: "10px",
+            padding: 0,
           },
         }}
       >
