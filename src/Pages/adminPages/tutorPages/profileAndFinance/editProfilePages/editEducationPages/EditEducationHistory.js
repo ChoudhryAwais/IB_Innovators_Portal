@@ -159,127 +159,135 @@ export function EditEducationHistory({ data, setData }) {
             height: "auto",
             maxHeight: "90vh",
             overflow: "auto",
-            borderRadius: "16px",
+            borderRadius: "20px",
+            padding: 0,
           },
         }}
       >
-        <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
-          Education History
-        </h2>
-
-        <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
-
-        {/* Fields stacked vertically */}
-        <p className="text-sm text-[#6B7280] mb-1">Qualification Title</p>
-
-        <TextField
-          type="text"
-          value={newRecord.qualificationTitle}
-          onChange={(e) => handleInputChange("qualificationTitle", e.target.value)}
-          fullWidth
-          placeholder="Enter details"
-          sx={{
-            mb: 4,
-            "& .MuiInputBase-input::placeholder": {
-              color: "black",
-              opacity: 1, // make sure it's fully visible
-            },
-            "& .MuiInputBase-input:focus::placeholder": {
-              color: "grey", // switch to grey when focused
-            },
+        <div
+          className="h-full overflow-auto p-6" // ✅ scrollbar inside modal
+          style={{
+            boxSizing: "border-box",
           }}
-        />
-        <p className="text-sm text-[#6B7280] mb-1">Year of Graduation</p>
+        >
+          <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+            Education History
+          </h2>
 
-        <TextField
-          type="text"
-          value={newRecord.yearOfGraduation}
-          onChange={(e) => handleInputChange("yearOfGraduation", e.target.value)}
-          fullWidth
-          placeholder="Enter details"
-          sx={{
-            mb: 4,
-            "& .MuiInputBase-input::placeholder": {
-              color: "black",
-              opacity: 1, // make sure it's fully visible
-            },
-            "& .MuiInputBase-input:focus::placeholder": {
-              color: "grey", // switch to grey when focused
-            },
-          }}
-        />
-        <p className="text-sm text-[#6B7280] mb-1">University</p>
+          <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-        <TextField
-          type="text"
-          value={newRecord.university}
-          onChange={(e) => handleInputChange("university", e.target.value)}
-          fullWidth
-          placeholder="Enter details"
-          sx={{
-            mb: 4,
-            "& .MuiInputBase-input::placeholder": {
-              color: "black",
-              opacity: 1, // make sure it's fully visible
-            },
-            "& .MuiInputBase-input:focus::placeholder": {
-              color: "grey", // switch to grey when focused
-            },
-          }}
-        />
-        <p className="text-sm text-[#6B7280] mb-1">Grade (Or in progress)</p>
+          {/* Fields stacked vertically */}
+          <p className="text-sm text-[#6B7280] mb-1">Qualification Title</p>
 
-        <TextField
-          type="text"
-          value={newRecord.grade}
-          onChange={(e) => handleInputChange("grade", e.target.value)}
-          fullWidth
-          placeholder="Enter details"
-          sx={{
-            mb: 4,
-            "& .MuiInputBase-input::placeholder": {
-              color: "black",
-              opacity: 1, // make sure it's fully visible
-            },
-            "& .MuiInputBase-input:focus::placeholder": {
-              color: "grey", // switch to grey when focused
-            },
-          }}
-        />
-
-        {/* Buttons */}
-        <div className="flex gap-3 justify-end mt-6">
-          <Button
-            onClick={() => setAddingNewRecord(false)}
-            variant="outlined"
+          <TextField
+            type="text"
+            value={newRecord.qualificationTitle}
+            onChange={(e) => handleInputChange("qualificationTitle", e.target.value)}
+            fullWidth
+            placeholder="Enter details"
             sx={{
-              width: 166,
-              height: 50,
-              borderRadius: "10px",
-              borderColor: "#A2A1A833",
-              fontSize: "16px",
-              fontWeight: 300,
-              color: "#16151C",
+              mb: 4,
+              "& .MuiInputBase-input::placeholder": {
+                color: "black",
+                opacity: 1, // make sure it's fully visible
+              },
+              "& .MuiInputBase-input:focus::placeholder": {
+                color: "grey", // switch to grey when focused
+              },
             }}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={loading}
-            variant="contained"
+          />
+          <p className="text-sm text-[#6B7280] mb-1">Year of Graduation</p>
+
+          <TextField
+            type="text"
+            value={newRecord.yearOfGraduation}
+            onChange={(e) => handleInputChange("yearOfGraduation", e.target.value)}
+            fullWidth
+            placeholder="Enter details"
             sx={{
-              width: 166,
-              height: 50,
-              borderRadius: "10px",
-              backgroundColor: "#4071B6",
-              fontSize: "20px",
-              fontWeight: 300,
-              color: "#FFFFFF",
+              mb: 4,
+              "& .MuiInputBase-input::placeholder": {
+                color: "black",
+                opacity: 1, // make sure it's fully visible
+              },
+              "& .MuiInputBase-input:focus::placeholder": {
+                color: "grey", // switch to grey when focused
+              },
             }}
-            onClick={handleModalSubmit}
-          >
-            {loading ? "Submitting" : "Add"}
-          </Button>
+          />
+          <p className="text-sm text-[#6B7280] mb-1">University</p>
+
+          <TextField
+            type="text"
+            value={newRecord.university}
+            onChange={(e) => handleInputChange("university", e.target.value)}
+            fullWidth
+            placeholder="Enter details"
+            sx={{
+              mb: 4,
+              "& .MuiInputBase-input::placeholder": {
+                color: "black",
+                opacity: 1, // make sure it's fully visible
+              },
+              "& .MuiInputBase-input:focus::placeholder": {
+                color: "grey", // switch to grey when focused
+              },
+            }}
+          />
+          <p className="text-sm text-[#6B7280] mb-1">Grade (Or in progress)</p>
+
+          <TextField
+            type="text"
+            value={newRecord.grade}
+            onChange={(e) => handleInputChange("grade", e.target.value)}
+            fullWidth
+            placeholder="Enter details"
+            sx={{
+              mb: 4,
+              "& .MuiInputBase-input::placeholder": {
+                color: "black",
+                opacity: 1, // make sure it's fully visible
+              },
+              "& .MuiInputBase-input:focus::placeholder": {
+                color: "grey", // switch to grey when focused
+              },
+            }}
+          />
+
+          {/* Buttons */}
+          <div className="flex gap-3 justify-end mt-6">
+            <Button
+              onClick={() => setAddingNewRecord(false)}
+              variant="outlined"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                borderColor: "#A2A1A833",
+                fontSize: "16px",
+                fontWeight: 300,
+                color: "#16151C",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={loading}
+              variant="contained"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                backgroundColor: "#4071B6",
+                fontSize: "20px",
+                fontWeight: 300,
+                color: "#FFFFFF",
+              }}
+              onClick={handleModalSubmit}
+            >
+              {loading ? "Submitting" : "Add"}
+            </Button>
+          </div>
         </div>
       </CustomModal>
     </div>

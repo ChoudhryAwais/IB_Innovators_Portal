@@ -1,6 +1,9 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { db } from "../../firebase";
+"use client"
+
+import React, { useContext, useEffect, useState } from "react"
+import { MyContext } from "../../Context/MyContext"
+import { useNavigate } from "react-router-dom"
+import { db } from "../../firebase"
 import {
   collection,
   doc,
@@ -8,251 +11,510 @@ import {
   deleteDoc,
   orderBy,
   query,
-} from "firebase/firestore";
-
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-import { Button } from "@mui/material";
-import { toast } from "react-hot-toast";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+} from "firebase/firestore"
+import { ChevronRightIcon } from "@heroicons/react/24/outline"
+import { toast } from "react-hot-toast"
+import { Button, ListItemButton } from "@mui/material"
+import CustomModal from "../../Components/CustomModal/CustomModal"
 
 const ProcessedRevisionCoursesForm = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedLink, setSelectedLink] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [contactUsSubmissions, setContactUsSubmissions] = useState([]);
+  const { isUserLoggedIn, setIsUserLoggedIn, setUserType, setUserDetails, userType } =
+    useContext(MyContext)
+  const navigate = useNavigate()
+  const [contactUsSubmissions, setContactUsSubmissions] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [selectedLink, setSelectedLink] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const fetchData = async () => {
-    const ordersRef = collection(db, "adminPanel");
-    const customDocRef = doc(ordersRef, "processedUpcomingCoursesForm");
-    const orderCollectionRef = collection(
-      customDocRef,
-      "processedUpcomingCoursesForm"
-    );
+    const ordersRef = collection(db, "adminPanel")
+    const customDocRef = doc(ordersRef, "processedUpcomingCoursesForm")
+    const orderCollectionRef = collection(customDocRef, "processedUpcomingCoursesForm")
 
-    const orderedQuery = query(orderCollectionRef, orderBy("processedAt", "desc"));
+    const orderedQuery = query(orderCollectionRef, orderBy("processedAt", "desc"))
+
     const unsubscribe = onSnapshot(
       orderedQuery,
       (querySnapshot) => {
-        const fetchedData = [];
+        const fetchedData = []
         querySnapshot.forEach((doc) => {
-          fetchedData.push({ ...doc.data(), id: doc.id });
-        });
-
-        fetchedData.sort(
-          (a, b) => b.submittedAt.toDate() - a.submittedAt.toDate()
-        );
-
-        setContactUsSubmissions(fetchedData);
+          fetchedData.push({ id: doc.id, ...doc.data() })
+        })
+        fetchedData.sort((a, b) => b.submittedAt.toDate() - a.submittedAt.toDate())
+        setContactUsSubmissions(fetchedData)
       },
       (error) => {
-        alert("Error fetching data: ", error);
-      }
-    );
+        toast.error("Error fetching data: ", error)
+      },
+    )
 
-    return () => {
-      unsubscribe();
-    };
-  };
+    return () => unsubscribe()
+  }
 
-  const handleDeleteClick = async (student) => {
+  const handleDeleteClick = async (item) => {
     try {
-      setLoading(true);
-      const prevOrdersRef = collection(db, "adminPanel");
-      const prevCustomDocRef = doc(prevOrdersRef, "processedUpcomingCoursesForm");
-      const prevOrderCollectionRef = collection(
-        prevCustomDocRef,
-        "processedUpcomingCoursesForm"
-      );
+      setLoading(true)
+      const prevOrdersRef = collection(db, "adminPanel")
+      const prevCustomDocRef = doc(prevOrdersRef, "processedUpcomingCoursesForm")
+      const prevOrderCollectionRef = collection(prevCustomDocRef, "processedUpcomingCoursesForm")
 
-      const studentDocRef = doc(prevOrderCollectionRef, student.id);
-      await deleteDoc(studentDocRef);
+      const docToDelete = doc(prevOrderCollectionRef, item.id)
+      await deleteDoc(docToDelete)
 
-      setShowModal(false);
-      toast.success("Deleted successfully");
+      setShowModal(false)
+      toast.success("Deleted successfully")
     } catch (error) {
-      toast.error("Error deleting student form");
-      console.error("Error deleting student form: ", error);
+      toast.error("Error deleting form")
+      console.error("Error deleting form: ", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const displayedSessions = contactUsSubmissions?.slice(startIndex, endIndex)
 
-  const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedSessions = contactUsSubmissions?.slice(startIndex, endIndex);
+  function formatDateTime(timestampData) {
+    if (!timestampData) return "N/A"
+    const dateObject = new Date(
+      timestampData.seconds * 1000 + timestampData.nanoseconds / 1000000,
+    )
+    const formattedTime = dateObject.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+    const formattedDate = dateObject.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    return `${formattedTime} - ${formattedDate}`
+  }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">Processed Forms</h2>
-        <span className="text-sm text-gray-500">
-          {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
-        </span>
+    <div className="min-h-screen">
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="mb-6 pb-2 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
+          <span className="text-sm text-[#16151C]">
+            {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
+          </span>
+        </div>
+
+        <div className="space-y-3">
+          {displayedSessions.map((item, index) => (
+            <ListItemButton
+              key={index}
+              onClick={() => {
+                setSelectedLink(item)
+                setShowModal(true)
+              }}
+              sx={{
+                borderRadius: "8px",
+                p: 1,
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#F9FAFB",
+                },
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div className="flex flex-col">
+                <span className="font-medium text-[#16151C]">
+                  {item.userDetails?.firstName} {item.userDetails?.lastName}
+                </span>
+                <span className="text-sm text-[#16151C]">
+                  {item.userDetails?.email}
+                </span>
+              </div>
+              <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
+            </ListItemButton>
+          ))}
+        </div>
+
+        {contactUsSubmissions?.length === 0 && (
+          <div className="text-center text-[#16151C] pb-4 mb-2">No Processed Forms</div>
+        )}
       </div>
 
-      {displayedSessions.map((item, index) => (
-        <Accordion key={index} className="shadow-sm rounded-lg border border-gray-200">
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon className="text-gray-500" />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-            className="bg-gray-50 hover:bg-gray-100 rounded-t-lg"
-          >
-            <div className="flex-1 flex justify-between items-center">
-              <span className="font-medium text-gray-800">{item.userDetails?.email}</span>
+      {showModal && selectedLink && (
+        <CustomModal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false)
+            setSelectedLink(null)
+          }}
+          PaperProps={{
+            sx: {
+              width: "90vw",
+              maxWidth: "1080px",
+              height: "auto",
+              maxHeight: "90vh",
+              overflow: "hidden",
+              borderRadius: "20px",
+              padding: 0,
+            },
+          }}
+        >
+          <div className="h-full overflow-auto p-6" style={{ boxSizing: "border-box" }}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-[#16151C]">
+                Processed Forms{" "}
+                <span className="font-light text-lg">(Revision Course Forms)</span>
+              </h2>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{
+                    color: "#16151C",
+                    textTransform: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    minWidth: "unset",
+                    padding: "4px 8px",
+                    borderRadius: "6px",
+                    "&:hover": { backgroundColor: "#f5f5f5" },
+                  }}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    width="16"
+                    height="18"
+                    viewBox="0 0 16 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ color: "#16151C" }}
+                  >
+                    <path
+                      d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
+                      stroke="#16151C"
+                      strokeWidth="1.125"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="font-light text-xs">Copy Text</span>
+                </Button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <svg
+                    className="w-5 h-5 text-[#16151C]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </AccordionSummary>
-          <AccordionDetails className="bg-white border-t border-gray-100">
-            <div className="space-y-3 text-sm text-gray-700">
-              <div className="border-b border-gray-200 pb-3">
-                <div><strong>Course Heading:</strong> {item.courseData?.heading}</div>
-                <div><strong>Course Tagline:</strong> {item.courseData?.tagline}</div>
-                <div><strong>Submitted By UserType:</strong> {item?.userType}</div>
-                <div><strong>User Timezone:</strong> {item?.timeZone}</div>
-                <div><strong>Objective:</strong>
-                  <ul className="list-disc list-inside ml-4">{item.objective?.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
+
+            {/* Main Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+              {/* Left Column */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  <span className="text-[#16151C]">Course Heading:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.courseData?.heading || "N/A"}
+                  </span>
+
+                  <span className="text-[#16151C]">Course Tagline:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.courseData?.tagline || "N/A"}
+                  </span>
+
+                  <span className="text-[#16151C]">Submitted By:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.userType || "Student"}
+                  </span>
+
+                  <span className="text-[#16151C]">Time Zone:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.timeZone || "N/A"}
+                  </span>
+
+                  <span className="text-[#16151C]">Objective:</span>
+                  <div className="font-semibold text-[#16151C] space-y-1">
+                    {selectedLink?.objective?.map((obj, i) => (
+                      <div key={i}>{obj}</div>
+                    ))}
+                  </div>
+
+                  <span className="text-[#16151C]">Seeking Tutoring For:</span>
+                  <div className="font-semibold text-[#16151C] space-y-1">
+                    {selectedLink?.seekingTutoringFor?.map((sub, i) => (
+                      <div key={i}>{sub}</div>
+                    ))}
+                  </div>
                 </div>
-                <div><strong>Seeking Tutoring For:</strong>
-                  <ul className="list-disc list-inside ml-4">{item.seekingTutoringFor?.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-                </div>
-                <div><strong>How often to take lessons:</strong>
-                  <ul className="list-disc list-inside ml-4">{item?.howOftenToTakeLesson?.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-                </div>
-                <div><strong>Tutor Support Type:</strong> Certified IB Examiner</div>
-                <div><strong>Course Type:</strong> {item?.selectedCourse?.title}</div>
-                <div><strong>Total Teaching Hours:</strong> {item?.selectedCourse?.hours * item?.seekingTutoringFor?.length}</div>
-                <div><strong>Price:</strong> £ {item?.quotedPrice}</div>
               </div>
 
-              <div className="border-b border-gray-200 pb-3">
-                <div><strong>Want Guidance and Support:</strong> {item?.wantGuidanceAndSupport}</div>
-                {item?.wantGuidanceAndSupport === "yes" && (
-                  <div className="space-y-2 mt-2">
-                    <div><strong>Guidance & Support Subjects:</strong>
-                      <ul className="list-disc list-inside ml-4">{item?.guidanceAndSupportSubjects?.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
+              {/* Middle Column */}
+              <div className="space-y-2">
+                <div className="font-semibold text-[#16151C]">Course Details</div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  <span className="text-[#16151C]">Course Type:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.selectedCourse?.title || "N/A"}
+                  </span>
+
+                  <span className="text-[#16151C]">Total Hours:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    {selectedLink?.selectedCourse?.hours *
+                      (selectedLink?.seekingTutoringFor?.length || 1)}
+                  </span>
+
+                  <span className="text-[#16151C]">Price:</span>
+                  <span className="font-semibold text-[#16151C]">
+                    £ {selectedLink?.quotedPrice || "N/A"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-2">
+                <div className="font-semibold text-[#16151C] mb-2">
+                  How Often to Take Lessons
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  {selectedLink?.howOftenToTakeLesson?.map((freq, i) => {
+                    const [day, time] = freq.split("-").map((s) => s.trim())
+                    return (
+                      <React.Fragment key={i}>
+                        <span className="text-[#16151C]">{day}:</span>
+                        <span className="text-[#16151C]">{time}</span>
+                      </React.Fragment>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Guidance & Support */}
+            <div className="mt-8 pt-6 border-t border-gray-200 text-sm">
+              <h3 className="font-bold text-[#16151C] mb-4">
+                Guidance & Support Details:
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <div className="flex">
+                    <span className="text-[#16151C] w-44">Need Support:</span>
+                    <span className="font-semibold text-[#16151C]">
+                      {selectedLink?.wantGuidanceAndSupport === "yes" ? "Yes" : "No"}
+                    </span>
+                  </div>
+                  {selectedLink?.wantGuidanceAndSupport === "yes" && (
+                    <>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44">Subjects:</span>
+                        <div className="font-semibold text-[#16151C] space-y-1">
+                          {selectedLink?.guidanceAndSupportSubjects?.map(
+                            (sub, i) => (
+                              <div key={i} className="flex items-center">
+                                <span className="w-1 h-1 bg-gray-900 rounded-full mr-2"></span>
+                                {sub}
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44">Objective:</span>
+                        <span className="font-semibold text-[#16151C]">
+                          {selectedLink?.guidanceObjectiveTitle || "N/A"}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {selectedLink?.wantGuidanceAndSupport === "yes" && (
+                  <div className="space-y-2">
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44">Tutor Level:</span>
+                      <span className="font-semibold text-[#16151C]">
+                        {selectedLink?.guidanceObjective?.level || "N/A"}
+                      </span>
                     </div>
-                    <div><strong>Guidance and Support Objective:</strong> {item?.guidanceObjectiveTitle}</div>
-                    <div><strong>Tutor Level:</strong> {item?.guidanceObjective?.level}</div>
-                    <div><strong>Tutor Support Type:</strong> {item?.guidanceObjective?.diploma}</div>
-                    <div><strong>Price:</strong> £ {item?.guidancePrice}</div>
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44">Tutor Support Type:</span>
+                      <span className="font-semibold text-[#16151C]">
+                        {selectedLink?.guidanceObjective?.diploma || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44">Price:</span>
+                      <span className="font-semibold text-[#16151C]">
+                        £ {selectedLink?.guidancePrice || "N/A"}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
+            </div>
 
-              <div className="space-y-1">
-                <div className="font-medium">Student&apos;s Information:</div>
-                <div><strong>First Name:</strong> {item?.userDetails?.firstName}</div>
-                <div><strong>Last Name:</strong> {item?.userDetails?.lastName}</div>
-                <div><strong>Email:</strong> {item?.userDetails?.email}</div>
-                <div><strong>Phone:</strong> {item?.userDetails?.phone}</div>
-                <div><strong>Address:</strong> {item?.userDetails?.address || "N/A"}</div>
-                <div><strong>City:</strong> {item?.userDetails?.city || "N/A"}</div>
-                <div><strong>ZIP:</strong> {item?.userDetails?.zip || "N/A"}</div>
-                <div><strong>Country:</strong> {item?.userDetails?.country?.label || "N/A"}</div>
-                <div><strong>GMT:</strong> {item?.userDetails?.gmtTimezone || "N/A"}</div>
+            {/* Student & Parent Info */}
+            <div className="mt-8 pt-6 border-t border-gray-200 text-md">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="font-semibold text-[#16151C] mb-4">Student Info:</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-[#16151C]">Name: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.firstName}{" "}
+                        {selectedLink?.userDetails?.lastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Email: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.email}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Contact No: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.phone}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Address: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.address || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">City: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.city || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">ZIP: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.zip || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Country: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.country?.label || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">GMT: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.gmtTimezone || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-[#16151C] mb-4">Parent Info:</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-[#16151C]">Name: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.parentFirstName}{" "}
+                        {selectedLink?.userDetails?.parentLastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Email: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.parentEmail}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Contact No: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.parentPhone}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C]">Relationship: </span>
+                      <span className="text-[#16151C]">
+                        {selectedLink?.userDetails?.relation || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
 
-              <div className="space-y-1 mt-4">
-                <div className="font-medium">Parent&apos;s Information:</div>
-                <div><strong>First Name:</strong> {item?.userDetails?.parentFirstName}</div>
-                <div><strong>Last Name:</strong> {item?.userDetails?.parentLastName}</div>
-                <div><strong>Email:</strong> {item?.userDetails?.parentEmail}</div>
-                <div><strong>Phone:</strong> {item?.userDetails?.parentPhone}</div>
-                <div><strong>Relation:</strong> {item?.userDetails?.relation}</div>
-              </div>
-
+            {/* Footer Buttons */}
+            <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
               <Button
+                onClick={() => setShowModal(false)}
+                variant="outlined"
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "8px",
+                  borderColor: "#D1D5DB",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#374151",
+                  textTransform: "none",
+                  "&:hover": {
+                    borderColor: "#9CA3AF",
+                    backgroundColor: "#F9FAFB",
+                  },
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                disabled={loading}
                 variant="outlined"
                 color="error"
-                onClick={() => {
-                  setShowModal(true);
-                  setSelectedLink(item);
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "8px",
+                  backgroundColor: "#A81E1E0D",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#A81E1E",
+                  borderColor: "#A81E1E",
+                  textTransform: "none",
+                  "&:hover": { backgroundColor: "#A81E1E0D" },
+                  "&:disabled": { backgroundColor: "#9CA3AF" },
                 }}
-                className="mt-4 w-full border-red-500 text-red-600 hover:bg-red-50"
+                onClick={() => handleDeleteClick(selectedLink)}
               >
-                Delete
+                {loading ? "Deleting..." : "Delete"}
               </Button>
             </div>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-
-      {contactUsSubmissions?.length > itemsPerPage && (
-        <div className="flex justify-center items-center mt-6">
-          <Stack spacing={2}>
-            <Pagination
-              count={Math.ceil(contactUsSubmissions?.length / itemsPerPage)}
-              page={currentPage}
-              onChange={handleChangePage}
-            />
-          </Stack>
-        </div>
+          </div>
+        </CustomModal>
       )}
 
-      {contactUsSubmissions?.length === 0 && (
-        <div className="text-center text-gray-400 py-12">No Processed Forms</div>
-      )}
-
-      <Dialog
-        open={showModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => {
-          setShowModal(false);
-        }}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle className="text-lg font-semibold">
-          Please confirm to delete this form.
-        </DialogTitle>
-        <DialogActions className="p-4">
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setShowModal(false);
-            }}
-            className="border-gray-300 text-gray-600 hover:bg-gray-50"
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={loading}
-            color="error"
-            variant="contained"
-            onClick={() => handleDeleteClick(selectedLink)}
-            className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
-          >
-            {loading ? "Deleting" : "Delete"}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default ProcessedRevisionCoursesForm;
+export default ProcessedRevisionCoursesForm
