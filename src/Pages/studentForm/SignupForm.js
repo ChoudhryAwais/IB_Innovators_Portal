@@ -8,7 +8,8 @@ import { useNavigate } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SaveIcon from "@mui/icons-material/Save";
 import toast from "react-hot-toast";
-import Button from "@mui/material/Button";
+
+import { MenuItem, Select, Button, TextField, Modal, Divider } from "@mui/material"
 
 import emailjs from "emailjs-com";
 import getStudentRegisterEmailTemplate from "../../Components/getEmailTemplate/getStudentRegisterEmailTemplate";
@@ -91,82 +92,117 @@ function SignupForm({ student, setCreateAccountModal }) {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-white rounded-xl shadow p-6">
-      <h2 className="text-center text-2xl font-semibold text-gray-900 mb-6">
-        Register Student
-      </h2>
-
-      <form className="space-y-5">
-        {/* Full Name */}
-        <div className="w-full">
-          <label className="block text-gray-800 text-left mb-1">
-            Full Name
-          </label>
-          <input
-            required
-            type="text"
-            placeholder="Enter Full Name"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="h-12 w-full px-4 bg-white/40 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Email */}
-        <div className="w-full">
-          <label className="block text-gray-800 text-left mb-1">Email</label>
-          <input
-            required
-            type="email"
-            placeholder="Enter email address"
-            value={signUpEmail}
-            onChange={(e) => setSignUpEmail(e.target.value)}
-            className="h-12 w-full px-4 bg-white/40 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Password */}
-        <div className="w-full">
-          <label className="block text-gray-800 text-left mb-1">Password</label>
-          <input
-            required
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter your password"
-            value={signUpPassword}
-            onChange={(e) => setSignUpPassword(e.target.value)}
-            className="h-12 w-full px-4 bg-white/40 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4">
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => setCreateAccountModal(false)}
+    <div className="bg-white p-8">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-[#16151C]">
+          Register Student
+        </h2>
+        <button
+          onClick={() => setCreateAccountModal(false)}
+          className="p-1 hover:bg-gray-100 rounded"
+        >
+          <svg
+            className="w-5 h-5 text-[#16151C]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            CANCEL
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+      {/* Full Name */}
+      <TextField
+        required
+        fullWidth
+        label="Full Name"
+        value={userName}
+        onChange={(e) => setUserName(e.target.value)}
+        sx={{ mb: 4 }}
+      />
+
+      {/* Email */}
+      <TextField
+        required
+        fullWidth
+        type="email"
+        label="Email Address"
+        value={signUpEmail}
+        onChange={(e) => setSignUpEmail(e.target.value)}
+        sx={{ mb: 4 }}
+      />
+
+      {/* Password */}
+      <TextField
+        required
+        fullWidth
+        type={showPassword ? "text" : "password"}
+        label="Password"
+        value={signUpPassword}
+        onChange={(e) => setSignUpPassword(e.target.value)}
+        sx={{ mb: 7 }}
+      />
+
+      {/* Actions */}
+      <div className="flex gap-3 justify-end">
+        <Button
+          onClick={() => setCreateAccountModal(false)}
+          variant="outlined"
+          sx={{
+            width: 166,
+            height: 50,
+            borderRadius: "10px",
+            borderColor: "#A2A1A833",
+            fontSize: "16px",
+            fontWeight: 300,
+            color: "#16151C",
+          }}
+        >
+          Cancel
+        </Button>
+
+        {submitting ? (
+          <Button
+            disabled
+            variant="contained"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6",
+              fontSize: "20px",
+              fontWeight: 300,
+              color: "#FFFFFF",
+            }}
+          >
+            Registering...
           </Button>
-          {submitting ? (
-            <LoadingButton
-              loading
-              loadingPosition="start"
-              startIcon={<SaveIcon />}
-              variant="outlined"
-            >
-              REGISTERING
-            </LoadingButton>
-          ) : (
-            <Button
-              onClick={() => SignUpHandler()}
-              variant="contained"
-              color="success"
-            >
-              REGISTER
-            </Button>
-          )}
-        </div>
-      </form>
+        ) : (
+          <Button
+            onClick={SignUpHandler}
+            variant="contained"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6",
+              fontSize: "20px",
+              fontWeight: 300,
+              color: "#FFFFFF",
+            }}
+          >
+            Register
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

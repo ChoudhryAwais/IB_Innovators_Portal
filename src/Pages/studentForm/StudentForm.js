@@ -1,532 +1,558 @@
-"use client"
-
-import React, { useState, useEffect } from "react"
-import { db } from "../../firebase"
-import { collection, doc, addDoc, deleteDoc, query, onSnapshot, orderBy } from "firebase/firestore"
-import SignupForm from "./SignupForm"
-
-import { Modal } from "@mui/material"
-
-import Accordion from "@mui/material/Accordion"
-import AccordionSummary from "@mui/material/AccordionSummary"
-import AccordionDetails from "@mui/material/AccordionDetails"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-
-import Pagination from "@mui/material/Pagination"
-import Stack from "@mui/material/Stack"
-import Button from "@mui/material/Button"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogTitle from "@mui/material/DialogTitle"
-import Slide from "@mui/material/Slide"
-import ProcessedStudentForm from "./ProcessedStudentForm"
-import { toast } from "react-hot-toast"
+import React, { useState, useEffect } from "react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { db } from "../../firebase";
+import {
+  collection,
+  doc,
+  addDoc,
+  deleteDoc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-hot-toast";
+import { Button, ListItemButton, Divider } from "@mui/material";
+import { MyContext } from "../../Context/MyContext";
+import ProcessedStudentForm from "./ProcessedStudentForm";
 import CustomModal from "../../Components/CustomModal/CustomModal"
-import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+import SignupForm from "./SignupForm";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 const StudentForm = () => {
-  const { setFirstMessage, setSecondMessage } = useTopHeading()
+  const { isUserLoggedIn, setIsUserLoggedIn, setUserType, setUserDetails, userType } =
+    useContext(MyContext);
+
+  const [studentData, setStudentData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLink, setSelectedLink] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [createAccountModal, setCreateAccountModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState({});
+  const [processedCount, setProcessedCount] = useState(0); //processed student form count
+
 
   useEffect(() => {
-    setFirstMessage("1-1 Student Inquiry")
-    setSecondMessage("Show all Student Forms")
-  }, [setFirstMessage, setSecondMessage])
+    fetchData();
+    fetchProcessedCount();
 
-  const [studentData, setStudentData] = useState([])
-  const [expanded, setExpanded] = useState(null)
-
-  const [createAccountModal, setCreateAccountModal] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState({})
-
-  const [showModal, setShowModal] = useState(false)
-  const [selectedLink, setSelectedLink] = useState({})
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    fetchData()
-  }, [])
+  }, []);
 
   const fetchData = () => {
-    const ordersRef = collection(db, "adminPanel")
-    const customDocRef = doc(ordersRef, "studentForm")
-    const orderCollectionRef = collection(customDocRef, "studentForm")
+    const ordersRef = collection(db, "adminPanel");
+    const customDocRef = doc(ordersRef, "studentForm");
+    const orderCollectionRef = collection(customDocRef, "studentForm");
 
-    const orderedQuery = query(orderCollectionRef, orderBy("submittedAt", "desc"))
+    const orderedQuery = query(orderCollectionRef, orderBy("submittedAt", "desc"));
 
     const unsubscribe = onSnapshot(
       orderedQuery,
       (querySnapshot) => {
-        const fetchedData = []
+        const fetchedData = [];
         querySnapshot.forEach((doc) => {
-          fetchedData.push({ ...doc.data(), id: doc.id })
-        })
-
-        fetchedData.sort((a, b) => new Date(b.submittedOn) - new Date(a.submittedOn))
-
-        setStudentData(fetchedData)
+          fetchedData.push({ ...doc.data(), id: doc.id });
+        });
+        fetchedData.sort(
+          (a, b) => new Date(b.submittedOn) - new Date(a.submittedOn)
+        );
+        setStudentData(fetchedData);
       },
       (error) => {
-        toast.error("Error fetching data")
-      },
-    )
+        toast.error("Error fetching data");
+      }
+    );
 
-    return () => {
-      unsubscribe()
-    }
-  }
+    return () => unsubscribe();
+  };
+
+
+  const fetchProcessedCount = async () => {
+    const ordersRef = collection(db, "adminPanel");
+    const customDocRef = doc(ordersRef, "processedStudentForm");
+    const orderCollectionRef = collection(customDocRef, "processedStudentForm");
+
+    const unsubscribe = onSnapshot(orderCollectionRef, (querySnapshot) => {
+      setProcessedCount(querySnapshot.size); // total processed docs
+    });
+
+    return () => unsubscribe();
+  };
 
   const handleProcessedClick = async (student) => {
     try {
-      setLoading(true)
-      const ordersRef = collection(db, "adminPanel")
-      const customDocRef = doc(ordersRef, "processedStudentForm")
-      const orderCollectionRef = collection(customDocRef, "processedStudentForm")
+      setLoading(true);
+      const ordersRef = collection(db, "adminPanel");
+      const customDocRef = doc(ordersRef, "processedStudentForm");
+      const orderCollectionRef = collection(customDocRef, "processedStudentForm");
 
-      await addDoc(orderCollectionRef, { ...student, processedAt: new Date() })
+      await addDoc(orderCollectionRef, { ...student, processedAt: new Date() });
 
-      const prevOrdersRef = collection(db, "adminPanel")
-      const prevCustomDocRef = doc(prevOrdersRef, "studentForm")
-      const prevOrderCollectionRef = collection(prevCustomDocRef, "studentForm")
+      const prevOrdersRef = collection(db, "adminPanel");
+      const prevCustomDocRef = doc(prevOrdersRef, "studentForm");
+      const prevOrderCollectionRef = collection(prevCustomDocRef, "studentForm");
 
-      const studentDocRef = doc(prevOrderCollectionRef, student.id)
-      await deleteDoc(studentDocRef)
+      const studentDocRef = doc(prevOrderCollectionRef, student.id);
+      await deleteDoc(studentDocRef);
 
-      setShowModal(false)
-      toast.success("Marked as processed")
+      setShowModal(false);
+      toast.success("Marked as processed");
     } catch (error) {
-      toast.error("Error processing student form")
-      console.error("Error processing student form: ", error)
+      toast.error("Error processing student form");
+      console.error("Error processing student form: ", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const itemsPerPage = 5
-  const [currentPage, setCurrentPage] = React.useState(1)
-
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage)
-  }
-
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const displayedSessions = studentData?.slice(startIndex, endIndex)
+    setCurrentPage(newPage);
+  };
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedSessions = studentData?.slice(startIndex, endIndex);
 
   function formatDateTime(timestampData) {
-    const dateObject = new Date(timestampData.seconds * 1000 + timestampData.nanoseconds / 1000000)
-
+    if (!timestampData) return "N/A";
+    const dateObject = new Date(
+      timestampData.seconds * 1000 + timestampData.nanoseconds / 1000000
+    );
     const formattedTime = dateObject.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    })
-
+    });
     const formattedDate = dateObject.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    })
-
-    return { date: formattedDate, time: formattedTime }
+    });
+    return { date: formattedDate, time: formattedTime };
   }
 
   return (
-    <TopHeadingProvider>
-      <div className=" min-h-screen p-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-6">Students Forms ({studentData?.length || 0})</h1>
+    <div className="h-full bg-white p-6 grid place-items-start">
+      <div className="w-full mx-auto border border-gray-200 rounded-lg p-6 h-full">
+        <h1 className="text-2xl font-semibold text-gray-900 mb-6">
+          Student Forms ({(studentData?.length || 0) + (processedCount || 0)})
+        </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Pending Forms Column */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">Pending Forms</h2>
-                <span className="text-sm text-gray-500">{String(studentData?.length || 0).padStart(2, "0")} Forms</span>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          {/* Pending Forms */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="mb-6 pb-2 border-b border-gray-200 ">
+              <h2 className="text-lg font-semibold text-[#16151C]">
+                Pending Forms
+              </h2>
+              <span className="text-sm text-[#16151C]">
+                {String(studentData?.length).padStart(2, "0")} Forms
+              </span>
+            </div>
 
-              <div className="space-y-3">
-                {displayedSessions.map((student, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg">
-                    <Accordion className="shadow-none">
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon className="text-gray-400" />}
-                        className="hover:bg-gray-50"
-                      >
-                        <div className="flex items-center justify-between w-full pr-4">
-                          <div className="flex flex-col">
-                            <span className="font-medium text-gray-900">
-                              {student?.userDetails?.firstName} {student?.userDetails?.lastName}
-                            </span>
-                            <span className="text-sm text-gray-500">{student?.userDetails?.email}</span>
-                          </div>
-                        </div>
-                      </AccordionSummary>
-                      <AccordionDetails className="border-t border-gray-100">
-                        <div>
-                          {student?.type === "new" ? (
-                            <div className="p-4 font-sans leading-relaxed">
-                              <div className="text-center mb-6">
-                                <h3>Inquiry Form</h3>
-                              </div>
-
-                              <div>
-                                <strong>Program:</strong> {student.program || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Class:</strong> {student.class || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Selected Subjects:</strong>{" "}
-                                {student.selectedSubjects.length ? student.selectedSubjects.join(", ") : "None"}
-                              </div>
-                              <div>
-                                <strong>Tutoring Support:</strong> {student.tutoringSupport || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Package:</strong> {student.package || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Hours Requested:</strong> {student.hours}
-                              </div>
-                              <div>
-                                <strong>Lesson Dates:</strong>
-                                <ul className="list-disc ml-6">
-                                  {student.lessonDates?.map((item, i) => (
-                                    <li key={i}>{item}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                              <div>
-                                <strong>Time Zone:</strong> {student.timeZone || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Support Needed:</strong> {student.guidanceAndSupport?.needed ? "Yes" : "No"}
-                              </div>
-                              <div>
-                                <strong>Total Cost:</strong> £{student.totalCost}
-                              </div>
-                              <div>
-                                <strong>Total Cost After Support:</strong> £{student.totalCostAfterGuidanceAndSupport}
-                              </div>
-
-                              {student.guidanceAndSupport?.needed && (
-                                <div className="border-t border-gray-300 mt-4 pt-4">
-                                  <strong>Guidance & Support Details:</strong>
-                                  <br />
-                                  <div>
-                                    <strong>Assignment Type(s):</strong>{" "}
-                                    {student.guidanceAndSupport.assignmentType.length
-                                      ? student.guidanceAndSupport.assignmentType.join(", ")
-                                      : "None"}
-                                  </div>
-                                  <div>
-                                    <strong>Query:</strong> {student.guidanceAndSupport.query || "N/A"}
-                                  </div>
-                                  <div>
-                                    <strong>Requested Hours:</strong> {student.guidanceAndSupport.hours}
-                                  </div>
-                                </div>
-                              )}
-
-                              <div className="border-t border-gray-300 mt-4 pt-4">
-                                <strong>Student Info:</strong>
-                                <br />
-                                {student?.userDetails?.firstName} {student?.userDetails?.lastName}
-                                <br />
-                                Email: {student?.userDetails?.email}
-                              </div>
-
-                              <div className="border-t border-gray-300 mt-4 pt-4">
-                                <strong>Parent Info:</strong>
-                                <br />
-                                {student?.userDetails?.parentFirstName} {student?.userDetails?.parentLastName}
-                                <br />
-                                Email: {student?.userDetails?.parentEmail}
-                                <br />
-                                Relation: {student?.userDetails?.relation}
-                              </div>
-
-                              <div className="border-t border-gray-300 mt-4 pt-4">
-                                <strong>Billing Info:</strong>
-                                <br />
-                                Name: {student?.billingInfo?.fullName}
-                                <br />
-                                Email: {student?.billingInfo?.email}
-                                <br />
-                                Contact No: {student?.billingInfo?.contactNo}
-                              </div>
-                            </div>
-                          ) : (
-                            <div>
-                              {student?.chosenPricingPlan === "Other Plans" ? (
-                                <div className="flex-1 text-center">
-                                  <h3>Inquiry Form:</h3>
-                                </div>
-                              ) : (
-                                <div className="flex-1 text-center">
-                                  <h3>Guidance and Support Form:</h3>
-                                </div>
-                              )}
-
-                              <div>
-                                <strong>Submission User Type:</strong> {student?.userType}
-                              </div>
-                              <div>
-                                <strong>Submission Date:</strong> {formatDateTime(student?.submittedAt)?.date}
-                              </div>
-                              <div>
-                                <strong>Submission Time:</strong> {formatDateTime(student?.submittedAt)?.time}
-                              </div>
-                              <div>
-                                <strong>User TimeZone:</strong> {student?.timeZone}
-                              </div>
-
-                              <div className="border-b border-gray-300 mb-4">
-                                <strong>How often to take lessons:</strong>
-                                <ul className="list-disc ml-6">
-                                  {student?.howOftenToTakeLesson?.map((item, i) => (
-                                    <li key={i}>{item}</li>
-                                  ))}
-                                </ul>
-                              </div>
-
-                              <div>
-                                <strong>Final Exams:</strong> {student?.finalExamDate}
-                              </div>
-                              <div className="border-b border-gray-300 mb-4 pb-4">
-                                <strong>What Course To Pursue:</strong> {student?.whatCourseToPursue}
-                              </div>
-
-                              {/* Other Pricing Plan */}
-                              {student?.chosenPricingPlan === "Other Plans" ? (
-                                <>
-                                  <div className="border-b border-gray-300 mb-4 pb-4">
-                                    <div>
-                                      <strong>Seeking Tutor For:</strong>
-                                      <ul className="list-disc ml-6">
-                                        {student.seekingTutoringFor?.map((item, i) => (
-                                          <li key={i}>{item}</li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                    <div>
-                                      <strong>Tutoring objective:</strong> {student?.objective?.select}
-                                    </div>
-                                    <div>
-                                      <strong>Tutoring Plan:</strong> {student?.tutoringPlanTitle}
-                                    </div>
-                                    <div>
-                                      <strong>Tutor Level:</strong> {student?.objective?.level}
-                                    </div>
-                                    <div>
-                                      <strong>Tutor Support Type:</strong> {student?.objective?.diploma}
-                                    </div>
-                                    <div>
-                                      <strong>Price:</strong> £{student?.price}
-                                    </div>
-                                  </div>
-
-                                  <div className="border-b border-gray-300 mb-4 pb-4">
-                                    <div>
-                                      <strong>Want Guidance and Support:</strong> {student?.wantGuidanceAndSupport}
-                                    </div>
-                                    {student?.wantGuidanceAndSupport === "yes" && (
-                                      <>
-                                        <div>
-                                          <strong>Guidance & Support Subjects:</strong>
-                                          <ul className="list-disc ml-6">
-                                            {student?.guidanceAndSupportSubjects?.map((item, i) => (
-                                              <li key={i}>{item}</li>
-                                            ))}
-                                          </ul>
-                                        </div>
-                                        <div>
-                                          <strong>Guidance and Support Objective:</strong>{" "}
-                                          {student?.guidanceObjectiveTitle}
-                                        </div>
-                                        <div>
-                                          <strong>Tutor Level:</strong> {student?.guidanceObjective?.level}
-                                        </div>
-                                        <div>
-                                          <strong>Tutor Support Type:</strong> {student?.guidanceObjective?.diploma}
-                                        </div>
-                                        <div>
-                                          <strong>Price:</strong> £{student?.guidancePrice}
-                                        </div>
-                                      </>
-                                    )}
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="border-b border-gray-300 mb-4 pb-4">
-                                  <div>
-                                    <strong>Guidance & Support Subjects:</strong>
-                                    <ul className="list-disc ml-6">
-                                      {student.seekingTutoringFor?.map((item, i) => (
-                                        <li key={i}>{item}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                  <div>
-                                    <strong>Guidance and Support Objective:</strong> {student?.guidanceObjectiveTitle}
-                                  </div>
-                                  <div>
-                                    <strong>Tutor Level:</strong> {student?.guidanceObjective?.level}
-                                  </div>
-                                  <div>
-                                    <strong>Tutor Support Type:</strong> {student?.guidanceObjective?.diploma}
-                                  </div>
-                                  <div>
-                                    <strong>Price:</strong> £{student?.guidancePrice}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Student Info */}
-                              <div>
-                                <strong>Student's Information:</strong>
-                              </div>
-                              <div>
-                                <strong>First Name:</strong> {student?.userDetails?.firstName}
-                              </div>
-                              <div>
-                                <strong>Last Name:</strong> {student?.userDetails?.lastName}
-                              </div>
-                              <div>
-                                <strong>Email:</strong> {student?.userDetails?.email}
-                              </div>
-                              <div>
-                                <strong>Phone:</strong> {student?.userDetails?.phone}
-                              </div>
-                              <div>
-                                <strong>Address:</strong> {student?.userDetails?.address || "N/A"}
-                              </div>
-                              <div>
-                                <strong>City:</strong> {student?.userDetails?.city || "N/A"}
-                              </div>
-                              <div>
-                                <strong>ZIP:</strong> {student?.userDetails?.zip || "N/A"}
-                              </div>
-                              <div>
-                                <strong>Country:</strong> {student?.userDetails?.country?.label || "N/A"}
-                              </div>
-                              <div>
-                                <strong>GMT:</strong> {student?.userDetails?.gmtTimezone || "N/A"}
-                              </div>
-
-                              <br />
-                              <div>
-                                <strong>Parent's Information:</strong>
-                              </div>
-                              <div>
-                                <strong>First Name:</strong> {student?.userDetails?.parentFirstName}
-                              </div>
-                              <div>
-                                <strong>Last Name:</strong> {student?.userDetails?.parentLastName}
-                              </div>
-                              <div>
-                                <strong>Email:</strong> {student?.userDetails?.parentEmail}
-                              </div>
-                              <div>
-                                <strong>Phone:</strong> {student?.userDetails?.parentPhone}
-                              </div>
-                              <div>
-                                <strong>Relation:</strong> {student?.userDetails?.relation}
-                              </div>
-                            </div>
-                          )}
-
-                          <br />
-                          <div className="flex flex-row items-center justify-end w-full">
-                            <Button
-                              variant="outlined"
-                              className="mr-2"
-                              onClick={() => {
-                                setShowModal(true)
-                                setSelectedLink(student)
-                              }}
-                            >
-                              Mark as Processed
-                            </Button>
-
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                setCreateAccountModal(true)
-                                setSelectedStudent(student)
-                              }}
-                            >
-                              Create Account
-                            </Button>
-                          </div>
-                        </div>
-                      </AccordionDetails>
-                    </Accordion>
+            <div className="space-y-3">
+              {displayedSessions.map((student, index) => (
+                <ListItemButton
+                  key={index}
+                  onClick={() => {
+                    setSelectedLink(student);
+                    setShowModal(true);
+                  }}
+                  sx={{
+                    borderRadius: "8px",
+                    p: 1,
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "#F9FAFB" },
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium text-[#16151C]">
+                      {student?.userDetails?.firstName}{" "}
+                      {student?.userDetails?.lastName}
+                    </span>
+                    <span className="text-sm text-[#16151C]">
+                      {student?.userDetails?.email || "N/A"}
+                    </span>
                   </div>
-                ))}
+                  <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
+                </ListItemButton>
+              ))}
+            </div>
+
+            {studentData?.length === 0 && (
+              <div className="text-center text-[#16151C] pb-4 mb-2">
+                No Pending Forms
+              </div>
+            )}
+            {studentData?.length > itemsPerPage && (
+              <div className="flex items-center justify-between mt-6 py-3 bg-white">
+                <div className="text-sm text-gray-700">
+                  Showing {startIndex + 1} to {Math.min(endIndex, studentData.length)} out of{" "}
+                  {studentData.length} records
+                </div>
+                <Stack spacing={2}>
+                  <Pagination
+                    count={Math.ceil(studentData?.length / itemsPerPage)}
+                    page={currentPage}
+                    onChange={handleChangePage}
+                    color="primary"
+                    size="small"
+                  />
+                </Stack>
+              </div>
+            )}
+
+          </div>
+
+          <ProcessedStudentForm />
+        </div>
+
+        {showModal && selectedLink && (
+          <CustomModal
+            open={showModal}
+            onClose={() => {
+              setShowModal(false);
+              setSelectedLink({});
+            }}
+            PaperProps={{
+              sx: {
+                width: "90vw",
+                maxWidth: "1200px",
+                height: "auto",
+                maxHeight: "90vh",
+                overflow: "hidden",
+                borderRadius: "20px",
+                padding: 0,
+              },
+            }}
+          >
+            <div className="h-full overflow-auto p-6" style={{ boxSizing: "border-box" }}>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-[#16151C]">
+                  Pending Forms{" "}
+                  <span className="font-light text-lg">(1-1 Student Inquiry Form)</span>
+                </h2>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="text"
+                    size="small"
+                    sx={{
+                      color: "#16151C",
+                      textTransform: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      minWidth: "unset",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      "&:hover": { backgroundColor: "#f5f5f5" },
+                    }}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      width="16"
+                      height="18"
+                      viewBox="0 0 16 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ color: "#16151C" }}
+                    >
+                      <path
+                        d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
+                        stroke="#16151C"
+                        strokeWidth="1.125"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-light text-xs">Copy Text</span>
+                  </Button>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="p-1 hover:bg-gray-100 rounded"
+                  >
+                    <svg
+                      className="w-5 h-5 text-[#16151C]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+
+              {/* ---------------- Section 1 ---------------- */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm border-b border-gray-200 pb-6">
+                {/* Column 1 */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                  <span className="text-[#16151C]">Program:</span>
+                  <span className="font-semibold">{selectedLink?.program || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Class:</span>
+                  <span className="font-semibold">{selectedLink?.class || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Subjects:</span>
+                  <div className="font-semibold space-y-1">
+                    {selectedLink?.selectedSubjects?.map((sub, i) => (
+                      <div key={i}>{sub}</div>
+                    ))}
+                  </div>
+
+                  <span className="text-[#16151C]">Tutoring Support:</span>
+                  <span className="font-semibold">{selectedLink?.tutoringSupport || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Package:</span>
+                  <span className="font-semibold">{selectedLink?.package || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Hours Requested:</span>
+                  <span className="font-semibold">{selectedLink?.hours || "N/A"}</span>
+                </div>
+
+                {/* Column 2 */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                  <span className="text-[#16151C]">Lesson Dates:</span>
+                  <div className="font-semibold space-y-1">
+                    {selectedLink?.lessonDates?.map((date, i) => (
+                      <div key={i}>{date}</div>
+                    ))}
+                  </div>
+
+                  <span className="text-[#16151C]">Time Zone:</span>
+                  <span className="font-semibold">{selectedLink?.timeZone || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Support Needed:</span>
+                  <span className="font-semibold">
+                    {selectedLink?.guidanceAndSupport?.needed ? "Yes" : "No"}
+                  </span>
+
+                  <span className="text-[#16151C]">Total Cost:</span>
+                  <span className="font-semibold">£ {selectedLink?.totalCost || "N/A"}</span>
+
+                  <span className="text-[#16151C]">Cost After Support:</span>
+                  <span className="font-semibold">
+                    £ {selectedLink?.totalCostAfterGuidanceAndSupport || "N/A"}
+                  </span>
+                </div>
               </div>
 
-              {studentData?.length > itemsPerPage && (
-                <div className="flex justify-center mt-6">
-                  <Stack spacing={2}>
-                    <Pagination
-                      count={Math.ceil(studentData?.length / itemsPerPage)}
-                      page={currentPage}
-                      onChange={handleChangePage}
-                    />
-                  </Stack>
+              {/* ---------------- Section 2 ---------------- */}
+              {selectedLink?.guidanceAndSupport?.needed && (
+                <div className="mt-8 border-b border-gray-200 pb-6">
+                  <h3 className="font-bold text-[#16151C] mb-4">
+                    Guidance & Support Details
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div className="space-y-2">
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44">Assignment Types:</span>
+                        <span className="font-semibold">
+                          {selectedLink?.guidanceAndSupport?.assignmentType?.join(", ") || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44">Query:</span>
+                        <span className="font-semibold">
+                          {selectedLink?.guidanceAndSupport?.query || "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44">Requested Hours:</span>
+                        <span className="font-semibold">
+                          {selectedLink?.guidanceAndSupport?.hours || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                    {/* <div className="space-y-2">
+                      
+                    </div> */}
+                  </div>
                 </div>
               )}
 
-              {studentData?.length === 0 && <div className="text-center text-gray-400 py-12">No Pending Forms</div>}
+              {/* ---------------- Section 3 ---------------- */}
+              <div className="mt-8 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Student Info */}
+                  <div>
+                    <h3 className="font-semibold text-[#16151C] mb-4">Student Info</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-[#16151C]">Name: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.userDetails?.firstName} {selectedLink?.userDetails?.lastName}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#16151C]">Email: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.userDetails?.email}
+                        </span>
+                      </div>
 
-              <Modal
-                open={createAccountModal}
-                onClose={() => {
-                  setCreateAccountModal(false)
-                }}
-              >
-                <CustomModal>
-                  <SignupForm setCreateAccountModal={setCreateAccountModal} student={selectedStudent} />
-                </CustomModal>
-              </Modal>
+                    </div>
+                  </div>
 
-              <Dialog
-                open={showModal}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={() => {
-                  setShowModal(false)
-                }}
-              >
-                <DialogTitle>{"Please confirm to mark this as processed"}</DialogTitle>
-                <DialogActions>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => {
-                      setShowModal(false)
-                    }}
-                  >
-                    No
-                  </Button>
-                  <Button disabled={loading} variant="contained" onClick={() => handleProcessedClick(selectedLink)}>
-                    {loading ? "Confirming" : "Confirm"}
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                  {/* Parent Info */}
+                  <div>
+                    <h3 className="font-semibold text-[#16151C] mb-4">Parent Info</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-[#16151C]">Name: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.userDetails?.parentFirstName}{" "}
+                          {selectedLink?.userDetails?.parentLastName}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#16151C]">Email: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.userDetails?.parentEmail}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#16151C]">Relation: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.userDetails?.relation || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Billing Info */}
+                  <div>
+                    <h3 className="font-semibold text-[#16151C] mb-4">Billing Info</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-[#16151C]">Name: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.billingInfo?.fullName || "N/A"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#16151C]">Email: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.billingInfo?.email || "N/A"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#16151C]">Contact No: </span>
+                        <span className="font-semibold">
+                          {selectedLink?.billingInfo?.contactNo || "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ---------------- Footer Buttons ---------------- */}
+              <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
+                <Button
+                  onClick={() => setShowModal(false)}
+                  variant="outlined"
+                  sx={{
+                    width: 166,
+                    height: 50,
+                    borderRadius: "8px",
+                    borderColor: "#D1D5DB",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#374151",
+                    textTransform: "none",
+                    "&:hover": {
+                      borderColor: "#9CA3AF",
+                      backgroundColor: "#F9FAFB",
+                    },
+                  }}
+                >
+                  Back
+                </Button>
+
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: 166,
+                    height: 50,
+                    borderRadius: "8px",
+                    backgroundColor: "#4071B6", // green for create
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#FFFFFF",
+                    textTransform: "none",
+                    "&:hover": { backgroundColor: "#4071B6" },
+                  }}
+                  onClick={() => {
+                    setCreateAccountModal(true);
+                    setSelectedStudent(selectedLink);
+                  }}
+                >
+                  Create Account
+                </Button>
+
+                <Button
+                  disabled={loading}
+                  variant="contained"
+                  sx={{
+                    width: 166,
+                    height: 50,
+                    borderRadius: "8px",
+                    backgroundColor: "#4071B6",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#FFFFFF",
+                    textTransform: "none",
+                    "&:hover": { backgroundColor: "#4071B6" },
+                    "&:disabled": { backgroundColor: "#9CA3AF" },
+                  }}
+                  onClick={() => handleProcessedClick(selectedLink)}
+                >
+                  {loading ? "Processing..." : "Mark as Processed"}
+                </Button>
+              </div>
             </div>
+          </CustomModal>
 
-            <ProcessedStudentForm />
-          </div>
-        </div>
+        )}
+        <CustomModal
+          open={createAccountModal}
+          onClose={() => setCreateAccountModal(false)}
+          PaperProps={{
+            sx: {
+              width: "90vw",
+              maxWidth: "800px",
+              height: "auto",
+              maxHeight: "90vh",
+              overflow: "hidden",
+              borderRadius: "20px",
+              padding: 0,
+            },
+          }}
+        >
+          <SignupForm
+            setCreateAccountModal={setCreateAccountModal}
+            student={selectedStudent}
+          />
+        </CustomModal>
+
+
       </div>
-    </TopHeadingProvider>
-  )
-}
+    </div>
+  );
+};
 
-export default StudentForm
+export default StudentForm;

@@ -1,191 +1,303 @@
-import React, { useEffect, useState } from "react"
-import { db } from "../../firebase"
+import React, { useState, useEffect } from "react";
+import { db } from "../../firebase";
 import {
   collection,
   doc,
   onSnapshot,
+  deleteDoc,
   orderBy,
   query,
-  deleteDoc,
-} from "firebase/firestore"
-
-import Pagination from "@mui/material/Pagination"
-import Stack from "@mui/material/Stack"
-
-import Accordion from "@mui/material/Accordion"
-import AccordionSummary from "@mui/material/AccordionSummary"
-import AccordionDetails from "@mui/material/AccordionDetails"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import { Button } from "@mui/material"
-import { toast } from "react-hot-toast"
-
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogTitle from "@mui/material/DialogTitle"
-import Slide from "@mui/material/Slide"
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+} from "firebase/firestore";
+import { Button, ListItemButton, Divider } from "@mui/material";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import { toast } from "react-hot-toast";
+import CustomModal from "../../Components/CustomModal/CustomModal"
 
 const ProcessedContactUsForm = () => {
-  const [contactUsSubmissions, setContactUsSubmissions] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [selectedLink, setSelectedLink] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [contactUsSubmissions, setContactUsSubmissions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLink, setSelectedLink] = useState({});
+  const [loading, setLoading] = useState(false);
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
-    const ordersRef = collection(db, "adminPanel")
-    const customDocRef = doc(ordersRef, "processedContactUsForm")
-    const orderCollectionRef = collection(customDocRef, "processedContactUsForm")
-
-    const orderedQuery = query(orderCollectionRef, orderBy("processedAt", "desc"))
+    const ordersRef = collection(db, "adminPanel");
+    const customDocRef = doc(ordersRef, "processedContactUsForm");
+    const orderCollectionRef = collection(customDocRef, "processedContactUsForm");
+    const orderedQuery = query(orderCollectionRef, orderBy("processedAt", "desc"));
 
     const unsubscribe = onSnapshot(
       orderedQuery,
       (querySnapshot) => {
-        const fetchedData = []
+        const fetchedData = [];
         querySnapshot.forEach((doc) => {
-          fetchedData.push({ ...doc.data(), id: doc.id })
-        })
+          fetchedData.push({ ...doc.data(), id: doc.id });
+        });
 
-        fetchedData.sort((a, b) => b.submittedAt.toDate() - a.submittedAt.toDate())
-        setContactUsSubmissions(fetchedData)
+        fetchedData.sort((a, b) => b.submittedAt.toDate() - a.submittedAt.toDate());
+        setContactUsSubmissions(fetchedData);
       },
       (error) => {
-        alert("Error fetching data: ", error)
+        toast.error("Error fetching data: " + error.message);
       }
-    )
+    );
 
-    return () => {
-      unsubscribe()
-    }
-  }
+    return () => unsubscribe();
+  };
 
-  const handleDeleteClick = async (student) => {
+  const handleDeleteClick = async (item) => {
     try {
-      setLoading(true)
-      const prevOrdersRef = collection(db, "adminPanel")
-      const prevCustomDocRef = doc(prevOrdersRef, "processedContactUsForm")
-      const prevOrderCollectionRef = collection(prevCustomDocRef, "processedContactUsForm")
-
-      const studentDocRef = doc(prevOrderCollectionRef, student.id)
-      await deleteDoc(studentDocRef)
-
-      setShowModal(false)
-      toast.success("Deleted successfully")
+      setLoading(true);
+      const ordersRef = collection(db, "adminPanel");
+      const customDocRef = doc(ordersRef, "processedContactUsForm");
+      const orderCollectionRef = collection(customDocRef, "processedContactUsForm");
+      const docRef = doc(orderCollectionRef, item.id);
+      await deleteDoc(docRef);
+      setShowModal(false);
+      toast.success("Deleted successfully");
     } catch (error) {
-      toast.error("Error deleting student form")
-      console.error("Error deleting student form: ", error)
+      toast.error("Error deleting form");
+      console.error("Error deleting form: ", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
+  };
 
   const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const displayedSessions = contactUsSubmissions?.slice(startIndex, endIndex)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedSessions = contactUsSubmissions?.slice(startIndex, endIndex);
 
   function formatDateTime(timestampData) {
+    if (!timestampData) return { date: "N/A", time: "N/A" };
     const dateObject = new Date(
       timestampData.seconds * 1000 + timestampData.nanoseconds / 1000000
-    )
-
+    );
     const formattedTime = dateObject.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    })
-
+    });
     const formattedDate = dateObject.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-    })
-
-    return { date: formattedDate, time: formattedTime }
+    });
+    return { date: formattedDate, time: formattedTime };
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">Processed Forms</h2>
-        <span className="text-sm text-gray-500">
-          {String(contactUsSubmissions?.length || 0).padStart(2, "0")} Forms
+
+
+    <div className="bg-white rounded-lg border border-gray-200 p-6 w-full h-full">
+      <div className="mb-6 pb-2 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
+        <span className="text-sm text-[#16151C]">
+          {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
         </span>
       </div>
 
       <div className="space-y-3">
         {displayedSessions.map((item, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg">
-            <Accordion className="shadow-none">
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon className="text-gray-400" />}
-                className="hover:bg-gray-50"
-              >
-                <div className="flex items-center justify-between w-full pr-4">
-                  <div className="flex flex-col">
-                    <span className="font-medium text-gray-900">
-                      {item?.firstName} {item?.lastName}
-                    </span>
-                    <span className="text-sm text-gray-500">{item?.email}</span>
-                  </div>
-                </div>
-              </AccordionSummary>
-              <AccordionDetails className="border-t border-gray-100">
-                <div className="mb-4 mr-4 ml-4 space-y-1">
-                  <div>
-                    <strong>Submission Date:</strong> {formatDateTime(item?.submittedAt)?.date}
-                  </div>
-                  <div>
-                    <strong>Submission Time:</strong> {formatDateTime(item?.submittedAt)?.time}
-                  </div>
-                  <div>
-                    <strong>Email:</strong> {item?.email || "N/A"}
-                  </div>
-                  <div>
-                    <strong>Phone:</strong> {item.phone}
-                  </div>
-                  <div>
-                    <strong>Country:</strong> {item?.country?.label}
-                  </div>
-                  <div>
-                    <strong>Graduation Year:</strong> {item?.graduationYear}
-                  </div>
-                  <div>
-                    <strong>Message:</strong> {item.howCanWeSupport}
-                  </div>
-                </div>
-
-                <div className="flex justify-end items-center">
-                  <Button
-                    onClick={() => {
-                      setShowModal(true)
-                      setSelectedLink(item)
-                    }}
-                    variant="outlined"
-                    color="error"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </div>
+          <ListItemButton
+            key={index}
+            onClick={() => {
+              setSelectedLink(item);
+              setShowModal(true);
+            }}
+            sx={{
+              borderRadius: "8px",
+              p: 1,
+              cursor: "pointer",
+              "&:hover": { backgroundColor: "#F9FAFB" },
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div className="flex flex-col">
+              <span className="font-medium text-[#16151C]">
+                {item?.firstName} {item?.lastName}
+              </span>
+              <span className="text-sm text-[#16151C]">{item?.email || "N/A"}</span>
+            </div>
+            <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
+          </ListItemButton>
         ))}
       </div>
 
+      {contactUsSubmissions?.length === 0 && (
+        <div className="text-center text-[#16151C] pb-4 mb-2">
+          No Processed Forms
+        </div>
+      )}
+      {showModal && selectedLink && (
+        <CustomModal
+          open={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedLink({});
+          }}
+          PaperProps={{
+            sx: {
+              width: "90vw",
+              maxWidth: "760px",
+              height: "auto",
+              maxHeight: "90vh",
+              overflow: "hidden",
+              borderRadius: "20px",
+              padding: 0,
+            },
+          }}
+        >
+          <div className="h-full overflow-auto p-6" style={{ boxSizing: "border-box" }}>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-[#16151C]">
+                Processed Form Details
+              </h2>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{
+                    color: "#16151C",
+                    textTransform: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    minWidth: "unset",
+                    padding: "4px 8px",
+                    borderRadius: "6px",
+                    "&:hover": { backgroundColor: "#f5f5f5" },
+                  }}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    width="16"
+                    height="18"
+                    viewBox="0 0 16 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ color: "#16151C" }}
+                  >
+                    <path
+                      d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
+                      stroke="#16151C"
+                      strokeWidth="1.125"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="font-light text-xs">Copy Text</span>
+                </Button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <svg
+                    className="w-5 h-5 text-[#16151C]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <Divider sx={{ borderColor: "#E5E7EB", mb: 3 }} />
+
+            {/* Main Grid - Two Column Key-Value Layout */}
+            <div className="grid grid-cols-[auto_1fr] gap-y-3 gap-x-12 text-sm">
+              <span className="text-[#16151C] font-medium">Name:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.firstName} {selectedLink?.lastName}</span>
+
+              <span className="text-[#16151C] font-medium">Submission Date:</span>
+              <span className="text-[#16151C] font-semibold">{formatDateTime(selectedLink?.submittedAt)?.date || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Submission Time:</span>
+              <span className="text-[#16151C] font-semibold">{formatDateTime(selectedLink?.submittedAt)?.time || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Email:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.email || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Country:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.country?.label || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Phone:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.phone || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Graduation Year:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.graduationYear || "N/A"}</span>
+
+              <span className="text-[#16151C] font-medium">Message:</span>
+              <span className="text-[#16151C] font-semibold">{selectedLink?.howCanWeSupport || "N/A"}</span>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
+              <Button
+                onClick={() => setShowModal(false)}
+                variant="outlined"
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "8px",
+                  borderColor: "#D1D5DB",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#374151",
+                  textTransform: "none",
+                  "&:hover": {
+                    borderColor: "#9CA3AF",
+                    backgroundColor: "#F9FAFB",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={loading}
+                variant="outlined"
+                color="error"
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "8px",
+                  backgroundColor: "#A81E1E0D",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "#A81E1E",
+                  borderColor: "#A81E1E",
+                  textTransform: "none",
+                  "&:hover": { backgroundColor: "#A81E1E0D" },
+                  "&:disabled": { backgroundColor: "#9CA3AF" },
+                }}
+                onClick={() => handleDeleteClick(selectedLink)}
+              >
+                {loading ? "Deleting..." : "Delete"}
+              </Button>
+            </div>
+          </div>
+        </CustomModal>
+
+      )}
       {contactUsSubmissions?.length > itemsPerPage && (
         <div className="flex justify-center mt-6">
           <Stack spacing={2}>
@@ -198,42 +310,10 @@ const ProcessedContactUsForm = () => {
         </div>
       )}
 
-      {contactUsSubmissions?.length === 0 && (
-        <div className="text-center text-gray-400 py-12">No Processed Forms</div>
-      )}
-
-      <Dialog
-        open={showModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => {
-          setShowModal(false)
-        }}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Please confirm to delete this form."}</DialogTitle>
-
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setShowModal(false)
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={loading}
-            color="error"
-            variant="contained"
-            onClick={() => handleDeleteClick(selectedLink)}
-          >
-            {loading ? "Deleting" : "Delete"}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
-  )
-}
 
-export default ProcessedContactUsForm
+
+  );
+};
+
+export default ProcessedContactUsForm;
