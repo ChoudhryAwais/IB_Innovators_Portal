@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 import { db, storage } from "../../firebase"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore"
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import { toast } from "react-hot-toast"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 
 const modules = {
   toolbar: [
@@ -23,16 +23,22 @@ const modules = {
 const formats = ["header", "bold", "italic", "underline", "color", "font", "align", "size"]
 
 export default function EditBlog({ item, onClose }) {
-  const [url, setUrl] = useState(item?.url || "")
-  const [editorContent, setEditorContent] = useState(item?.content || "")
-  const [image, setImage] = useState(item?.image || null)
-  const [selectedFile, setSelectedFile] = useState(item?.selectedFile || null)
-  const [header, setHeader] = useState(item?.header || "")
-  const [seoTags, setSeoTags] = useState(item?.seoTags || "")
-  const [writtenBy, setWrittenBy] = useState(item?.writtenBy || "")
-  const [duration, setDuration] = useState(item?.duration || "")
-  const [description, setDescription] = useState(item?.description || "")
-  const [selectedTags, setSelectedTags] = useState(item?.selectedTags || [])
+  const [url, setUrl] = useState("")
+  const [editorContent, setEditorContent] = useState("")
+  const [image, setImage] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [header, setHeader] = useState("")
+  const [seoTags, setSeoTags] = useState("")
+  const [writtenBy, setWrittenBy] = useState("")
+  const [duration, setDuration] = useState("")
+  const [description, setDescription] = useState("")
+  const [selectedTags, setSelectedTags] = useState([])
+
+  const { id } = useParams()
+  const location = useLocation()
+  const blogFromState = location.state?.blog
+
+  const [blog, setBlog] = useState(item || blogFromState || null)
 
   const navigate = useNavigate()
 
@@ -54,6 +60,34 @@ export default function EditBlog({ item, onClose }) {
     "Study Skills",
     "Uncategorized",
   ]
+
+  useEffect(() => {
+    if (id && !blog) {
+      // fetch blog by id if not provided
+      const fetchBlog = async () => {
+        const blogDoc = await getDoc(doc(db, "Blogs", id))
+        if (blogDoc.exists()) {
+          setBlog({ id: blogDoc.id, ...blogDoc.data() })
+        }
+      }
+      fetchBlog()
+    }
+  }, [id, blog])
+
+  // Sync states when blog is loaded
+  useEffect(() => {
+    if (blog) {
+      setUrl(blog.url || "")
+      setEditorContent(blog.content || "")
+      setImage(blog.image || null)
+      setHeader(blog.header || "")
+      setSeoTags(blog.seoTags || "")
+      setWrittenBy(blog.writtenBy || "")
+      setDuration(blog.duration || "")
+      setDescription(blog.description || "")
+      setSelectedTags(blog.selectedTags || [])
+    }
+  }, [blog])
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -80,29 +114,49 @@ export default function EditBlog({ item, onClose }) {
         imageUrl = await getDownloadURL(storageRef)
       }
 
-      const blogsRef = doc(db, "Blogs", item?.id)
-      await updateDoc(blogsRef, {
-        content: editorContent,
-        image: imageUrl !== "" ? imageUrl : item?.image,
-        header,
-        updatedOn: new Date(),
-        seoTags,
-        url,
-        selectedTags,
-        writtenBy,
-        duration,
-        description,
-      })
+      if (blog?.id) {
+        const blogsRef = doc(db, "Blogs", blog.id)
+        await updateDoc(blogsRef, {
+          content: editorContent,
+          image: imageUrl !== "" ? imageUrl : blog?.image,
+          header,
+          updatedOn: new Date(),
+          seoTags,
+          url,
+          selectedTags,
+          writtenBy,
+          duration,
+          description,
+        })
+        toast.success("Blog updated successfully!")
+      } else {
+        // ---- CREATE MODE ----
+        const blogsRef = collection(db, "Blogs")
+        await addDoc(blogsRef, {
+          content: editorContent,
+          image: imageUrl,
+          header,
+          createdOn: new Date(),
+          seoTags,
+          url,
+          selectedTags,
+          writtenBy,
+          duration,
+          description,
+        })
+        toast.success("Blog created successfully!")
+      }
 
+      // reset fields
       setEditorContent("")
       setImage(null)
       setSelectedFile(null)
       setHeader("")
-      toast.success("Blog updated successfully!")
-      onClose && onClose()
+
+      onClose ? onClose() : navigate("/blogs")
     } catch (e) {
       console.error(e)
-      toast.error("Error updating blog")
+      toast.error("Error saving blog")
     }
   }
 
@@ -118,17 +172,18 @@ export default function EditBlog({ item, onClose }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-8">Edit Blog</h1>
+    <div className="p-6">
+        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
+          <h1 className="text-2xl font-semibold text-[#16151C] mb-6">
+            {blog?.id ? "Edit Blog" : "Create a New Blog"}
+          </h1>
 
           {/* Image Upload Section */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-medium text-gray-700 mb-2">
               Choose an image for a Blog
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors relative">
+            <div className="w-[510px] border-2 border-dashed border-[#4071B6] rounded-lg p-8 text-center hover:border-gray-400 transition-colors relative">
               {image ? (
                 <div className="relative inline-block">
                   <img
@@ -146,7 +201,7 @@ export default function EditBlog({ item, onClose }) {
                   </label>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center cursor-pointer">
+                <label className="flex flex-col items-center justify-center cursor-pointer ">
                   <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg
                       className="w-6 h-6 text-white"
@@ -162,15 +217,11 @@ export default function EditBlog({ item, onClose }) {
                       />
                     </svg>
                   </div>
-                  <p className="text-gray-600 mb-2">
-                    Drag & Drop or <span className="text-blue-600 underline">choose image</span>
+                  <p className="text-[#16151C] text-sm mb-2">
+                    Drag & Drop or <span className="text-blue-600 underline">choose image</span> to upload
                   </p>
-                  <p className="text-sm text-gray-400">Supported formats: JPEG, PNG</p>
-                  <input
-                    type="file"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
+                  <p className="text-[11px] text-[#A2A1A8]">Supported formats: Jpeg, png</p>
+                  <input type="file" onChange={handleImageChange} className="hidden" />
                 </label>
               )}
             </div>
@@ -178,7 +229,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog URL */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">
               Blog URL (without spacing, separate with "-"):
             </label>
             <input
@@ -192,7 +243,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Tags Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Tags</label>
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Select Tags</label>
             <div className="relative">
               <select
                 onChange={handleSelectChange}
@@ -232,17 +283,17 @@ export default function EditBlog({ item, onClose }) {
           {/* Written By and Reading Duration */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Written By</label>
+              <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Written By</label>
               <input
                 value={writtenBy}
                 type="text"
                 onChange={(e) => setWrittenBy(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                placeholder="Jhon Deo"
+                placeholder="John Doe"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Reading Duration</label>
+              <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Reading Duration</label>
               <input
                 value={duration}
                 type="text"
@@ -255,7 +306,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* SEO Tags */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Blog SEO Tags</label>
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog SEO Tags</label>
             <textarea
               value={seoTags}
               onChange={(e) => setSeoTags(e.target.value)}
@@ -267,7 +318,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog Header */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Blog Header (50 - 60 characters)</label>
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog Header (50 - 60 characters)</label>
             <input
               value={header}
               type="text"
@@ -282,7 +333,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog Description */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">
               Blog Description (70 - 160 characters)
             </label>
             <textarea
@@ -297,10 +348,10 @@ export default function EditBlog({ item, onClose }) {
             <div className="text-right text-sm text-gray-500 mt-1">{description?.length || 0}/160</div>
           </div>
 
-          {/* Blog Body */}
+          {/* Blog Summary */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Blog Body</label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
+            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog Summary</label>
+            <div className="rounded-lg overflow-hidden">
               <ReactQuill
                 value={editorContent}
                 onChange={setEditorContent}
@@ -310,24 +361,24 @@ export default function EditBlog({ item, onClose }) {
               />
             </div>
           </div>
-
+         
           {/* Submit Buttons */}
           <div className="flex gap-3 justify-end">
             <button
-              onClick={() => navigate("/blogs")}
+              onClick={() => (onClose ? onClose() : navigate("/blogs"))}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
-              Close
+              Cancel
             </button>
             <button
               onClick={handleBlogSubmit}
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
+              className="px-6 py-2 bg-[#4071B6] hover:bg-[#305a91] text-white rounded-lg transition-colors font-medium"
             >
-              Submit
+              {blog?.id ? "Publishing..." : "Publish"}
             </button>
           </div>
         </div>
-      </div>
+      
     </div>
   )
 }

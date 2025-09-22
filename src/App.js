@@ -97,7 +97,7 @@ function App() {
                   <Route path="/seo" element={<SEO />} />
                   <Route path="/blogs" element={<Blogs />} />
                   <Route path="/blogs/new" element={<EditBlog />} />
-
+                  <Route path="/blogs/edit/:id" element={<EditBlog />} />
                   {/* <Route path="/jobOpenings/:id" element={<JobApplication />} /> */}
                   <Route path="/supportBlogs" element={<SupportBlogs />} />
                   <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />

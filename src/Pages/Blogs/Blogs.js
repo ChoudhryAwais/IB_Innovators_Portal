@@ -7,6 +7,9 @@ import { collection, doc, addDoc, deleteDoc, query, onSnapshot } from "firebase/
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
+import Divider from "@mui/material/Divider"
+import CustomModal from "../../Components/CustomModal/CustomModal";
+
 import {
   Button,
   Dialog,
@@ -81,26 +84,37 @@ export default function Blogs() {
 
   const handleBlogSubmit = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       if (selectedFile && url !== "" && header !== "" && editorContent !== "") {
-        let imageUrl = ""
+        let imageUrl = "";
+
+        // First, upload the image to Firebase Storage
         if (selectedFile) {
-          const randomString = Math.random().toString(36).substring(7)
-          const newFileName = randomString + "_" + selectedFile.name
-          const storageRef = ref(storage, "blog_images/" + newFileName)
+          // Generate a random string to prepend to the file name
+          const randomString = Math.random().toString(36).substring(7);
+
+          // Get the file extension
+          const fileExtension = selectedFile.name.split(".").pop();
+
+          // Prepend the random string to the file name and concatenate the file extension
+          const newFileName = randomString + "_" + selectedFile.name;
+
+          // Create a storage reference with the new file name
+          const storageRef = ref(storage, "blog_images/" + newFileName);
 
           const fileArrayBuffer = await new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.onload = (e) => resolve(e.target.result)
-            reader.onerror = (e) => reject(e)
-            reader.readAsArrayBuffer(selectedFile)
-          })
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(e);
+            reader.readAsArrayBuffer(selectedFile);
+          });
 
-          await uploadBytes(storageRef, fileArrayBuffer)
-          imageUrl = await getDownloadURL(storageRef)
+          await uploadBytes(storageRef, fileArrayBuffer);
+          imageUrl = await getDownloadURL(storageRef);
         }
 
-        const blogsRef = collection(db, "Blogs")
+        // Then, save the blog content to Firestore
+        const blogsRef = collection(db, "Blogs");
         await addDoc(blogsRef, {
           content: editorContent,
           image: imageUrl,
@@ -112,21 +126,21 @@ export default function Blogs() {
           writtenBy,
           duration,
           description,
-        })
-        setEditorContent("")
-        setImage(null)
-        setSelectedFile(null)
-        setHeader("")
-        toast.success("Blog submitted successfully!")
+        });
+        setEditorContent("");
+        setImage(null);
+        setSelectedFile(null);
+        setHeader("");
+        toast.success("Blog submitted successfully!");
       } else {
-        toast.error("Please fill all details")
+        toast.error("Please fill all details");
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSelectChange = (event) => {
     const value = event.target.value
@@ -187,105 +201,159 @@ export default function Blogs() {
 
   return (
     <TopHeadingProvider>
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen p-6">
+        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
           {/* Header Section */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center  mb-8">
             <h1 className="text-2xl font-bold text-gray-900">Existing Blogs</h1>
-            <button
+            <Button
+              variant="contained"
               onClick={() => navigate("/blogs/new")}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              sx={{
+                backgroundColor: "#4071B6",
+                width: "250px",
+                height: "50px",
+                "&:hover": { backgroundColor: "#427ac9ff" },
+                color: "white",
+                px: 3,
+                py: 1.5,
+                borderRadius: "0.5rem",
+                fontWeight: 500,
+                textTransform: "none",
+                fontSize: "16px",
+              }}
             >
               + Create a new Blog
-            </button>
+            </Button>
           </div>
 
           {/* Blog Cards */}
           <div className="space-y-6">
-            {upcomingDisplayedSessions.map((blog, index) => (
-              <div key={blog.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-start gap-4">
-                  {/* Author Avatar and Info */}
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {blog.writtenBy ? blog.writtenBy.charAt(0).toUpperCase() : "A"}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{blog.writtenBy || "Amit Das"}</p>
-                      <p className="text-xs text-gray-500">4 days ago</p>
-                    </div>
-                  </div>
-
-                  {/* Blog Content */}
+            {upcomingDisplayedSessions.map((blog) => (
+              <div
+                key={blog.id}
+                className="rounded-lg pb-4 flex gap-4 items-stretch relative border-b border-gray-200"
+              >
+                {/* Left Section: Author + Blog Content */}
+                <div className="flex-1 flex items-start pb-5 pr-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{blog.header}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    {/* Author Info */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">
+                          {blog.writtenBy ? blog.writtenBy.charAt(0).toUpperCase() : "A"}
+                        </span>
+                      </div>
+                      <div flex className="flex items-center gap-1">
+                        <p className="text-sm  text-#16151C">
+                          {blog.writtenBy || "Amit Das"}
+                        </p>
+                        <p className="text-sm text-[#757575]">- 4 days ago</p>
+                      </div>
+                    </div>
+
+                    {/* Blog Title */}
+                    <h3 className="text-lg text-[#16151C] mb-2">
+                      {blog.header}
+                    </h3>
+
+                    {/* Blog Content */}
+                    <p className="text-[#16151C] text-base leading-relaxed">
                       {blog.description ||
-                        "An intense way to learn about the process and practice your designs skills — My 1st hackathon Hackathons have been on my mind since I heard it was a good way to gain experience as a junior UX designer. As my portfolio..."}
+                        "N/A"}
                     </p>
                   </div>
 
                   {/* Blog Image */}
-                  <div className="flex-shrink-0 ml-4">
-                    <div className="w-32 h-20 bg-black rounded-lg overflow-hidden">
-                      {blog.image ? (
-                        <img
-                          src={blog.image || "/placeholder.svg"}
-                          alt={blog.header}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                          <div className="text-green-200">
-                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                              <path
-                                fillRule="evenodd"
-                                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
+                  <div className="w-[140px] h-full bg-black rounded-lg overflow-hidden ml-4">
+                    {blog.image ? (
+                      <img
+                        src={blog.image || "/placeholder.svg"}
+                        alt={blog.header}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                        <div className="text-green-200">
+                          <svg
+                            className="w-8 h-8"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
+                </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 ml-4">
-                    <button
+                {/* Right Section: Buttons (bottom aligned) */}
+                <div className="flex flex-col justify-end">
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outlined"
+                      color="error"
                       onClick={() => {
-                        setSelectedLink(blog)
-                        setShowModal(true)
+                        setSelectedLink(blog);
+                        setShowModal(true);
                       }}
-                      className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium"
+                      sx={{
+                        borderRadius: "8px",
+                        width: "118px",
+                        height: "36px",
+                        color: "#A81E1E",
+                        backgroundColor: "#A81E1E0D",
+                        borderColor: "#A81E1E",
+                        fontSize: "11.36px",
+                      }}
                     >
                       Delete
-                    </button>
-                    <button
-                      onClick={() => navigate("/blogs/new")}
-                      className="px-4 py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium"
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => navigate(`/blogs/edit/${blog.id}`, { state: { blog } })}
+                      sx={{
+                        borderRadius: "8px",
+                        width: "118px",
+                        height: "36px",
+                        color: "#4071B6",
+                        backgroundColor: "#4071B60D",
+                        borderColor: "#4071B6",
+                        fontSize: "11.36px",
+                      }}
                     >
                       Edit
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
+
+
           {/* No Blogs Message */}
           {blogs?.length === 0 && <div className="text-center text-gray-400 text-xl py-20">No Blogs</div>}
 
           {/* Pagination */}
           {blogs?.length > upcomingItemsPerPage && (
-            <div className="flex items-center justify-center mt-8">
+            <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white ">
+              <div className="text-sm text-gray-700">
+                Showing {upcomingStartIndex + 1} to {Math.min(upcomingEndIndex, blogs.length)} out of {blogs.length} records
+              </div>
               <Stack spacing={2}>
                 <Pagination
                   count={Math.ceil(blogs?.length / upcomingItemsPerPage)}
                   page={upcomingCurrentPage}
                   onChange={handleUpcomingChangePage}
+                  color="primary"
+                  size="small"
                 />
               </Stack>
             </div>
@@ -293,40 +361,57 @@ export default function Blogs() {
         </div>
 
         {/* Delete Dialog */}
-        <Dialog
-          open={showModal}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={() => setShowModal(false)}
-        >
-          <DialogTitle className="text-lg font-semibold text-gray-900">
-            Are you sure you want to delete this Post?
-          </DialogTitle>
-          <DialogActions className="flex gap-2 p-4">
-            <Button
-              onClick={() => setShowModal(false)}
-              sx={{
-                border: "1px solid #d1d5db",
-                color: "#374151",
-                textTransform: "none",
-                "&:hover": { backgroundColor: "#f9fafb" },
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => deleteBlog(selectedLink?.id)}
-              sx={{
-                backgroundColor: "#2563eb",
-                color: "white",
-                textTransform: "none",
-                "&:hover": { backgroundColor: "#1d4ed8" },
-              }}
-            >
-              Yes
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <CustomModal open={showModal} onClose={() => setShowModal(false)}>
+  {/* Title */}
+  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+    Delete Post
+  </h2>
+
+  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+  {/* Message */}
+  <p className="text-lg text-center font-light text-[#16151C] mb-12">
+    Are you sure you want to permanently delete this post?
+  </p>
+
+  {/* Buttons */}
+  <div className="flex gap-3 justify-end">
+    <Button
+      onClick={() => setShowModal(false)}
+      variant="outlined"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        borderColor: "#A2A1A833",
+        fontSize: "16px",
+        fontWeight: 300,
+        color: "#16151C",
+        textTransform: "none",
+      }}
+    >
+      Cancel
+    </Button>
+    <Button
+      onClick={() => deleteBlog(selectedLink?.id)}
+      variant="contained"
+      sx={{
+        width: 166,
+        height: 50,
+        borderRadius: "10px",
+        backgroundColor: "#4071B6",
+        fontSize: "20px",
+        fontWeight: 300,
+        color: "#FFFFFF",
+        textTransform: "none",
+        "&:hover": { backgroundColor: "#305a91" },
+      }}
+    >
+      Yes
+    </Button>
+  </div>
+</CustomModal>
+
 
 
         {/* Edit Modal (kept intact for other workflow) */}
