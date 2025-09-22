@@ -16,6 +16,8 @@ import SignUpOnly from "./Pages/SignUp/SignUpOnly";
 
 import StudentForm from "./Pages/studentForm/StudentForm";
 import TutorForm from "./Pages/tutorForm/TutorForm";
+import SignupForm from "./Pages/tutorForm/SignupForm";
+
 import Blogs from "./Pages/Blogs/Blogs";
 import EditBlog from "./Pages/Blogs/EditBlog";
 
@@ -104,6 +106,8 @@ function App() {
                   <Route path="/coursesForms" element={<CourseTabs />} />
                   {/* <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} /> */}
                   <Route path="/tutorForms" element={<TutorForm />} />
+                  <Route path="/signup" element={<SignupForm />} />
+
                   <Route path="/tutorsAndSubjects" element={<TutorPages />} />
                   <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
                   <Route path="/tutorsAndSubjects/:tutorId/edit" element={<EditProfile />} />

@@ -98,7 +98,7 @@ const ProcessedStudentForm = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 w-full h-full">
+    <div className="bg-white rounded-lg border border-gray-200 p-6 w-full">
       <div className="mb-6 pb-2 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
         <span className="text-sm text-[#16151C]">

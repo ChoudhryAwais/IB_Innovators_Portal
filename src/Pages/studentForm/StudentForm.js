@@ -20,6 +20,7 @@ import CustomModal from "../../Components/CustomModal/CustomModal"
 import SignupForm from "./SignupForm";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
 
 const StudentForm = () => {
   const { isUserLoggedIn, setIsUserLoggedIn, setUserType, setUserDetails, userType } =
@@ -32,6 +33,13 @@ const StudentForm = () => {
   const [createAccountModal, setCreateAccountModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState({});
   const [processedCount, setProcessedCount] = useState(0); //processed student form count
+
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
+
+  useEffect(() => {
+    setFirstMessage("1-1 Student Inquiry")
+    setSecondMessage("Show all Student Forms")
+  }, [setFirstMessage, setSecondMessage])
 
 
   useEffect(() => {
@@ -134,95 +142,409 @@ const StudentForm = () => {
   }
 
   return (
-    <div className="h-full bg-white p-6 grid place-items-start">
-      <div className="w-full mx-auto border border-gray-200 rounded-lg p-6 h-full">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-          Student Forms ({(studentData?.length || 0) + (processedCount || 0)})
-        </h1>
+    <TopHeadingProvider>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          {/* Pending Forms */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="mb-6 pb-2 border-b border-gray-200 ">
-              <h2 className="text-lg font-semibold text-[#16151C]">
-                Pending Forms
-              </h2>
-              <span className="text-sm text-[#16151C]">
-                {String(studentData?.length).padStart(2, "0")} Forms
-              </span>
-            </div>
+      <div className="h-full bg-white p-6 grid place-items-start">
+        <div className="w-full mx-auto border border-gray-200 rounded-lg p-6 h-full">
+          <h1 className="text-2xl font-semibold text-gray-900 mb-6">
+            Student Forms ({(studentData?.length || 0) + (processedCount || 0)})
+          </h1>
 
-            <div className="space-y-3">
-              {displayedSessions.map((student, index) => (
-                <ListItemButton
-                  key={index}
-                  onClick={() => {
-                    setSelectedLink(student);
-                    setShowModal(true);
-                  }}
-                  sx={{
-                    borderRadius: "8px",
-                    p: 1,
-                    cursor: "pointer",
-                    "&:hover": { backgroundColor: "#F9FAFB" },
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div className="flex flex-col">
-                    <span className="font-medium text-[#16151C]">
-                      {student?.userDetails?.firstName}{" "}
-                      {student?.userDetails?.lastName}
-                    </span>
-                    <span className="text-sm text-[#16151C]">
-                      {student?.userDetails?.email || "N/A"}
-                    </span>
-                  </div>
-                  <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
-                </ListItemButton>
-              ))}
-            </div>
-
-            {studentData?.length === 0 && (
-              <div className="text-center text-[#16151C] pb-4 mb-2">
-                No Pending Forms
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            {/* Pending Forms */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="mb-6 pb-2 border-b border-gray-200 ">
+                <h2 className="text-lg font-semibold text-[#16151C]">
+                  Pending Forms
+                </h2>
+                <span className="text-sm text-[#16151C]">
+                  {String(studentData?.length).padStart(2, "0")} Forms
+                </span>
               </div>
-            )}
-            {studentData?.length > itemsPerPage && (
-              <div className="flex items-center justify-between mt-6 py-3 bg-white">
-                <div className="text-sm text-gray-700">
-                  Showing {startIndex + 1} to {Math.min(endIndex, studentData.length)} out of{" "}
-                  {studentData.length} records
+
+              <div className="space-y-3">
+                {displayedSessions.map((student, index) => (
+                  <ListItemButton
+                    key={index}
+                    onClick={() => {
+                      setSelectedLink(student);
+                      setShowModal(true);
+                    }}
+                    sx={{
+                      borderRadius: "8px",
+                      p: 1,
+                      cursor: "pointer",
+                      "&:hover": { backgroundColor: "#F9FAFB" },
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium text-[#16151C]">
+                        {student?.userDetails?.firstName}{" "}
+                        {student?.userDetails?.lastName}
+                      </span>
+                      <span className="text-sm text-[#16151C]">
+                        {student?.userDetails?.email || "N/A"}
+                      </span>
+                    </div>
+                    <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
+                  </ListItemButton>
+                ))}
+              </div>
+
+              {studentData?.length === 0 && (
+                <div className="text-center text-[#16151C] pb-4 mb-2">
+                  No Pending Forms
                 </div>
-                <Stack spacing={2}>
-                  <Pagination
-                    count={Math.ceil(studentData?.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handleChangePage}
-                    color="primary"
-                    size="small"
-                  />
-                </Stack>
-              </div>
-            )}
+              )}
+              {studentData?.length > itemsPerPage && (
+                <div className="flex items-center justify-between mt-6 py-3 bg-white">
+                  <div className="text-sm text-gray-700">
+                    Showing {startIndex + 1} to {Math.min(endIndex, studentData.length)} out of{" "}
+                    {studentData.length} records
+                  </div>
+                  <Stack spacing={2}>
+                    <Pagination
+                      count={Math.ceil(studentData?.length / itemsPerPage)}
+                      page={currentPage}
+                      onChange={handleChangePage}
+                      color="primary"
+                      size="small"
+                    />
+                  </Stack>
+                </div>
+              )}
 
+            </div>
+
+            <ProcessedStudentForm />
           </div>
 
-          <ProcessedStudentForm />
-        </div>
+          {showModal && selectedLink && (
+            <CustomModal
+              open={showModal}
+              onClose={() => {
+                setShowModal(false);
+                setSelectedLink({});
+              }}
+              PaperProps={{
+                sx: {
+                  width: "90vw",
+                  maxWidth: "1200px",
+                  height: "auto",
+                  maxHeight: "90vh",
+                  overflow: "hidden",
+                  borderRadius: "20px",
+                  padding: 0,
+                },
+              }}
+            >
+              <div className="h-full overflow-auto p-6" style={{ boxSizing: "border-box" }}>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-[#16151C]">
+                    Pending Forms{" "}
+                    <span className="font-light text-lg">(1-1 Student Inquiry Form)</span>
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="text"
+                      size="small"
+                      sx={{
+                        color: "#16151C",
+                        textTransform: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        minWidth: "unset",
+                        padding: "4px 8px",
+                        borderRadius: "6px",
+                        "&:hover": { backgroundColor: "#f5f5f5" },
+                      }}
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        width="16"
+                        height="18"
+                        viewBox="0 0 16 18"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ color: "#16151C" }}
+                      >
+                        <path
+                          d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
+                          stroke="#16151C"
+                          strokeWidth="1.125"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className="font-light text-xs">Copy Text</span>
+                    </Button>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
+                      <svg
+                        className="w-5 h-5 text-[#16151C]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-        {showModal && selectedLink && (
+
+                {/* ---------------- Section 1 ---------------- */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm border-b border-gray-200 pb-6">
+                  {/* Column 1 */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <span className="text-[#16151C]">Program:</span>
+                    <span className="font-semibold">{selectedLink?.program || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Class:</span>
+                    <span className="font-semibold">{selectedLink?.class || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Subjects:</span>
+                    <div className="font-semibold space-y-1">
+                      {selectedLink?.selectedSubjects?.map((sub, i) => (
+                        <div key={i}>{sub}</div>
+                      ))}
+                    </div>
+
+                    <span className="text-[#16151C]">Tutoring Support:</span>
+                    <span className="font-semibold">{selectedLink?.tutoringSupport || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Package:</span>
+                    <span className="font-semibold">{selectedLink?.package || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Hours Requested:</span>
+                    <span className="font-semibold">{selectedLink?.hours || "N/A"}</span>
+                  </div>
+
+                  {/* Column 2 */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <span className="text-[#16151C]">Lesson Dates:</span>
+                    <div className="font-semibold space-y-1">
+                      {selectedLink?.lessonDates?.map((date, i) => (
+                        <div key={i}>{date}</div>
+                      ))}
+                    </div>
+
+                    <span className="text-[#16151C]">Time Zone:</span>
+                    <span className="font-semibold">{selectedLink?.timeZone || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Support Needed:</span>
+                    <span className="font-semibold">
+                      {selectedLink?.guidanceAndSupport?.needed ? "Yes" : "No"}
+                    </span>
+
+                    <span className="text-[#16151C]">Total Cost:</span>
+                    <span className="font-semibold">£ {selectedLink?.totalCost || "N/A"}</span>
+
+                    <span className="text-[#16151C]">Cost After Support:</span>
+                    <span className="font-semibold">
+                      £ {selectedLink?.totalCostAfterGuidanceAndSupport || "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* ---------------- Section 2 ---------------- */}
+                {selectedLink?.guidanceAndSupport?.needed && (
+                  <div className="mt-8 border-b border-gray-200 pb-6">
+                    <h3 className="font-bold text-[#16151C] mb-4">
+                      Guidance & Support Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                      <div className="space-y-2">
+                        <div className="flex">
+                          <span className="text-[#16151C] w-44">Assignment Types:</span>
+                          <span className="font-semibold">
+                            {selectedLink?.guidanceAndSupport?.assignmentType?.join(", ") || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="text-[#16151C] w-44">Query:</span>
+                          <span className="font-semibold">
+                            {selectedLink?.guidanceAndSupport?.query || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="text-[#16151C] w-44">Requested Hours:</span>
+                          <span className="font-semibold">
+                            {selectedLink?.guidanceAndSupport?.hours || "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                      {/* <div className="space-y-2">
+                      
+                    </div> */}
+                    </div>
+                  </div>
+                )}
+
+                {/* ---------------- Section 3 ---------------- */}
+                <div className="mt-8 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Student Info */}
+                    <div>
+                      <h3 className="font-semibold text-[#16151C] mb-4">Student Info</h3>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-[#16151C]">Name: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.userDetails?.firstName} {selectedLink?.userDetails?.lastName}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#16151C]">Email: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.userDetails?.email}
+                          </span>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    {/* Parent Info */}
+                    <div>
+                      <h3 className="font-semibold text-[#16151C] mb-4">Parent Info</h3>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-[#16151C]">Name: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.userDetails?.parentFirstName}{" "}
+                            {selectedLink?.userDetails?.parentLastName}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#16151C]">Email: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.userDetails?.parentEmail}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#16151C]">Relation: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.userDetails?.relation || "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Billing Info */}
+                    <div>
+                      <h3 className="font-semibold text-[#16151C] mb-4">Billing Info</h3>
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-[#16151C]">Name: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.billingInfo?.fullName || "N/A"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#16151C]">Email: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.billingInfo?.email || "N/A"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[#16151C]">Contact No: </span>
+                          <span className="font-semibold">
+                            {selectedLink?.billingInfo?.contactNo || "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ---------------- Footer Buttons ---------------- */}
+                <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
+                  <Button
+                    onClick={() => setShowModal(false)}
+                    variant="outlined"
+                    sx={{
+                      width: 166,
+                      height: 50,
+                      borderRadius: "8px",
+                      borderColor: "#D1D5DB",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      color: "#374151",
+                      textTransform: "none",
+                      "&:hover": {
+                        borderColor: "#9CA3AF",
+                        backgroundColor: "#F9FAFB",
+                      },
+                    }}
+                  >
+                    Back
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    sx={{
+                      width: 166,
+                      height: 50,
+                      borderRadius: "8px",
+                      backgroundColor: "#4071B6", // green for create
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      color: "#FFFFFF",
+                      textTransform: "none",
+                      "&:hover": { backgroundColor: "#4071B6" },
+                    }}
+                    onClick={() => {
+                      setCreateAccountModal(true);
+                      setSelectedStudent(selectedLink);
+                    }}
+                  >
+                    Create Account
+                  </Button>
+
+                  <Button
+                    disabled={loading}
+                    variant="contained"
+                    sx={{
+                      width: 166,
+                      height: 50,
+                      borderRadius: "8px",
+                      backgroundColor: "#4071B6",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      color: "#FFFFFF",
+                      textTransform: "none",
+                      "&:hover": { backgroundColor: "#4071B6" },
+                      "&:disabled": { backgroundColor: "#9CA3AF" },
+                    }}
+                    onClick={() => handleProcessedClick(selectedLink)}
+                  >
+                    {loading ? "Processing..." : "Mark as Processed"}
+                  </Button>
+                </div>
+              </div>
+            </CustomModal>
+
+          )}
           <CustomModal
-            open={showModal}
-            onClose={() => {
-              setShowModal(false);
-              setSelectedLink({});
-            }}
+            open={createAccountModal}
+            onClose={() => setCreateAccountModal(false)}
             PaperProps={{
               sx: {
                 width: "90vw",
-                maxWidth: "1200px",
+                maxWidth: "800px",
                 height: "auto",
                 maxHeight: "90vh",
                 overflow: "hidden",
@@ -231,327 +553,16 @@ const StudentForm = () => {
               },
             }}
           >
-            <div className="h-full overflow-auto p-6" style={{ boxSizing: "border-box" }}>
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-[#16151C]">
-                  Pending Forms{" "}
-                  <span className="font-light text-lg">(1-1 Student Inquiry Form)</span>
-                </h2>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="text"
-                    size="small"
-                    sx={{
-                      color: "#16151C",
-                      textTransform: "none",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                      minWidth: "unset",
-                      padding: "4px 8px",
-                      borderRadius: "6px",
-                      "&:hover": { backgroundColor: "#f5f5f5" },
-                    }}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      width="16"
-                      height="18"
-                      viewBox="0 0 16 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      style={{ color: "#16151C" }}
-                    >
-                      <path
-                        d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
-                        stroke="#16151C"
-                        strokeWidth="1.125"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="font-light text-xs">Copy Text</span>
-                  </Button>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="p-1 hover:bg-gray-100 rounded"
-                  >
-                    <svg
-                      className="w-5 h-5 text-[#16151C]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
-
-
-              {/* ---------------- Section 1 ---------------- */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm border-b border-gray-200 pb-6">
-                {/* Column 1 */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                  <span className="text-[#16151C]">Program:</span>
-                  <span className="font-semibold">{selectedLink?.program || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Class:</span>
-                  <span className="font-semibold">{selectedLink?.class || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Subjects:</span>
-                  <div className="font-semibold space-y-1">
-                    {selectedLink?.selectedSubjects?.map((sub, i) => (
-                      <div key={i}>{sub}</div>
-                    ))}
-                  </div>
-
-                  <span className="text-[#16151C]">Tutoring Support:</span>
-                  <span className="font-semibold">{selectedLink?.tutoringSupport || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Package:</span>
-                  <span className="font-semibold">{selectedLink?.package || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Hours Requested:</span>
-                  <span className="font-semibold">{selectedLink?.hours || "N/A"}</span>
-                </div>
-
-                {/* Column 2 */}
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                  <span className="text-[#16151C]">Lesson Dates:</span>
-                  <div className="font-semibold space-y-1">
-                    {selectedLink?.lessonDates?.map((date, i) => (
-                      <div key={i}>{date}</div>
-                    ))}
-                  </div>
-
-                  <span className="text-[#16151C]">Time Zone:</span>
-                  <span className="font-semibold">{selectedLink?.timeZone || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Support Needed:</span>
-                  <span className="font-semibold">
-                    {selectedLink?.guidanceAndSupport?.needed ? "Yes" : "No"}
-                  </span>
-
-                  <span className="text-[#16151C]">Total Cost:</span>
-                  <span className="font-semibold">£ {selectedLink?.totalCost || "N/A"}</span>
-
-                  <span className="text-[#16151C]">Cost After Support:</span>
-                  <span className="font-semibold">
-                    £ {selectedLink?.totalCostAfterGuidanceAndSupport || "N/A"}
-                  </span>
-                </div>
-              </div>
-
-              {/* ---------------- Section 2 ---------------- */}
-              {selectedLink?.guidanceAndSupport?.needed && (
-                <div className="mt-8 border-b border-gray-200 pb-6">
-                  <h3 className="font-bold text-[#16151C] mb-4">
-                    Guidance & Support Details
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                    <div className="space-y-2">
-                      <div className="flex">
-                        <span className="text-[#16151C] w-44">Assignment Types:</span>
-                        <span className="font-semibold">
-                          {selectedLink?.guidanceAndSupport?.assignmentType?.join(", ") || "N/A"}
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <span className="text-[#16151C] w-44">Query:</span>
-                        <span className="font-semibold">
-                          {selectedLink?.guidanceAndSupport?.query || "N/A"}
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <span className="text-[#16151C] w-44">Requested Hours:</span>
-                        <span className="font-semibold">
-                          {selectedLink?.guidanceAndSupport?.hours || "N/A"}
-                        </span>
-                      </div>
-                    </div>
-                    {/* <div className="space-y-2">
-                      
-                    </div> */}
-                  </div>
-                </div>
-              )}
-
-              {/* ---------------- Section 3 ---------------- */}
-              <div className="mt-8 text-sm">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {/* Student Info */}
-                  <div>
-                    <h3 className="font-semibold text-[#16151C] mb-4">Student Info</h3>
-                    <div className="space-y-2">
-                      <div>
-                        <span className="text-[#16151C]">Name: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.userDetails?.firstName} {selectedLink?.userDetails?.lastName}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[#16151C]">Email: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.userDetails?.email}
-                        </span>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  {/* Parent Info */}
-                  <div>
-                    <h3 className="font-semibold text-[#16151C] mb-4">Parent Info</h3>
-                    <div className="space-y-2">
-                      <div>
-                        <span className="text-[#16151C]">Name: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.userDetails?.parentFirstName}{" "}
-                          {selectedLink?.userDetails?.parentLastName}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[#16151C]">Email: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.userDetails?.parentEmail}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[#16151C]">Relation: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.userDetails?.relation || "N/A"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Billing Info */}
-                  <div>
-                    <h3 className="font-semibold text-[#16151C] mb-4">Billing Info</h3>
-                    <div className="space-y-2">
-                      <div>
-                        <span className="text-[#16151C]">Name: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.billingInfo?.fullName || "N/A"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[#16151C]">Email: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.billingInfo?.email || "N/A"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-[#16151C]">Contact No: </span>
-                        <span className="font-semibold">
-                          {selectedLink?.billingInfo?.contactNo || "N/A"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ---------------- Footer Buttons ---------------- */}
-              <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
-                <Button
-                  onClick={() => setShowModal(false)}
-                  variant="outlined"
-                  sx={{
-                    width: 166,
-                    height: 50,
-                    borderRadius: "8px",
-                    borderColor: "#D1D5DB",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "#374151",
-                    textTransform: "none",
-                    "&:hover": {
-                      borderColor: "#9CA3AF",
-                      backgroundColor: "#F9FAFB",
-                    },
-                  }}
-                >
-                  Back
-                </Button>
-
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: 166,
-                    height: 50,
-                    borderRadius: "8px",
-                    backgroundColor: "#4071B6", // green for create
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "#FFFFFF",
-                    textTransform: "none",
-                    "&:hover": { backgroundColor: "#4071B6" },
-                  }}
-                  onClick={() => {
-                    setCreateAccountModal(true);
-                    setSelectedStudent(selectedLink);
-                  }}
-                >
-                  Create Account
-                </Button>
-
-                <Button
-                  disabled={loading}
-                  variant="contained"
-                  sx={{
-                    width: 166,
-                    height: 50,
-                    borderRadius: "8px",
-                    backgroundColor: "#4071B6",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "#FFFFFF",
-                    textTransform: "none",
-                    "&:hover": { backgroundColor: "#4071B6" },
-                    "&:disabled": { backgroundColor: "#9CA3AF" },
-                  }}
-                  onClick={() => handleProcessedClick(selectedLink)}
-                >
-                  {loading ? "Processing..." : "Mark as Processed"}
-                </Button>
-              </div>
-            </div>
+            <SignupForm
+              setCreateAccountModal={setCreateAccountModal}
+              student={selectedStudent}
+            />
           </CustomModal>
 
-        )}
-        <CustomModal
-          open={createAccountModal}
-          onClose={() => setCreateAccountModal(false)}
-          PaperProps={{
-            sx: {
-              width: "90vw",
-              maxWidth: "800px",
-              height: "auto",
-              maxHeight: "90vh",
-              overflow: "hidden",
-              borderRadius: "20px",
-              padding: 0,
-            },
-          }}
-        >
-          <SignupForm
-            setCreateAccountModal={setCreateAccountModal}
-            student={selectedStudent}
-          />
-        </CustomModal>
-
-
+        </div>
       </div>
-    </div>
+    </TopHeadingProvider>
+
   );
 };
 

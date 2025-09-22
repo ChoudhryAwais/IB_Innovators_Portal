@@ -99,7 +99,7 @@ const ProcessedContactUsForm = () => {
   return (
 
 
-    <div className="bg-white rounded-lg border border-gray-200 p-6 w-full h-full">
+    <div className="bg-white rounded-lg border border-gray-200 p-6 w-full">
       <div className="mb-6 pb-2 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
         <span className="text-sm text-[#16151C]">
@@ -274,19 +274,17 @@ const ProcessedContactUsForm = () => {
               </Button>
               <Button
                 disabled={loading}
-                variant="outlined"
+                variant="contained"
                 color="error"
                 sx={{
                   width: 166,
                   height: 50,
                   borderRadius: "8px",
-                  backgroundColor: "#A81E1E0D",
                   fontSize: "14px",
                   fontWeight: 500,
-                  color: "#A81E1E",
-                  borderColor: "#A81E1E",
+                  color: "#FFFFFF",
                   textTransform: "none",
-                  "&:hover": { backgroundColor: "#A81E1E0D" },
+                  "&:hover": { backgroundColor: "#EF4444" },
                   "&:disabled": { backgroundColor: "#9CA3AF" },
                 }}
                 onClick={() => handleDeleteClick(selectedLink)}

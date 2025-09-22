@@ -7,8 +7,8 @@ import RevisionCoursesForm from "../revisionCourseForm/RevisionCoursesForm"
 import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
 
 export const CourseTabs = () => {
-  const { setFirstMessage, setSecondMessage } = useTopHeading()
   const [activeTab, setActiveTab] = useState("upcoming")
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
 
   useEffect(() => {
     setFirstMessage("Courses")

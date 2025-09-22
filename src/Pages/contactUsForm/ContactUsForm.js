@@ -16,6 +16,7 @@ import ProcessedContactUsForm from "./ProcessedContactUsForm";
 import { toast } from "react-hot-toast";
 import { Button, ListItemButton, Divider } from "@mui/material";
 import CustomModal from "../../Components/CustomModal/CustomModal"
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
 
 const ContactUsForm = () => {
   const {
@@ -31,6 +32,13 @@ const ContactUsForm = () => {
   const [selectedLink, setSelectedLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [processedCount, setProcessedCount] = useState(0); //processed contactus form count
+
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
+  
+    useEffect(() => {
+      setFirstMessage("Contact Us")
+      setSecondMessage("Show all Contact Us Forms")
+    }, [setFirstMessage, setSecondMessage])
 
   useEffect(() => {
     fetchData();
@@ -126,7 +134,8 @@ const ContactUsForm = () => {
   }
 
   return (
-    
+        <TopHeadingProvider>
+
     <div className="h-full bg-white p-6 grid place-items-start">
       <div className="w-full mx-auto border border-gray-200 rounded-lg p-6 h-full">
         <h1 className="text-2xl font-semibold text-gray-900 mb-6">
@@ -341,6 +350,8 @@ const ContactUsForm = () => {
         )}
       </div>
     </div>
+        </TopHeadingProvider>
+
   );
 };
 
