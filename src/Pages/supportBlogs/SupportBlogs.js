@@ -206,7 +206,7 @@ export default function SupportBlogs() {
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleEditBlog(blog)}
+                        onClick={() => navigate(`/supportBlogs/edit/${blog.id}`, { state: { blog } })}
                         sx={{
                           borderRadius: "8px",
                           width: "118px",
@@ -257,51 +257,51 @@ export default function SupportBlogs() {
 
           {/* Delete Confirmation Modal */}
           <CustomModal open={showModal} onClose={() => setShowModal(false)}>
-  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-    Delete Post
-  </h2>
+            <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+              Delete Post
+            </h2>
 
-  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+            <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-  <p className="text-lg text-center font-light text-[#16151C] mb-12">
-    Are you sure you want to permanently delete this post?
-  </p>
+            <p className="text-lg text-center font-light text-[#16151C] mb-12">
+              Are you sure you want to permanently delete this post?
+            </p>
 
-  <div className="flex gap-3 justify-end">
-    <Button
-      onClick={() => setShowModal(false)}
-      variant="outlined"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        borderColor: "#A2A1A833",
-        fontSize: "16px",
-        fontWeight: 300,
-        color: "#16151C",
-      }}
-    >
-      Cancel
-    </Button>
-    <Button
-      disabled={loading}
-      variant="contained"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        backgroundColor: "#4071B6",
-        fontSize: "20px",
-        fontWeight: 300,
-        color: "#FFFFFF",
-        "&:hover": { backgroundColor: "#305a91" },
-      }}
-      onClick={() => deleteBlog(selectedBlog?.id)}
-    >
-      {loading ? "Deleting..." : "Yes"}
-    </Button>
-  </div>
-</CustomModal>
+            <div className="flex gap-3 justify-end">
+              <Button
+                onClick={() => setShowModal(false)}
+                variant="outlined"
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "10px",
+                  borderColor: "#A2A1A833",
+                  fontSize: "16px",
+                  fontWeight: 300,
+                  color: "#16151C",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={loading}
+                variant="contained"
+                sx={{
+                  width: 166,
+                  height: 50,
+                  borderRadius: "10px",
+                  backgroundColor: "#4071B6",
+                  fontSize: "20px",
+                  fontWeight: 300,
+                  color: "#FFFFFF",
+                  "&:hover": { backgroundColor: "#305a91" },
+                }}
+                onClick={() => deleteBlog(selectedBlog?.id)}
+              >
+                {loading ? "Deleting..." : "Yes"}
+              </Button>
+            </div>
+          </CustomModal>
 
 
 

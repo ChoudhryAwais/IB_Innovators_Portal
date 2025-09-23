@@ -8,6 +8,9 @@ import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore"
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import { toast } from "react-hot-toast"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
+import Button from "@mui/material/Button";
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
+
 
 const modules = {
   toolbar: [
@@ -23,6 +26,13 @@ const modules = {
 const formats = ["header", "bold", "italic", "underline", "color", "font", "align", "size"]
 
 export default function EditBlog({ item, onClose }) {
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
+
+  useEffect(() => {
+    setFirstMessage("Blogs")
+    setSecondMessage("Show all Blogs")
+  }, [setFirstMessage, setSecondMessage])
+
   const [url, setUrl] = useState("")
   const [editorContent, setEditorContent] = useState("")
   const [image, setImage] = useState(null)
@@ -172,7 +182,9 @@ export default function EditBlog({ item, onClose }) {
   }
 
   return (
-    <div className="p-6">
+    <TopHeadingProvider>
+
+      <div className="p-6">
         <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
           <h1 className="text-2xl font-semibold text-[#16151C] mb-6">
             {blog?.id ? "Edit Blog" : "Create a New Blog"}
@@ -361,24 +373,54 @@ export default function EditBlog({ item, onClose }) {
               />
             </div>
           </div>
-         
+
           {/* Submit Buttons */}
           <div className="flex gap-3 justify-end">
-            <button
+            <Button
+              variant="outlined"
               onClick={() => (onClose ? onClose() : navigate("/blogs"))}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "0.5rem",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                borderColor: "grey.400",
+                color: "text.primary",
+                "&:hover": {
+                  backgroundColor: "grey.100",
+                  borderColor: "grey.400",
+                },
+              }}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+
+            <Button
+              variant="contained"
               onClick={handleBlogSubmit}
-              className="px-6 py-2 bg-[#4071B6] hover:bg-[#305a91] text-white rounded-lg transition-colors font-medium"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "0.5rem",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                backgroundColor: "#4071B6",
+                "&:hover": {
+                  backgroundColor: "#305a91",
+                },
+              }}
             >
-              {blog?.id ? "Publishing..." : "Publish"}
-            </button>
+              Publish
+            </Button>
           </div>
+
         </div>
-      
-    </div>
+
+      </div>
+    </TopHeadingProvider>
+
   )
 }

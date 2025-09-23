@@ -1,11 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import "react-quill/dist/quill.snow.css"
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { db } from "../../firebase"
-import { collection, addDoc } from "firebase/firestore"
 import toast from "react-hot-toast"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
+import { doc, getDoc, addDoc, updateDoc, collection, getDocs } from "firebase/firestore"
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+import { TextField, MenuItem } from "@mui/material";
+import Button from "@mui/material/Button";
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
+
 
 const modules = {
   toolbar: [
@@ -21,11 +27,25 @@ const modules = {
 const formats = ["header", "bold", "italic", "underline", "color", "font", "align", "size"]
 
 export default function CreateSupportBlog() {
+
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
+
+  useEffect(() => {
+    setFirstMessage("Support Blogs")
+    setSecondMessage("Show Support Blogs")
+  }, [setFirstMessage, setSecondMessage])
+
+
   const [editorContent, setEditorContent] = useState("")
   const [viewers, setViewers] = useState("")
   const [header, setHeader] = useState("")
   const [subCategory, setSubCategory] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const { id } = useParams()
+  const location = useLocation()
+  const blogFromState = location.state?.blog
+  const [blog, setBlog] = useState(blogFromState || null)
 
   const [categories, setCategories] = useState([])
   const [subCategories, setSubCategories] = useState([])
@@ -33,35 +53,84 @@ export default function CreateSupportBlog() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchExistingBlogs = async () => {
-      const blogsRef = collection(db, "SupportBlogs")
-      const snapshot = await blogsRef.get?.()
-      setCategories([])
-      setSubCategories([])
+    const fetchCategories = async () => {
+      const q = collection(db, "SupportBlogs");
+      const snapshot = await getDocs(q);
+
+      const subCategorySet = new Set();
+      const categorySet = new Set();
+
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (data.subCategory) subCategorySet.add(data.subCategory);
+        if (data.viewers) categorySet.add(data.viewers);
+      });
+
+      setSubCategories(Array.from(subCategorySet));
+      setCategories(Array.from(categorySet));
     }
-    fetchExistingBlogs()
-  }, [])
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchBlog = async () => {
+      if (id && !blog) {
+        const blogDoc = await getDoc(doc(db, "SupportBlogs", id))
+        if (blogDoc.exists()) {
+          setBlog({ id: blogDoc.id, ...blogDoc.data() })
+        }
+      }
+    }
+    fetchBlog()
+  }, [id, blog])
+
+  useEffect(() => {
+    if (blog) {
+      setHeader(blog.header || "")
+      setEditorContent(blog.content || "")
+      setViewers(blog.viewers || "")
+      setSubCategory(blog.subCategory || "")
+    }
+  }, [blog])
 
   const handleBlogSubmit = async () => {
     if (viewers && header && editorContent && subCategory) {
       setLoading(true)
       try {
-        const blogsRef = collection(db, "SupportBlogs")
-        await addDoc(blogsRef, {
-          content: editorContent,
-          viewers,
-          header,
-          subCategory,
-          createdOn: new Date(),
-        })
-        toast.success("Blog submitted successfully!")
+        if (blog?.id) {
+          // ---- EDIT MODE ----
+          const blogRef = doc(db, "SupportBlogs", blog.id)
+          await updateDoc(blogRef, {
+            content: editorContent,
+            viewers,
+            header,
+            subCategory,
+            updatedOn: new Date(),
+          })
+          toast.success("Blog updated successfully!")
+        } else {
+          // ---- CREATE MODE ----
+          const blogsRef = collection(db, "SupportBlogs")
+          await addDoc(blogsRef, {
+            content: editorContent,
+            viewers,
+            header,
+            subCategory,
+            createdOn: new Date(),
+          })
+          toast.success("Blog submitted successfully!")
+        }
+
+        // reset and redirect
         setEditorContent("")
         setViewers("")
         setHeader("")
         setSubCategory("")
+        navigate("/supportBlogs")
       } catch (err) {
         console.error(err)
-        toast.error("Error submitting blog")
+        toast.error("Error saving blog")
       }
       setLoading(false)
     } else {
@@ -70,97 +139,154 @@ export default function CreateSupportBlog() {
   }
 
   return (
-    <div className="p-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Create a new Blogs</h1>
+    <TopHeadingProvider>
 
-        <div className="space-y-6">
-          {/* Select Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
-            <select
+      <div className="p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          {/* Title changes based on create/edit */}
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">
+            {blog?.id ? "Edit Blog" : "Create a new Blog"}
+          </h1>
+
+          <div className="space-y-6">
+            {/* Select Category */}
+            <Autocomplete
+              freeSolo
+              options={categories}
               value={viewers}
-              onChange={(e) => setViewers(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-            >
-              <option value="">Tutor Support Centre</option>
-              <option value="Student">Student</option>
-              <option value="Teacher">Teacher</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
+              onChange={(event, newValue) => {
+                if (typeof newValue === "string") {
+                  setViewers(newValue); // typed value
+                } else if (newValue) {
+                  setViewers(newValue);
+                } else {
+                  setViewers("");
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select Category"
+                  fullWidth
+                  sx={{
+                    background: "rgba(255,255,255,0.3)",
+                    borderRadius: "0.5rem",
+                  }}
+                />
+              )}
+            />
 
-          {/* Select Subcategory */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Subcategory</label>
-            <select
+            {/*  Subcategory */}
+            <Autocomplete
+              freeSolo
+              options={subCategories}
               value={subCategory}
-              onChange={(e) => setSubCategory(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-            >
-              <option value="">Using the portal</option>
-              <option value="Getting Started">Getting Started</option>
-              <option value="Advanced Features">Advanced Features</option>
-              <option value="Troubleshooting">Troubleshooting</option>
-            </select>
-          </div>
+              onChange={(event, newValue) => {
+                if (typeof newValue === "string") {
+                  setSubCategory(newValue); // typed value
+                } else if (newValue) {
+                  setSubCategory(newValue);
+                } else {
+                  setSubCategory("");
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select Subcategory"
+                  fullWidth
+                  sx={{
+                    background: "rgba(255,255,255,0.3)",
+                    borderRadius: "0.5rem",
+                  }}
+                />
+              )}
+            />
 
-          {/* Blog Summary */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Blog Summary</label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              {/* Custom toolbar to match design */}
-              <div className="bg-gray-50 border-b border-gray-300 px-3 py-2 flex items-center gap-2">
-                <select className="text-sm border-none bg-transparent">
-                  <option>Normal</option>
-                </select>
-                <div className="flex items-center gap-1">
-                  <button className="p-1 hover:bg-gray-200 rounded">
-                    <strong>B</strong>
-                  </button>
-                  <button className="p-1 hover:bg-gray-200 rounded">
-                    <em>I</em>
-                  </button>
-                  <button className="p-1 hover:bg-gray-200 rounded">
-                    <u>U</u>
-                  </button>
-                </div>
-                <button className="p-1 hover:bg-gray-200 rounded text-sm">A</button>
-                <select className="text-sm border-none bg-transparent">
-                  <option>Sans Serif</option>
-                </select>
-                <button className="p-1 hover:bg-gray-200 rounded">≡</button>
-                <select className="text-sm border-none bg-transparent">
-                  <option>Normal</option>
-                </select>
-              </div>
-              <textarea
+            {/* Blog Header */}
+            {/* <TextField
+              value={header}
+              onChange={(e) => setHeader(e.target.value)}
+              label="Blog Header"
+              fullWidth
+            /> */}
+
+            {/* Blog Body */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Blog Body
+              </label>
+              <ReactQuill
                 value={editorContent}
-                onChange={(e) => setEditorContent(e.target.value)}
-                placeholder="Enter blog summary"
-                className="w-full h-32 p-3 border-none resize-none focus:outline-none"
+                onChange={setEditorContent}
+                modules={modules}
+                formats={formats}
+                style={{
+                  background: "rgba(255,255,255,0.3)",
+                  borderRadius: "10px",
+                  minHeight: "200px",
+                }}
               />
             </div>
           </div>
-        </div>
 
-        {/* Action buttons */}
-        <div className="flex justify-end gap-3 mt-8">
-          <button
-            onClick={() => navigate("/supportBlogs")}
-            className="px-6 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors duration-200"
-          >
-            Cancel
-          </button>
-          <button
-            disabled={loading}
-            onClick={handleBlogSubmit}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50"
-          >
-            {loading ? "Publishing..." : "Publish"}
-          </button>
+          {/* Action buttons */}
+          <div className="flex justify-end gap-3 mt-8">
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/supportBlogs")}
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "0.5rem",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                borderColor: "grey.400",
+                color: "text.primary",
+                "&:hover": {
+                  backgroundColor: "grey.100",
+                  borderColor: "grey.400",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              disabled={loading}
+              onClick={handleBlogSubmit}
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "0.5rem",
+                px: 3,
+                py: 1,
+                textTransform: "none",
+                backgroundColor: "#4071B6",
+                "&:hover": {
+                  backgroundColor: "#1e40af",
+                },
+                "&.Mui-disabled": {
+                  opacity: 0.5,
+                  backgroundColor: "#6a93ccd2",
+                  color: "white",
+                },
+              }}
+            >
+              {loading
+                ? blog?.id
+                  ? "Saving..."
+                  : "Publishing..."
+                : blog?.id
+                  ? "Save Changes"
+                  : "Publish"}
+            </Button>
+          </div>
+
         </div>
       </div>
-    </div>
+    </TopHeadingProvider>
   )
 }

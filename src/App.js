@@ -101,6 +101,7 @@ function App() {
                   {/* <Route path="/jobOpenings/:id" element={<JobApplication />} /> */}
                   <Route path="/supportBlogs" element={<SupportBlogs />} />
                   <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />
+                  <Route path="/supportBlogs/edit/:id" element={<CreateSupportBlog />} />
                   <Route path="/upcomingCourses" element={<UpcommingCourses />} />
                   <Route path="/studentForms" element={<StudentForm />} />
                   <Route path="/coursesForms" element={<CourseTabs />} />
