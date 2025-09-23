@@ -17,6 +17,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Modal,
+  TextField,
 } from "@mui/material";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +26,9 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Slide from "@mui/material/Slide";
 import { TopHeadingProvider, useTopHeading } from "../../../Components/Layout"
+import CustomModal from "../../../Components/CustomModal/CustomModal";
+import Divider from "@mui/material/Divider"
+
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -39,11 +43,11 @@ export function ManageSubjects() {
   const [newSubject, setNewSubject] = useState("");
 
   const { setFirstMessage, setSecondMessage } = useTopHeading()
-    useEffect(() => {
-      setFirstMessage("Subjects")
-      setSecondMessage("Show all Subjects")
-    }, [setFirstMessage, setSecondMessage])
-  
+  useEffect(() => {
+    setFirstMessage("Subjects")
+    setSecondMessage("Show all Subjects")
+  }, [setFirstMessage, setSecondMessage])
+
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -99,69 +103,124 @@ export function ManageSubjects() {
   const displayedSessions = subjects?.slice(startIndex, endIndex);
 
   return (
-    <div className="flex-1 mt-0 mb-2 p-3 rounded-lg shadow-lg bg-white/50 backdrop-blur-md">
-      <h2 className="text-left font-semibold text-lg mb-4">Subjects</h2>
-      <Button
-        variant="contained"
-        className="w-full"
-        onClick={() => setOpenDialog(true)}
-      >
-        Add New Subject
-      </Button>
+    <div className="p-6">
+      <div className="flex-1 mt-0 mb-2 p-6 rounded-lg border border-[#A2A1A833] bg-white/50">
 
-      <List>
-        {displayedSessions.map((subject) => (
-          <ListItem key={subject}>
-            <ListItemText primary={subject} />
-            <ListItemSecondaryAction>
-              
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
+        {/* Header Row */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Subjects ({subjects?.length || 0})
+          </h2>
 
-      {subjects?.length > itemsPerPage && (
-        <div className="flex items-center justify-center">
-          <Stack spacing={2}>
-            <Pagination
-              count={Math.ceil(subjects?.length / itemsPerPage)}
-              page={currentPage}
-              onChange={handleChangePage}
-            />
-          </Stack>
+          <Button
+            variant="contained"
+            onClick={() => setOpenDialog(true)}
+            sx={{
+              backgroundColor: "#4071B6",
+              width: "250px",
+              height: "50px",
+              "&:hover": { backgroundColor: "#427ac9ff" },
+              color: "white",
+              px: 3,
+              py: 1.5,
+              borderRadius: "0.5rem",
+              fontWeight: 500,
+              textTransform: "none",
+              fontSize: "16px",
+            }}
+          >
+            + Add a new subject
+          </Button>
         </div>
-      )}
 
-      <Modal open={openDialog}>
-        <div className="fixed inset-0 flex items-center justify-center">
-          <div className="flex flex-col w-[70%] max-w-[1000px] max-h-[90vh] overflow-hidden rounded-lg shadow-lg bg-white/70 backdrop-blur-md">
-            <div className="p-5 flex-1 overflow-auto">
-              <h2>Add New Subject</h2>
-              <div className="flex items-center">
-                <input
-                  type="text"
-                  value={newSubject}
-                  onChange={(e) => setNewSubject(e.target.value)}
-                  placeholder="Enter Subject Name"
-                  className="w-full p-2.5 my-2.5 border border-gray-300 bg-white/50 rounded-lg"
-                />
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setOpenDialog(false)}
-                >
-                  Cancel
-                </Button>
-                <Button variant="contained" color="success" onClick={handleAddSubject}>
-                  Add Subject
-                </Button>
-              </div>
-            </div>
+        {/* Subjects List */}
+        <List>
+          {displayedSessions.map((subject) => (
+            <ListItem key={subject}>
+              <ListItemText primary={subject} />
+              <ListItemSecondaryAction>
+                {/* Action buttons can go here later if needed */}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+
+        {/* Pagination */}
+        {subjects?.length > itemsPerPage && (
+          <div className="flex items-center justify-center mt-4">
+            <Stack spacing={2}>
+              <Pagination
+                count={Math.ceil(subjects?.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handleChangePage}
+              />
+            </Stack>
           </div>
-        </div>
-      </Modal>
+        )}
+
+        {/* Create Subject Modal */}
+        {/* Create Subject Modal */}
+        <CustomModal open={openDialog} onClose={() => setOpenDialog(false)}>
+          {/* Title */}
+          <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+            Add New Subject
+          </h2>
+
+          <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+          {/* Input Field */}
+          <TextField
+            type="text"
+            value={newSubject}
+            onChange={(e) => setNewSubject(e.target.value)}
+            label="Enter Subject Name"
+            fullWidth
+            sx={{ mb: 7 }}
+          />
+
+          {/* Buttons */}
+          <div className="flex gap-3 justify-end">
+            <Button
+              onClick={() => {
+                setNewSubject("")
+                setOpenDialog(false)
+              }}
+              variant="outlined"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                borderColor: "#A2A1A833",
+                fontSize: "16px",
+                fontWeight: 300,
+                color: "#16151C",
+                textTransform: "none",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleAddSubject}
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                backgroundColor: "#4071B6",
+                fontSize: "20px",
+                fontWeight: 300,
+                color: "#FFFFFF",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#305a91" },
+              }}
+            >
+              Add
+            </Button>
+          </div>
+        </CustomModal>
+
+      </div>
     </div>
   );
+
 }

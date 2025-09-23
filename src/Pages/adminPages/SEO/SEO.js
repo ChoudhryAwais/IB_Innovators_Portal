@@ -8,16 +8,16 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { db } from "../../../firebase";
 import { collection, addDoc, doc, setDoc, getDocs } from "firebase/firestore";
-import {useTopHeading} from "../../../Components/Layout";
+import { useTopHeading } from "../../../Components/Layout";
 import { TopHeadingProvider } from "../../../Components/Layout";
 
 export default function SEO() {
   const { setFirstMessage, setSecondMessage } = useTopHeading()
-  
-    useEffect(() => {
-      setFirstMessage("SEO")
-      setSecondMessage("Show all SEO pages")
-    }, [setFirstMessage, setSecondMessage])
+
+  useEffect(() => {
+    setFirstMessage("SEO")
+    setSecondMessage("Show all SEO pages")
+  }, [setFirstMessage, setSecondMessage])
 
   const [loading, setLoading] = useState(false);
   const [seoData, setSeoData] = useState([
@@ -162,53 +162,104 @@ export default function SEO() {
           <div className="flex-1 h-max mt-0 mb-2 p-2 ">
 
             {seoData.map((item, index) => (
-              <Accordion key={index} className="mb-4 bg-[#A2A1A80D] rounded-lg">
+              <Accordion
+                key={index}
+                className="overflow-hidden mb-4"
+                sx={{
+                  "&:before": { display: "none" },
+                  boxShadow: "none",
+                  border: "1px solid #A2A1A833",
+                  borderRadius: "12px !important",
+                  overflow: "hidden",
+                  backgroundColor: "#A2A1A80D",
+                }}
+              >
                 <AccordionSummary
-                  expandIcon={<ArrowDownwardIcon />}
+                  expandIcon={
+                    <ArrowDownwardIcon
+                      fontSize="inherit"
+                      className="ml-1 !text-3xl text-[#16151C]"
+                    />
+                  }
                   aria-controls={`panel${index}-content`}
                   id={`panel${index}-header`}
+                  className="px-6 py-4 hover:bg-gray-50"
+                  sx={{
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
+                    "&.Mui-expanded": {
+                      minHeight: "60px !important",
+                      maxHeight: "60px",
+                    },
+                    "& .MuiAccordionSummary-content": {
+                      margin: 0,
+                      my: 0,
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                    },
+                    "&.Mui-expanded": {
+                      minHeight: "0px !important",
+                    },
+                    "& .MuiAccordionSummary-content.Mui-expanded": {
+                      margin: 0,
+                      my: 0,
+                    },
+                    "& .MuiAccordionSummary-expandIconWrapper": {
+                      marginLeft: "16px",
+                    },
+                  }}
                 >
-                  <Typography>
-                    <b>{item.pageName}</b>
-                  </Typography>
+                  <div className="text-lg font-light text-[#16151C]">
+                    {item.pageName}
+                  </div>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleSubmit(index);
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      margin="normal"
-                      label="Enter SEO Tags"
-                      multiline
-                      rows={5}
-                      placeholder={`<title>Home</title>
-                      <meta name="title" content="IB Innovators - Home" />
-                      <meta name="description" content="Welcome to IB Innovators, your go-to platform for personalized tutoring services." />
-                      <link rel="canonical" href="https://example.com/home" />
-                      <script type="application/ld+json">{JSON.stringify(
-                        "schemaMarkup"
-                      )}</script>`}
-                      variant="outlined"
-                      value={item.schema}
-                      onChange={(e) =>
-                        handleInputChange(index, "schema", e.target.value)
-                      }
-                    />
-                    <Button
-                      disabled={loading}
-                      variant="contained"
-                      color="primary"
-                      type="submit"
+
+                <AccordionDetails className="px-0 pb-4 pt-0">
+                  <div className="space-y-4 px-6">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSubmit(index);
+                      }}
                     >
-                      Save
-                    </Button>
-                  </form>
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Enter SEO Tags"
+                        multiline
+                        rows={5}
+                        placeholder={`<title>${item.pageName}</title>
+<meta name="title" content="IB Innovators - ${item.pageName}" />
+<meta name="description" content="Welcome to IB Innovators, your go-to platform for personalized tutoring services." />
+<link rel="canonical" href="https://example.com/${item.pageName.toLowerCase()}" />
+<script type="application/ld+json">{JSON.stringify("schemaMarkup")}</script>`}
+                        variant="outlined"
+                        value={item.schema}
+                        onChange={(e) => handleInputChange(index, "schema", e.target.value)}
+                      />
+                      <Button
+                        disabled={loading}
+                        variant="outlined"
+                        color="primary"
+                        type="submit"
+                        sx={{
+                          borderRadius: "8px",
+                          width: "118px",
+                          height: "36px",
+                          color: "white",
+                          backgroundColor: "#4071B6",
+                          borderColor: "#4071B6",
+                          fontSize: "14px",
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </form>
+                  </div>
                 </AccordionDetails>
               </Accordion>
+
             ))}
           </div>
         </div>

@@ -48,6 +48,7 @@ import NewCourses from "./Pages/studentPages/newCourses/NewCourses";
 import ProfileAndFinanceStudent from "./Pages/studentPages/profileAndFinance/ProfileAndFinanceStudent";
 import SupportBlogs from "./Pages/supportBlogs/SupportBlogs";
 import CreateSupportBlog from "./Pages/supportBlogs/createSupportBlogs"; //inserted create support blog
+import SupportBlogsPreview from "./Pages/supportBlogs/SupportBlogsPreview";
 import Details from "./Pages/SupportAndTraining/Details";
 import { JobApplication } from "./Pages/jobApplication/JobApplication";
 import SEO from "./Pages/adminPages/SEO/SEO";
@@ -102,6 +103,7 @@ function App() {
                   <Route path="/supportBlogs" element={<SupportBlogs />} />
                   <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />
                   <Route path="/supportBlogs/edit/:id" element={<CreateSupportBlog />} />
+                  <Route path="/supportBlogsPreview" element={<SupportBlogsPreview />} />
                   <Route path="/upcomingCourses" element={<UpcommingCourses />} />
                   <Route path="/studentForms" element={<StudentForm />} />
                   <Route path="/coursesForms" element={<CourseTabs />} />

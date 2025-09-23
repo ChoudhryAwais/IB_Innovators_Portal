@@ -246,9 +246,15 @@ export default function Blogs() {
                       </div>
                       <div flex className="flex items-center gap-1">
                         <p className="text-sm  text-#16151C">
-                          {blog.writtenBy || "Amit Das"}
+                          {blog.writtenBy || "Admin"}
                         </p>
-                        <p className="text-sm text-[#757575]">- 4 days ago</p>
+                        <p className="text-sm text-[#757575]">
+                          - {blog.createdOn
+                            ? `${Math.floor(
+                              (new Date() - blog.createdOn.toDate()) / (1000 * 60 * 60 * 24)
+                            )} days ago`
+                            : "N/A"}
+                        </p>
                       </div>
                     </div>
 
@@ -362,55 +368,55 @@ export default function Blogs() {
 
         {/* Delete Dialog */}
         <CustomModal open={showModal} onClose={() => setShowModal(false)}>
-  {/* Title */}
-  <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-    Delete Post
-  </h2>
+          {/* Title */}
+          <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+            Delete Post
+          </h2>
 
-  <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+          <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-  {/* Message */}
-  <p className="text-lg text-center font-light text-[#16151C] mb-12">
-    Are you sure you want to permanently delete this post?
-  </p>
+          {/* Message */}
+          <p className="text-lg text-center font-light text-[#16151C] mb-12">
+            Are you sure you want to permanently delete this post?
+          </p>
 
-  {/* Buttons */}
-  <div className="flex gap-3 justify-end">
-    <Button
-      onClick={() => setShowModal(false)}
-      variant="outlined"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        borderColor: "#A2A1A833",
-        fontSize: "16px",
-        fontWeight: 300,
-        color: "#16151C",
-        textTransform: "none",
-      }}
-    >
-      Cancel
-    </Button>
-    <Button
-      onClick={() => deleteBlog(selectedLink?.id)}
-      variant="contained"
-      sx={{
-        width: 166,
-        height: 50,
-        borderRadius: "10px",
-        backgroundColor: "#4071B6",
-        fontSize: "20px",
-        fontWeight: 300,
-        color: "#FFFFFF",
-        textTransform: "none",
-        "&:hover": { backgroundColor: "#305a91" },
-      }}
-    >
-      Yes
-    </Button>
-  </div>
-</CustomModal>
+          {/* Buttons */}
+          <div className="flex gap-3 justify-end">
+            <Button
+              onClick={() => setShowModal(false)}
+              variant="outlined"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                borderColor: "#A2A1A833",
+                fontSize: "16px",
+                fontWeight: 300,
+                color: "#16151C",
+                textTransform: "none",
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => deleteBlog(selectedLink?.id)}
+              variant="contained"
+              sx={{
+                width: 166,
+                height: 50,
+                borderRadius: "10px",
+                backgroundColor: "#4071B6",
+                fontSize: "20px",
+                fontWeight: 300,
+                color: "#FFFFFF",
+                textTransform: "none",
+                "&:hover": { backgroundColor: "#305a91" },
+              }}
+            >
+              Yes
+            </Button>
+          </div>
+        </CustomModal>
 
 
 
