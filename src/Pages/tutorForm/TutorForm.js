@@ -407,7 +407,7 @@ const TutorForm = () => {
                   <Button
                     variant="contained"
                     onClick={() => {
-                      navigate("/signup", { state: { tutor: selectedLink } });
+                      navigate("/signupform", { state: { tutor: selectedLink } });
                     }}
                     sx={{
                       width: 166,

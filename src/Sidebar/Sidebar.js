@@ -187,7 +187,7 @@ const Sidebar = () => {
                     <FontAwesomeIcon icon={faGraduationCap} className="w-3.5 h-3.5" />
                     <span className="ml-2">Students</span>
                   </Link>
-                  <Link className={subItemClass("/signup", "userManagement")} to="/signup">
+                  <Link className={subItemClass("/admins", "userManagement")} to="/admins">
                     <FontAwesomeIcon icon={faUserShield} className="w-3.5 h-3.5" />
                     <span className="ml-2">Admins</span>
                   </Link>
@@ -279,7 +279,7 @@ const Sidebar = () => {
             </div>
 
             {/* User Sign Up */}
-            <Link className={linkClass("/userSignUp")} to="/userSignUp">
+            <Link className={linkClass("/signup")} to="/signup">
               <div className="flex items-center">
                 <FontAwesomeIcon icon={faUserPlus} className="w-4 h-4" />
                 {(windowWidth > 768 || !isSidebarExpanded) && <span className="ml-2">User Sign Up</span>}

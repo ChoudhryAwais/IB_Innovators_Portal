@@ -159,6 +159,7 @@ export default function SEO() {
     <TopHeadingProvider>
       <div className="min-h-screen p-6">
         <div className="rounded-xl shadow-sm p-6 border">
+                      <h1 className="text-2xl pb-2 font-bold text-gray-900">Seo Pages</h1>
           <div className="flex-1 h-max mt-0 mb-2 p-2 ">
 
             {seoData.map((item, index) => (

@@ -109,7 +109,7 @@ function App() {
                   <Route path="/coursesForms" element={<CourseTabs />} />
                   {/* <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} /> */}
                   <Route path="/tutorForms" element={<TutorForm />} />
-                  <Route path="/signup" element={<SignupForm />} />
+                  <Route path="/signupform" element={<SignupForm />} />
 
                   <Route path="/tutorsAndSubjects" element={<TutorPages />} />
                   <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
