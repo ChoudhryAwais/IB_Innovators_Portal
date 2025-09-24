@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { MyContext } from "../../Context/MyContext";
 
 // Import the three signup forms
 import RegisterAdmin from "./RegisterAdmin";
 import RegisterTutor from "./RegisterTutor";
 import RegisterStudent from "./RegisterStudent";
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
 
 function SignUpOnly() {
+   const { setFirstMessage, setSecondMessage } = useTopHeading()
+  
+    useEffect(() => {
+      setFirstMessage("User Sign Up")
+      setSecondMessage("User Sign Up/")
+    }, [setFirstMessage, setSecondMessage])
+
   const [activeTab, setActiveTab] = useState("admin");
 
   const tabs = [
@@ -69,6 +77,8 @@ function SignUpOnly() {
   };
 
   return (
+        <TopHeadingProvider>
+    
     <div className="min-h-screen p-6">
       <div className="mr-[10px] pt-0">
         <div className="bg-white rounded-lg border border-gray-200 shadow-md">
@@ -96,7 +106,10 @@ function SignUpOnly() {
         </div>
       </div>
     </div>
+        </TopHeadingProvider>
+    
   );
+  
 }
 
 export default SignUpOnly;
