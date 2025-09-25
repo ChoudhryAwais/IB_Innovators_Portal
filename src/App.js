@@ -59,7 +59,7 @@ import Loader from "./Pages/Login/Loader/Loader";
 import UpcomingCourseForm from "./Pages/upcomingCourseForm/UpcomingCourseForm";
 import {CourseTabs} from "./Pages/coursesTabbed/CourseTabs" //inserted coursesTabb
 import {ManageSubjects} from "./Pages/adminPages/tutorPages/ManageSubjects"
-
+import Admins from "./Pages/adminList/Admins.js" //imported Admins
 
 function App() {
   const { isUserLoggedIn, userType, loading } = useContext(MyContext);
@@ -123,7 +123,7 @@ function App() {
                   <Route path="/jobsAndRequests" element={<CreateOrder />} />
                   <Route path="/applicantsList" element={<ApplicationsList />} />
                   <Route path="/subjects" element={<ManageSubjects />} />
-
+                  <Route path="/admins" element={<Admins />} />
                   
                 </>
               )}

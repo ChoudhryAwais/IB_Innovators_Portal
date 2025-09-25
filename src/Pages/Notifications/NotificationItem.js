@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
-export const NotificationItem = ({ item, handleDelete }) => {
+export const NotificationItem = ({ item, handleDelete, index }) => {
   const {
     isUserLoggedIn,
     setIsUserLoggedIn,
@@ -69,63 +69,50 @@ export const NotificationItem = ({ item, handleDelete }) => {
   function formatDisplayDateTime(timestamp) {
     let date;
     if (timestamp instanceof Date) {
-        date = timestamp; // If it's already a Date object, no need to convert
+      date = timestamp; // If it's already a Date object, no need to convert
     } else if (timestamp && typeof timestamp.toDate === 'function') {
-        date = timestamp.toDate(); // If it's a Firebase Timestamp object, convert to Date
+      date = timestamp.toDate(); // If it's a Firebase Timestamp object, convert to Date
     } else {
-        return ''; // Handle invalid or missing timestamps
+      return ''; // Handle invalid or missing timestamps
     }
 
     const options = {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true // Use 12-hour clock format
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true // Use 12-hour clock format
     };
     return new Intl.DateTimeFormat('en-US', options).format(date);
-}
+  }
 
 
   return (
     <div
-      key={item.id}
-      className="shadowAndBorder"
-      style={{
-        marginTop: "0px",
-        flex: 1,
-        height: "max-content",
-        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)",
-        background: "rgba(255,255,255, 0.5)",
-        backdropFilter: "blur(4px)", // Adjust the blur intensity as needed
-        WebkitBackdropFilter: "blur(4px)", // For Safari support,
-        padding: "10px",
-        borderRadius: "10px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "10px",
-      }}
+      className={`h-[60px] flex justify-between items-center w-full p-3 ${index % 2 === 0 ? "bg-[#4071B60D]" : "bg-white"
+        }`}
     >
-      <div>
-        <div>{item.message}</div>
-        <div
-          style={{
-            fontSize: "small",
-            transform: "translateY(8px)",
-            color: "#5d5d5d",
-          }}
-        >
+      {/* Left side: Message */}
+      <div className="pl-6 text-base text-gray-900">{item.message}</div>
+
+      {/* Right side: Date/Time + Delete (side by side) */}
+      <div className="flex items-center gap-3">
+        <span className="text-sm text-gray-500">
           {item.time && formatDisplayDateTime(item.time)}
-        </div>
-      </div>
-      <div>
+        </span>
         <IconButton onClick={handleDeleteItem} aria-label="delete" size="large">
-          <DeleteIcon />
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.1032 6.88867C14.1032 6.88867 13.6507 12.5012 13.3882 14.8653C13.2632 15.9945 12.5657 16.6562 11.4232 16.677C9.24901 16.7162 7.07234 16.7187 4.89901 16.6728C3.79984 16.6503 3.11401 15.9803 2.99151 14.8712C2.72734 12.4862 2.27734 6.88867 2.27734 6.88867" stroke="#A2A1A8" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15.2567 4.19792H1.125" stroke="#A2A1A8" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12.5335 4.19852C11.8793 4.19852 11.316 3.73602 11.1877 3.09518L10.9852 2.08185C10.8602 1.61435 10.4368 1.29102 9.95432 1.29102H6.42682C5.94432 1.29102 5.52099 1.61435 5.39599 2.08185L5.19349 3.09518C5.06516 3.73602 4.50182 4.19852 3.84766 4.19852" stroke="#A2A1A8" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+
         </IconButton>
       </div>
     </div>
-  );
+  )
+
+
 };

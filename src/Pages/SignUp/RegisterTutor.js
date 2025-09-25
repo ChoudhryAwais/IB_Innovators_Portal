@@ -477,7 +477,7 @@ function RegisterTutor() {
           fullWidth
           variant="contained"
           type="submit"
-          sx={{ backgroundColor: "#4071B6", textTransform: "none", py: 1.5 , borderRadius: "10px"}}
+          sx={{ backgroundColor: "#4071B6", textTransform: "none", py: 1.5, borderRadius: "10px" }}
         >
           Register Tutor
         </Button>

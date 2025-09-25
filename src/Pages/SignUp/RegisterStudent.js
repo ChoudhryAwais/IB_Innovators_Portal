@@ -156,7 +156,7 @@ function RegisterStudent() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
-              zIndex: 1,color:
+              zIndex: 1, color:
                 signUpEmail.length > 0
                   ? "#4071B6" // highlighted when has value
                   : "#A2A1A8", // default gray
@@ -223,7 +223,7 @@ function RegisterStudent() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
-              zIndex: 1,color:
+              zIndex: 1, color:
                 signUpPassword.length > 0
                   ? "#4071B6" // highlighted when has value
                   : "#A2A1A8", // default gray
@@ -351,7 +351,7 @@ function RegisterStudent() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
-              zIndex: 1,color:
+              zIndex: 1, color:
                 confirmPassword.length > 0
                   ? "#4071B6" // highlighted when has value
                   : "#A2A1A8", // default gray

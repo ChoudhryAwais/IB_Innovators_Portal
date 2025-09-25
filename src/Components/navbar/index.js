@@ -16,6 +16,8 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogTitle from "@mui/material/DialogTitle"
 import Slide from "@mui/material/Slide"
 import { getAuth } from "firebase/auth"
+import CustomModal from "../CustomModal/CustomModal";
+import Divider from "@mui/material/Divider"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -155,38 +157,63 @@ const NavBar = () => {
       </div>
 
       {/* Logout confirmation modal */}
-      <Dialog
-        open={showModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => {
-          setShowModal(false)
+      <CustomModal open={showModal} onClose={() => setShowModal(false)}
+        PaperProps={{
+          sx: {
+            height: "auto",
+            overflow: "hidden",
+            borderRadius: "20px",
+          },
         }}
-        aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Are you sure you want to Log Out?"}</DialogTitle>
-        <DialogActions>
+        <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+          Logout
+        </h2>
+
+        <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+
+        <p className="text-lg text-center font-light text-[#16151C] mt-4 mb-12">
+          Are you sure you want to Logout?
+        </p>
+
+        <div className="flex gap-3 justify-end mt-7">
           <Button
+            onClick={() => setShowModal(false)}
             variant="outlined"
-            onClick={() => {
-              setShowModal(false)
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              borderColor: "#A2A1A833",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "#16151C",
             }}
           >
-            CANCEL
+            Cancel
           </Button>
 
           <Button
             variant="contained"
-            color="error"
+            sx={{
+              width: 166,
+              height: 50,
+              borderRadius: "10px",
+              backgroundColor: "#4071B6",
+              fontSize: "20px",
+              fontWeight: 600,
+              color: "#FFFFFF",
+            }}
             onClick={() => {
               logOutHandler()
               setShowModal(false)
             }}
           >
-            LOG OUT
+            Logout
           </Button>
-        </DialogActions>
-      </Dialog>
+        </div>
+      </CustomModal>
+
     </>
   )
 }

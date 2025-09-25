@@ -31,11 +31,13 @@ import {
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore";
+import CustomModal from "../../Components/CustomModal/CustomModal"
+import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
+import Divider from "@mui/material/Divider"
 
 import { db } from "../../firebase";
 
 import toast from "react-hot-toast";
-import TopHeading from "../../Components/TopHeading/TopHeading";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -46,9 +48,17 @@ export const Notifications = () => {
 
   const [notifications, setNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const { setFirstMessage, setSecondMessage } = useTopHeading()
 
   useEffect(() => {
-    const unsubscribe = () => {}; // Initialize unsubscribe function
+    setFirstMessage("Latest Notification")
+    setSecondMessage("Notification")
+  }, [setFirstMessage, setSecondMessage])
+  useEffect(() => {
+
+
+
+    const unsubscribe = () => { }; // Initialize unsubscribe function
 
     async function fetchAdminNotifications() {
       try {
@@ -173,128 +183,122 @@ export const Notifications = () => {
   );
 
   return (
-    <div className={styles.dataSummary}>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "5px",
-        }}
-      >
-        <TopHeading>Notifications</TopHeading>
-      </div>
+    <TopHeadingProvider>
+      <div className="p-6 min-h-screen">
+        <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-2 pt-3">
+          {/* Top flex section (empty div in your code) */}
+          <div className="flex justify-between items-center mb-4 px-2.5">
+            <h1 className="text-[16px] font-semibold text-gray-900">Latest Notifications</h1>
 
-      {notifications.length !== 0 && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            marginBottom: "10px",
-            marginRight: "10px",
-          }}
-        >
-            <Button
-              variant="contained"
-              startIcon={<DeleteIcon />}
-              color="error"
-              style={{
-                // borderColor: "rgba(139, 0, 0, 0.8)",
-                // background: "rgba(139, 0, 0, 0.8)",
-                color: "white",
-              }}
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              DELETE ALL
-            </Button>
-        </div>
-      )}
-
-      <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
-        {notifications.length !== 0 ? (
-          <></>
-        ) : (
-          <div
-            style={{
-              flex: 1,
-              color: "#aeaeae",
-              fontSize: "1.5rem",
-            }}
-          >
-            No Notifications
+            {/* Delete All button */}
+            {notifications.length !== 0 && (
+              <div className="flex justify-end items-center mb-2.5">
+                <Button
+                  variant="outlined"
+                  color="error"
+                  className="bg-transparent text-[#00ACE8] "
+                  onClick={() => setShowModal(true)}
+                  sx={{
+                    color: "#4071B6",
+                    border: "none",
+                    "&:hover": { border: "none" },
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    padding: 0,
+                    paddingRight: 3,
+                    textTransform: "none",
+                  }}
+                >
+                  Delete All
+                </Button>
+              </div>
+            )}
           </div>
-        )}
-        {notificationDisplayedSessions.map((item) => (
-          <NotificationItem
-            userId={userDetails.userId}
-            handleDelete={deleteItemHandler}
-            item={item}
-          />
-        ))}
-      </div>
 
-      {notifications.length > notificationItemsPerPage && (
-        <div
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            display: "flex",
-            marginTop: "20px",
-          }}
-        >
-          <Stack spacing={2}>
-            <Pagination
-              count={Math.ceil(
-                notifications?.length / notificationItemsPerPage
-              )}
-              page={notificationCurrentPage}
-              onChange={handleNotificationChangePage}
-            />
-          </Stack>
+          {/* Notifications list */}
+          <div className="px-2.5">
+            {notifications.length === 0 && (
+              <div className="flex-1 text-gray-400 text-2xl">
+                No Notifications
+              </div>
+            )}
+            {notificationDisplayedSessions.map((item, index) => (
+              <NotificationItem
+                key={item.id}
+                userId={userDetails.userId}
+                handleDelete={deleteItemHandler}
+                item={item}
+                index={index}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {notifications.length > notificationItemsPerPage && (
+            <div className="mt-6 flex items-center justify-between px-2.5">
+              <div className="text-sm text-gray-600">
+                Showing {notificationStartIndex + 1} to{" "}
+                {Math.min(notificationEndIndex, notifications.length)} of{" "}
+                {notifications.length} records
+              </div>
+              <Stack spacing={2}>
+                <Pagination
+                  count={Math.ceil(notifications?.length / notificationItemsPerPage)}
+                  page={notificationCurrentPage}
+                  onChange={handleNotificationChangePage}
+                  color="primary"
+                />
+              </Stack>
+            </div>
+          )}
+
+          {/* Delete confirmation modal */}
+          <CustomModal open={showModal} onClose={() => setShowModal(false)}
+            PaperProps={{
+              sx: {
+                height: "auto",
+                overflow: "hidden",
+                borderRadius: "20px",
+              },
+            }}
+          >
+            <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+              Please confirm to delete all notifications.
+            </h2>
+
+            <Divider className="border-gray-200 mb-5" />
+
+            <p className="text-lg text-center font-light text-[#16151C] mt-4 mb-12">
+              Are you sure you want to delete all notifications?
+            </p>
+
+            <div className="flex gap-3 justify-end mt-7">
+              <Button
+                onClick={() => setShowModal(false)}
+                variant="outlined"
+                className="w-40 h-12 rounded-lg border border-gray-300 text-gray-900 font-semibold text-base"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="contained"
+                className="w-40 h-12 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base"
+                onClick={() => {
+                  deleteAllHandler(userDetails.userId)
+                  setShowModal(false)
+                }}
+              >
+                DELETE
+              </Button>
+            </div>
+          </CustomModal>
         </div>
-      )}
+      </div>
+    </TopHeadingProvider>
 
-      <Dialog
-        open={showModal}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => {
-          setShowModal(false);
-        }}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>
-          {"Please confirm to delete all notifications."}
-        </DialogTitle>
-
-        <DialogActions>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setShowModal(false);
-            }}
-          >
-            CANCEL
-          </Button>
-
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              deleteAllHandler(userDetails.userId);
-            }}
-          >
-            DELETE
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
   );
+
 };
 
 const data = [
