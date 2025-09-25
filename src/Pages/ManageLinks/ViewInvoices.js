@@ -356,7 +356,7 @@ export default function ViewInvoices() {
                             <div className="flex flex-col text-sm text-[#16151C] space-y-1">
                               <div className="flex gap-10">
                                 <span className="font-light w-28">Tutor Name:</span>
-                                <span className="font-medium">{invoice?.tutorName || "N/A"}</span>
+                                <span className="font-medium">{invoice?.teacherName || "N/A"}</span>
                               </div>
                               <div className="flex gap-10">
                                 <span className="font-light w-28">Remarks:</span>

@@ -402,14 +402,14 @@ const StudentForm = () => {
                       <h3 className="font-semibold text-[#16151C] mb-4">Student Info</h3>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-[#16151C]">Name: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Name: </span>
+                          <span className="font-light">
                             {selectedLink?.userDetails?.firstName} {selectedLink?.userDetails?.lastName}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#16151C]">Email: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Email: </span>
+                          <span className="font-light">
                             {selectedLink?.userDetails?.email}
                           </span>
                         </div>
@@ -422,21 +422,21 @@ const StudentForm = () => {
                       <h3 className="font-semibold text-[#16151C] mb-4">Parent Info</h3>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-[#16151C]">Name: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Name: </span>
+                          <span className="font-light">
                             {selectedLink?.userDetails?.parentFirstName}{" "}
                             {selectedLink?.userDetails?.parentLastName}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#16151C]">Email: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Email: </span>
+                          <span className="font-light">
                             {selectedLink?.userDetails?.parentEmail}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#16151C]">Relation: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Relation: </span>
+                          <span className="font-light">
                             {selectedLink?.userDetails?.relation || "N/A"}
                           </span>
                         </div>
@@ -448,20 +448,20 @@ const StudentForm = () => {
                       <h3 className="font-semibold text-[#16151C] mb-4">Billing Info</h3>
                       <div className="space-y-2">
                         <div>
-                          <span className="text-[#16151C]">Name: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Name: </span>
+                          <span className="font-light">
                             {selectedLink?.billingInfo?.fullName || "N/A"}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#16151C]">Email: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Email: </span>
+                          <span className="font-light">
                             {selectedLink?.billingInfo?.email || "N/A"}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[#16151C]">Contact No: </span>
-                          <span className="font-semibold">
+                          <span className="font-medium text-[#16151C]">Contact No: </span>
+                          <span className="font-light">
                             {selectedLink?.billingInfo?.contactNo || "N/A"}
                           </span>
                         </div>
@@ -480,7 +480,7 @@ const StudentForm = () => {
                       height: 50,
                       borderRadius: "8px",
                       borderColor: "#D1D5DB",
-                      fontSize: "14px",
+                      fontSize: "16px",
                       fontWeight: 500,
                       color: "#374151",
                       textTransform: "none",
@@ -490,7 +490,33 @@ const StudentForm = () => {
                       },
                     }}
                   >
-                    Back
+                    Cancel
+                  </Button>
+
+                  
+
+                  <Button
+                    disabled={loading}
+                    variant="outlined"
+                    sx={{
+                      width: 166,
+                      height: 50,
+                      borderRadius: "8px",
+                      borderColor: "#D1D5DB",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      color: "#374151",
+                      textTransform: "none",
+                      padding: 0,
+                      "&:hover": {
+                        borderColor: "#9CA3AF",
+                        backgroundColor: "#F9FAFB",
+                      },
+                      "&:disabled": { backgroundColor: "#9CA3AF" },
+                    }}
+                    onClick={() => handleProcessedClick(selectedLink)}
+                  >
+                    {loading ? "Processing..." : "Mark as Processed"}
                   </Button>
 
                   <Button
@@ -500,7 +526,7 @@ const StudentForm = () => {
                       height: 50,
                       borderRadius: "8px",
                       backgroundColor: "#4071B6", // green for create
-                      fontSize: "14px",
+                      fontSize: "16px",
                       fontWeight: 500,
                       color: "#FFFFFF",
                       textTransform: "none",
@@ -512,26 +538,6 @@ const StudentForm = () => {
                     }}
                   >
                     Create Account
-                  </Button>
-
-                  <Button
-                    disabled={loading}
-                    variant="contained"
-                    sx={{
-                      width: 166,
-                      height: 50,
-                      borderRadius: "8px",
-                      backgroundColor: "#4071B6",
-                      fontSize: "14px",
-                      fontWeight: 500,
-                      color: "#FFFFFF",
-                      textTransform: "none",
-                      "&:hover": { backgroundColor: "#4071B6" },
-                      "&:disabled": { backgroundColor: "#9CA3AF" },
-                    }}
-                    onClick={() => handleProcessedClick(selectedLink)}
-                  >
-                    {loading ? "Processing..." : "Mark as Processed"}
                   </Button>
                 </div>
               </div>

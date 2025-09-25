@@ -92,7 +92,17 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              zIndex: 1,
+              color:
+                userName.length > 0
+                  ? "#4071B6" // highlighted when has value
+                  : "#A2A1A8", // default gray
+              "&.focused": {
+                color: "#4071B6", // highlighted when focused
+              },
             }}
+            className={userName.length > 0 ? "filled" : ""}
+            id="fullName-label"
           >
             Name
           </Box>
@@ -104,12 +114,37 @@ function RegisterTutor() {
             onChange={(e) => setUserName(e.target.value)}
             required
             InputProps={{ sx: { paddingTop: "15px" } }}
+            onFocus={() =>
+              document.getElementById("fullName-label").classList.add("focused")
+            }
+            onBlur={() =>
+              document.getElementById("fullName-label").classList.remove("focused")
+            }
             sx={{
-              "& .MuiOutlinedInput-root": { borderRadius: "8px", height: "55px" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#A2A1A833" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "& .MuiOutlinedInput-input::placeholder": { color: "#A2A1A833", opacity: 1, fontSize: "16px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                height: "55px",
+                backgroundColor: userName.length > 0 ? "#4071B60D" : "#fff",
+                borderColor: userName.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor:
+                  userName.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                backgroundColor: "#4071B60D",
+              },
+              "& .MuiOutlinedInput-input::placeholder": {
+                color: "#A2A1A833",
+                opacity: 1,
+                fontSize: "16px",
+              },
             }}
           />
         </Box>
@@ -124,7 +159,16 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              zIndex: 1, color:
+                signUpEmail.length > 0
+                  ? "#4071B6" // highlighted when has value
+                  : "#A2A1A8", // default gray
+              "&.focused": {
+                color: "#4071B6", // highlighted when focused
+              },
             }}
+            className={signUpEmail.length > 0 ? "filled" : ""}
+            id="email-label"
           >
             Email Address
           </Box>
@@ -137,12 +181,37 @@ function RegisterTutor() {
             onChange={(e) => setSignUpEmail(e.target.value)}
             required
             InputProps={{ sx: { paddingTop: "15px" } }}
+            onFocus={() =>
+              document.getElementById("email-label").classList.add("focused")
+            }
+            onBlur={() =>
+              document.getElementById("email-label").classList.remove("focused")
+            }
             sx={{
-              "& .MuiOutlinedInput-root": { borderRadius: "8px", height: "55px" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#A2A1A833" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "& .MuiOutlinedInput-input::placeholder": { color: "#A2A1A833", opacity: 1, fontSize: "16px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                height: "55px",
+                backgroundColor: signUpEmail.length > 0 ? "#4071B60D" : "#fff",
+                borderColor: signUpEmail.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor:
+                  signUpEmail.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                backgroundColor: "#4071B60D",
+              },
+              "& .MuiOutlinedInput-input::placeholder": {
+                color: "#A2A1A833",
+                opacity: 1,
+                fontSize: "16px",
+              },
             }}
           />
         </Box>
@@ -157,7 +226,16 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              zIndex: 1, color:
+                signUpPassword.length > 0
+                  ? "#4071B6" // highlighted when has value
+                  : "#A2A1A8", // default gray
+              "&.focused": {
+                color: "#4071B6", // highlighted when focused
+              },
             }}
+            className={signUpPassword.length > 0 ? "filled" : ""}
+            id="password-label"
           >
             Password
           </Box>
@@ -169,6 +247,12 @@ function RegisterTutor() {
             value={signUpPassword}
             onChange={(e) => setSignUpPassword(e.target.value)}
             required
+            onFocus={() =>
+              document.getElementById("password-label").classList.add("focused")
+            }
+            onBlur={() =>
+              document.getElementById("password-label").classList.remove("focused")
+            }
             InputProps={{
               sx: { paddingTop: "15px" },
               endAdornment: (
@@ -232,11 +316,30 @@ function RegisterTutor() {
               ),
             }}
             sx={{
-              "& .MuiOutlinedInput-root": { borderRadius: "8px", height: "55px" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#A2A1A833" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "& .MuiOutlinedInput-input::placeholder": { color: "#A2A1A833", opacity: 1, fontSize: "16px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                height: "55px",
+                backgroundColor: signUpPassword.length > 0 ? "#4071B60D" : "#fff",
+                borderColor: signUpPassword.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor:
+                  signUpPassword.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                backgroundColor: "#4071B60D",
+              },
+              "& .MuiOutlinedInput-input::placeholder": {
+                color: "#A2A1A833",
+                opacity: 1,
+                fontSize: "16px",
+              },
             }}
           />
         </Box>
@@ -251,7 +354,16 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              zIndex: 1, color:
+                confirmPassword.length > 0
+                  ? "#4071B6" // highlighted when has value
+                  : "#A2A1A8", // default gray
+              "&.focused": {
+                color: "#4071B6", // highlighted when focused
+              },
             }}
+            className={confirmPassword.length > 0 ? "filled" : ""}
+            id="confirm-password-label"
           >
             Confirm Password
           </Box>
@@ -263,6 +375,12 @@ function RegisterTutor() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            onFocus={() =>
+              document.getElementById("confirm-password-label").classList.add("focused")
+            }
+            onBlur={() =>
+              document.getElementById("confirm-password-label").classList.remove("focused")
+            }
             InputProps={{
               sx: { paddingTop: "15px" },
               endAdornment: (
@@ -326,11 +444,30 @@ function RegisterTutor() {
               ),
             }}
             sx={{
-              "& .MuiOutlinedInput-root": { borderRadius: "8px", height: "55px" },
-              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#A2A1A833" },
-              "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#4071B6" },
-              "& .MuiOutlinedInput-input::placeholder": { color: "#A2A1A833", opacity: 1, fontSize: "16px" },
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "10px",
+                height: "55px",
+                backgroundColor: confirmPassword.length > 0 ? "#4071B60D" : "#fff",
+                borderColor: confirmPassword.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor:
+                  confirmPassword.length > 0 ? "#4071B6" : "#A2A1A833",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#4071B6",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused": {
+                backgroundColor: "#4071B60D",
+              },
+              "& .MuiOutlinedInput-input::placeholder": {
+                color: "#A2A1A833",
+                opacity: 1,
+                fontSize: "16px",
+              },
             }}
           />
         </Box>
@@ -340,7 +477,7 @@ function RegisterTutor() {
           fullWidth
           variant="contained"
           type="submit"
-          sx={{ backgroundColor: "#4071B6", textTransform: "none", py: 1.5 }}
+          sx={{ backgroundColor: "#4071B6", textTransform: "none", py: 1.5 , borderRadius: "10px"}}
         >
           Register Tutor
         </Button>

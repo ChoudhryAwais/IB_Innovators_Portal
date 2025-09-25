@@ -496,7 +496,7 @@ const ProcessedRevisionCoursesForm = () => {
                   height: 50,
                   borderRadius: "8px",
                   backgroundColor: "#A81E1E0D",
-                  fontSize: "14px",
+                  fontSize: "16px",
                   fontWeight: 500,
                   color: "#A81E1E",
                   borderColor: "#A81E1E",

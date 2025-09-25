@@ -260,7 +260,7 @@ const ProcessedContactUsForm = () => {
                   height: 50,
                   borderRadius: "8px",
                   borderColor: "#D1D5DB",
-                  fontSize: "14px",
+                  fontSize: "16px",
                   fontWeight: 500,
                   color: "#374151",
                   textTransform: "none",
@@ -274,18 +274,21 @@ const ProcessedContactUsForm = () => {
               </Button>
               <Button
                 disabled={loading}
-                variant="contained"
+                variant="outlined"
                 color="error"
                 sx={{
                   width: 166,
-                  height: 50,
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  color: "#FFFFFF",
-                  textTransform: "none",
-                  "&:hover": { backgroundColor: "#EF4444" },
-                  "&:disabled": { backgroundColor: "#9CA3AF" },
+                    height: 50,
+                    borderRadius: "8px",
+                    backgroundColor: "#A81E1E0D",
+                    fontSize: "16px",
+                    fontWeight: 500,
+                    color: "#A81E1E",
+                    borderColor: "#A81E1E",
+                    textTransform: "none",
+                    padding: 0,
+                    "&:hover": { backgroundColor: "#A81E1E0D" },
+                    "&:disabled": { backgroundColor: "#9CA3AF" },
                 }}
                 onClick={() => handleDeleteClick(selectedLink)}
               >
