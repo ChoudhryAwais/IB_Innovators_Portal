@@ -183,7 +183,7 @@ const Sidebar = () => {
                     <FontAwesomeIcon icon={faChalkboardTeacher} className="w-3.5 h-3.5" />
                     <span className="ml-2">Tutors</span>
                   </Link>
-                  <Link className={subItemClass("/myStudents", "userManagement")} to="/myStudents">
+                  <Link className={subItemClass("/students", "userManagement")} to="/students">
                     <FontAwesomeIcon icon={faGraduationCap} className="w-3.5 h-3.5" />
                     <span className="ml-2">Students</span>
                   </Link>

@@ -91,7 +91,7 @@ export function ContactInformation({ userDetails, userId }) {
             </label>
             {editing === false ? (
               <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.userName?.split(" ")[0] || "Youssry"}
+                {userDetails?.userName?.split(" ")[0] || "Not entered"}
               </div>
             ) : (
               <input
@@ -117,7 +117,7 @@ export function ContactInformation({ userDetails, userId }) {
             {editing === false ? (
               <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
                 {userDetails?.userName?.split(" ").slice(1).join(" ") ||
-                  "El-Sadi"}
+                  "Not entered"}
               </div>
             ) : (
               <input
@@ -162,7 +162,7 @@ export function ContactInformation({ userDetails, userId }) {
               Email Address
             </label>
             <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-              {userDetails?.email || "tutor@example.com"}
+              {userDetails?.email || "Not entered"}
             </div>
           </div>
 
@@ -189,7 +189,7 @@ export function ContactInformation({ userDetails, userId }) {
             </label>
             {editing === false ? (
               <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.city || "California"}
+                {userDetails?.city || "Not entered"}
               </div>
             ) : (
               <input
@@ -209,7 +209,7 @@ export function ContactInformation({ userDetails, userId }) {
             </label>
             {editing === false ? (
               <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
-                {userDetails?.state || "United State"}
+                {userDetails?.state || "Not entered"}
               </div>
             ) : (
               <input
@@ -253,33 +253,6 @@ export function ContactInformation({ userDetails, userId }) {
           </div>
         </div>
 
-        {/* Edit/Save Buttons */}
-        {/* <div className="flex justify-end mt-8">
-          {editing === false ? (
-            <button
-              onClick={() => setEditing(true)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Edit Profile
-            </button>
-          ) : (
-            <div className="flex gap-3">
-              <button
-                onClick={() => setEditing(false)}
-                className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={savingChanges}
-                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                disabled={savingDetails}
-              >
-                {savingDetails ? "Saving..." : "Save Changes"}
-              </button>
-            </div>
-          )}
-        </div> */}
       </div>
     </div>
   </div>

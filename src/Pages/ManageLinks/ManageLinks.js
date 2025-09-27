@@ -905,7 +905,7 @@ export default function ManageLinks() {
 
                   <CustomModal open={removeBalance} onClose={() => setRemoveBalance(false)}>
                     <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
-                      Remove Balance
+                      Remove Credits
                     </h2>
 
                     <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />

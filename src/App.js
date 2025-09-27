@@ -33,7 +33,7 @@ import ProfileAndFinance from "./Pages/teacherPages/profileAndFinance/ProfileAnd
 import { SupportAndTraining } from "./Pages/SupportAndTraining/SupportAndTraining";
 import { Notifications } from "./Pages/Notifications/Notifications";
 import { CreateOrder } from "./Pages/adminPages/CreateOrder";
-import {ApplicationsList} from "./Pages/adminPages/createOrderPages/ApplicationsList" //inserted view applicants
+import { ApplicationsList } from "./Pages/adminPages/createOrderPages/ApplicationsList" //inserted view applicants
 
 import ContactUsForm from "./Pages/contactUsForm/ContactUsForm";
 import RequestCoursesForm from "./Pages/requestCoursesForm/RequestCoursesForm";
@@ -42,7 +42,12 @@ import RevisionCoursesForm from "./Pages/revisionCourseForm/RevisionCoursesForm"
 import { Toaster } from "react-hot-toast";
 import { TutorPages } from "./Pages/adminPages/tutorPages/TutorPages";
 import TutorDetail from "./Pages/adminPages/tutorPages/TutorDetail"; //inserted tutor Detail
-import {EditProfile} from "./Pages/adminPages/tutorPages/profileAndFinance/EditProfile"; //inserted edit profile
+import { EditProfile } from "./Pages/adminPages/tutorPages/profileAndFinance/EditProfile"; //inserted edit profile
+
+import { StudentPages } from "./Pages/adminPages/studentPages/StudentPages" //imported StudentPages
+import StudentDetail from "./Pages/adminPages/studentPages/StudentDetail"; //imported StudentDetail
+import { EditStudentProfile} from "./Pages/adminPages/studentPages/profileAndFinance/EditStudentProfile.js"; //imported EditProfileStudent
+
 import MySubscriptions from "./Pages/studentPages/mySubscriptions/MySubscriptions";
 import NewCourses from "./Pages/studentPages/newCourses/NewCourses";
 import ProfileAndFinanceStudent from "./Pages/studentPages/profileAndFinance/ProfileAndFinanceStudent";
@@ -57,8 +62,8 @@ import Layout from "./Components/Layout";
 import CustomModal from "./Pages/Login/CustomModal/CustomModal";
 import Loader from "./Pages/Login/Loader/Loader";
 import UpcomingCourseForm from "./Pages/upcomingCourseForm/UpcomingCourseForm";
-import {CourseTabs} from "./Pages/coursesTabbed/CourseTabs" //inserted coursesTabb
-import {ManageSubjects} from "./Pages/adminPages/tutorPages/ManageSubjects"
+import { CourseTabs } from "./Pages/coursesTabbed/CourseTabs" //inserted coursesTabb
+import { ManageSubjects } from "./Pages/adminPages/tutorPages/ManageSubjects"
 import Admins from "./Pages/adminList/Admins.js" //imported Admins
 
 function App() {
@@ -66,88 +71,91 @@ function App() {
 
   return (
     <>
-    <Router>
-      <ScrollToTop />
-      <CustomModal open={loading}>
-        <Loader />
-      </CustomModal>
-      <Toaster />
-      <Routes>
-        
-      <Route path="/jobOpenings/:id" element={<JobApplication />} />
-        {!isUserLoggedIn ? (
-          <>
-          <Route path="/" element={<Navigate to={"/login"} />} />
-            <Route path="/login" element={<Login />} />
-            {
-              (!loading && !userType) &&
-              <Route path="*" element={<Navigate to={"/login"} />} />
-            }
-          </>
-        ) : (
-          <>
-            <Route path="/" element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="/supportAndTraining" element={<SupportAndTraining />} />
-              <Route path="/supportAndTraining/:id" element={<Details />} />
-              <Route path="*" element={<Navigate to="/" />} />
+      <Router>
+        <ScrollToTop />
+        <CustomModal open={loading}>
+          <Loader />
+        </CustomModal>
+        <Toaster />
+        <Routes>
 
-              {userType === "admin" && (
-                <>
-                  <Route path="/seo" element={<SEO />} />
-                  <Route path="/blogs" element={<Blogs />} />
-                  <Route path="/blogs/new" element={<EditBlog />} />
-                  <Route path="/blogs/edit/:id" element={<EditBlog />} />
-                  {/* <Route path="/jobOpenings/:id" element={<JobApplication />} /> */}
-                  <Route path="/supportBlogs" element={<SupportBlogs />} />
-                  <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />
-                  <Route path="/supportBlogs/edit/:id" element={<CreateSupportBlog />} />
-                  <Route path="/supportBlogsPreview" element={<SupportBlogsPreview />} />
-                  <Route path="/upcomingCourses" element={<UpcommingCourses />} />
-                  <Route path="/studentForms" element={<StudentForm />} />
-                  <Route path="/coursesForms" element={<CourseTabs />} />
-                  {/* <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} /> */}
-                  <Route path="/tutorForms" element={<TutorForm />} />
-                  <Route path="/signupform" element={<SignupForm />} />
+          <Route path="/jobOpenings/:id" element={<JobApplication />} />
+          {!isUserLoggedIn ? (
+            <>
+              <Route path="/" element={<Navigate to={"/login"} />} />
+              <Route path="/login" element={<Login />} />
+              {
+                (!loading && !userType) &&
+                <Route path="*" element={<Navigate to={"/login"} />} />
+              }
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/supportAndTraining" element={<SupportAndTraining />} />
+                <Route path="/supportAndTraining/:id" element={<Details />} />
+                <Route path="*" element={<Navigate to="/" />} />
 
-                  <Route path="/tutorsAndSubjects" element={<TutorPages />} />
-                  <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
-                  <Route path="/tutorsAndSubjects/:tutorId/edit" element={<EditProfile />} />
-                  <Route path="/signup" element={<SignUpOnly />} />
-                  <Route path="/links" element={<ManageLinks />} />
-                  <Route path="/links/invoices/:id" element={<ViewInvoices />} />
-                  <Route path="/contactUsForms" element={<ContactUsForm />} />
-                  {/* <Route path="/requestCourseForm" element={<RequestCoursesForm />} />
+                {userType === "admin" && (
+                  <>
+                    <Route path="/seo" element={<SEO />} />
+                    <Route path="/blogs" element={<Blogs />} />
+                    <Route path="/blogs/new" element={<EditBlog />} />
+                    <Route path="/blogs/edit/:id" element={<EditBlog />} />
+                    {/* <Route path="/jobOpenings/:id" element={<JobApplication />} /> */}
+                    <Route path="/supportBlogs" element={<SupportBlogs />} />
+                    <Route path="/supportBlogs/new" element={<CreateSupportBlog />} />
+                    <Route path="/supportBlogs/edit/:id" element={<CreateSupportBlog />} />
+                    <Route path="/supportBlogsPreview" element={<SupportBlogsPreview />} />
+                    <Route path="/upcomingCourses" element={<UpcommingCourses />} />
+                    <Route path="/studentForms" element={<StudentForm />} />
+                    <Route path="/coursesForms" element={<CourseTabs />} />
+                    {/* <Route path="/upcomingCoursesForm" element={<UpcomingCourseForm />} /> */}
+                    <Route path="/tutorForms" element={<TutorForm />} />
+                    <Route path="/signupform" element={<SignupForm />} />
+                    <Route path="/tutorsAndSubjects" element={<TutorPages />} />
+                    <Route path="/tutorsAndSubjects/:tutorId" element={<TutorDetail />} />
+                    <Route path="/tutorsAndSubjects/:tutorId/edit" element={<EditProfile />} />
+                    <Route path="/students" element={<StudentPages />} />
+                    <Route path="/students/:studentId" element={<StudentDetail />} />
+                    <Route path="/students/:studentId/edit" element={<EditStudentProfile />} />
+
+                    <Route path="/signup" element={<SignUpOnly />} />
+                    <Route path="/links" element={<ManageLinks />} />
+                    <Route path="/links/invoices/:id" element={<ViewInvoices />} />
+                    <Route path="/contactUsForms" element={<ContactUsForm />} />
+                    {/* <Route path="/requestCourseForm" element={<RequestCoursesForm />} />
                   <Route path="/revisionCoursesForm" element={<RevisionCoursesForm />} /> */}
-                  <Route path="/jobsAndRequests" element={<CreateOrder />} />
-                  <Route path="/applicantsList" element={<ApplicationsList />} />
-                  <Route path="/subjects" element={<ManageSubjects />} />
-                  <Route path="/admins" element={<Admins />} />
-                  
-                </>
-              )}
-              {userType === "student" && (
-                <>
-                  <Route path="/mySubscriptions" element={<MySubscriptions />} />
-                  <Route path="/myCourses" element={<NewCourses />} />
-                  <Route path="/profile" element={<ProfileAndFinanceStudent />} />
-                </>
-              )}
-              {userType === "teacher" && (
-                <>
-                  <Route path="/activeCourses" element={<TeacherCourses />} />
-                  <Route path="/profileAndFinance" element={<ProfileAndFinance />} />
-                  <Route path="/myStudents" element={<MyStudents />} />
-                  <Route path="/jobOpenings" element={<JobOpening />} />
-                </>
-              )}
-            </Route>
-          </>
-        )}
-      </Routes>
-    </Router>
-  </>
+                    <Route path="/jobsAndRequests" element={<CreateOrder />} />
+                    <Route path="/applicantsList" element={<ApplicationsList />} />
+                    <Route path="/subjects" element={<ManageSubjects />} />
+                    <Route path="/admins" element={<Admins />} />
+
+                  </>
+                )}
+                {userType === "student" && (
+                  <>
+                    <Route path="/mySubscriptions" element={<MySubscriptions />} />
+                    <Route path="/myCourses" element={<NewCourses />} />
+                    <Route path="/profile" element={<ProfileAndFinanceStudent />} />
+                  </>
+                )}
+                {userType === "teacher" && (
+                  <>
+                    <Route path="/activeCourses" element={<TeacherCourses />} />
+                    <Route path="/profileAndFinance" element={<ProfileAndFinance />} />
+                    <Route path="/myStudents" element={<MyStudents />} />
+                    <Route path="/jobOpenings" element={<JobOpening />} />
+                  </>
+                )}
+              </Route>
+            </>
+          )}
+        </Routes>
+      </Router>
+    </>
   );
 }
 

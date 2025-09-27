@@ -2,81 +2,79 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { Profile } from "./profileAndFinance/Profile"
-import { AddSubjectsApplication } from "./AddSubjectsApplication"
-import TeacherInvoices from "./profileAndFinance/TeacherInvoices"
-import LinkedStudentsList from "./LinkedStudentsList/LinkedStudentsList"
-
 import Button from "@mui/material/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { TopHeadingProvider, useTopHeading } from "../../../Components/Layout"
 import { db } from "../../../firebase"
 import { collection, query, onSnapshot, where } from "firebase/firestore"
+import { Profile } from "./profileAndFinance/Profile"
+import Balance from "./profileAndFinance/Balance"
+import StudentInvoices from "./profileAndFinance/StudentInvoices"
+import LinkedTutorsList from "./profileAndFinance/LinkedTutorsList"
 
-const TutorDetail = () => {
+const StudentDetail = () => {
   const { setFirstMessage, setSecondMessage } = useTopHeading()
   const navigate = useNavigate()
-  const { tutorId } = useParams()
+  const { studentId } = useParams()
   const [activeTab, setActiveTab] = useState("profile")
-  const [tutorData, setTutorData] = useState({})
+  const [studentData, setStudentData] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setFirstMessage("Tutor Details")
-    setSecondMessage("Manage Tutor Information")
+    setFirstMessage("Student Details")
+    setSecondMessage("Manage Student Information")
   }, [setFirstMessage, setSecondMessage])
 
   useEffect(() => {
-    if (!tutorId) return
+    if (!studentId) return
 
     let unsubscribe
 
-    const fetchTutorData = async () => {
+    const fetchStudentData = async () => {
       try {
         setLoading(true)
         const userListRef = collection(db, "userList")
-        const q = query(userListRef, where("userId", "==", tutorId), where("type", "==", "teacher"))
+        const q = query(userListRef, where("userId", "==", studentId), where("type", "==", "student"))
 
         unsubscribe = onSnapshot(q, (querySnapshot) => {
           if (!querySnapshot.empty) {
-            const tutorDoc = querySnapshot.docs[0]
-            console.log("Tutor Data:", tutorData);
-            setTutorData(tutorDoc.data())
+            const studentDoc = querySnapshot.docs[0]
+            setStudentData(studentDoc.data())
           }
           setLoading(false)
         })
       } catch (e) {
-        console.error("Error fetching tutor data:", e)
+        console.error("Error fetching student data:", e)
         setLoading(false)
       }
     }
 
-    fetchTutorData()
+    fetchStudentData()
 
     return () => {
       if (unsubscribe && typeof unsubscribe === "function") {
         unsubscribe()
       }
     }
-  }, [tutorId])
+  }, [studentId])
 
   const handleBackToList = () => {
-    navigate("/tutorsAndSubjects")
+    navigate("/students")
   }
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "profile":
-        return <Profile userDetails={tutorData} userId={tutorData.userId} />
-      case "subjects":
-        return <AddSubjectsApplication userDetails={tutorData} userId={tutorData.userId} />
+        return <Profile userDetails={studentData} userId={studentData.userId} />
+      case "credits":
+        return <StudentInvoices userDetails={studentData} userId={studentData.userId} />
       case "payments":
-        return <TeacherInvoices userDetails={tutorData} userId={tutorData.userId} />
-      case "students":
-        return <LinkedStudentsList userId={tutorData.userId} />
+        return <Balance userDetails={studentData} userId={studentData.userId} />
+      case "tutors":
+        return <LinkedTutorsList userId={studentData.userId} />
       default:
-        return <Profile userDetails={tutorData} userId={tutorData.userId} />
+        return <Profile userDetails={studentData} userId={studentData.userId} />
     }
   }
 
@@ -84,17 +82,17 @@ const TutorDetail = () => {
     return (
       <TopHeadingProvider>
         <div className="flex items-center justify-center h-screen">
-          <div className="text-lg text-gray-600">Loading tutor details...</div>
+          <div className="text-lg text-gray-600">Loading student details...</div>
         </div>
       </TopHeadingProvider>
     )
   }
 
-  if (!tutorData.userId) {
+  if (!studentData.userId) {
     return (
       <TopHeadingProvider>
         <div className="flex flex-col items-center justify-center h-screen">
-          <div className="text-lg text-gray-600 mb-4">Tutor not found</div>
+          <div className="text-lg text-gray-600 mb-4">Student not found</div>
           <Button onClick={handleBackToList} variant="outlined">
             Back to List
           </Button>
@@ -116,21 +114,20 @@ const TutorDetail = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                    {tutorData?.userName || "N/A"}
+                    {studentData?.userName || "N/A"}
                   </h1>
                   <div className="flex items-center gap-2 text-gray-600 mb-1">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span>Science Tutors</span>;
-                    
+                    <span>Enrolled Student</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
-                    <span>{tutorData?.email || "N/A"}</span>
+                    <span>{studentData?.email || "N/A"}</span>
                   </div>
                 </div>
               </div>
@@ -153,20 +150,21 @@ const TutorDetail = () => {
                     backgroundColor: "#4071b62a",
                   },
                 }}
-                  onClick={() => navigate(`/tutorsAndSubjects/${tutorId}/edit`)}   
+                onClick={() => navigate(`/students/${studentId}/edit`)}
               >
                 Edit Profile
               </Button>
             </div>
           </div>
 
-
           <div className="flex gap-6">
             <div className="w-64 rounded-lg border border-gray-200 p-0 h-fit overflow-hidden">
               <div className="space-y-0">
                 <button
                   onClick={() => setActiveTab("profile")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "profile" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "profile"
+                      ? "bg-[#4071B6] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -181,20 +179,24 @@ const TutorDetail = () => {
                   </div>
                 </button>
                 <button
-                  onClick={() => setActiveTab("subjects")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium  ${activeTab === "subjects" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  onClick={() => setActiveTab("credits")}
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium  ${activeTab === "credits"
+                      ? "bg-[#4071B6] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Approved Subjects
+                    Credits Usage
                   </div>
                 </button>
                 <button
                   onClick={() => setActiveTab("payments")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "payments" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "payments"
+                      ? "bg-[#4071B6] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
@@ -205,15 +207,17 @@ const TutorDetail = () => {
                   </div>
                 </button>
                 <button
-                  onClick={() => setActiveTab("students")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "students" ? "bg-[#4071B6] text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                  onClick={() => setActiveTab("tutors")}
+                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "tutors"
+                      ? "bg-[#4071B6] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
                     </svg>
-                    Students
+                    Tutors
                   </div>
                 </button>
               </div>
@@ -227,6 +231,7 @@ const TutorDetail = () => {
       </div>
     </TopHeadingProvider>
   )
+
 }
 
-export default TutorDetail
+export default StudentDetail
