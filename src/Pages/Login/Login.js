@@ -18,16 +18,17 @@ export default function Login() {
       <Toaster />
 
       {/* Left Side - Illustration */}
-      <div className="hidden lg:flex w-1/2 h-full bg-[#4071B60D] p-12 items-center justify-center relative">
+      <div className="hidden lg:flex w-2/3 h-full bg-[#4071B60D] p-12 items-center justify-center relative">
         <div className="absolute top-8 left-8">
           <img src={Logo} alt="IB Innovators Logo" className="h-16 w-auto object-contain" />
         </div>
 
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full max-w-md mt-28">
           <img
             src={LoginImage}
             alt="International Day of Education illustration"
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain scale-110"
+            style={{ clipPath: "inset(0 0 75px 0)" }} 
           />
         </div>
       </div>
@@ -41,19 +42,19 @@ export default function Login() {
             alt="IB Innovators Logo"
             className="h-20 w-auto object-contain mb-3"
           />
-          <h1 className="text-[34px] font-bold text-[#4071B6] mb-2">Class Core</h1>
-          <p className="text-gray-500 text-[16px]">Please login here</p>
+          <h1 className="text-[34px] font-medium text-[#4071B6] mb-2">Class Core</h1>
+          <p className="text-[#A2A1A8] font-light text-[16px]">Please login here</p>
         </div>
 
         {/* Login Form (centered but nudged upward) */}
         <div className="flex-1 flex items-center justify-center px-8 lg:px-12">
-          <div className="w-full max-w-md -mt-16"> {/* 👈 negative top margin moves it up */}
+          <div className="w-full max-w-md -mt-24"> {/* 👈 negative top margin moves it up */}
             <LoginForm />
           </div>
         </div>
 
         {/* Footer (slightly lifted too) */}
-        <div className="p-4 lg:p-6 text-center text-gray-400 text-sm -mb-4">
+        <div className="p-4 lg:p-6 text-center text-[#A2A1A8] text-[18px] font-light -mb-2">
           @2025 IB Innovators. All rights reserved
         </div>
       </div>

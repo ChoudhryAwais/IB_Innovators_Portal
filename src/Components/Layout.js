@@ -26,13 +26,19 @@ export function useTopHeading() {
 
 export default function Layout() {
   const [sidebarWidth, setSidebarWidth] = useState(300)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 1024) {
-        setSidebarWidth(100)
+      const width = window.innerWidth
+      setWindowWidth(width)
+
+      if (width < 768) {
+        setSidebarWidth(80) // collapsed width on mobile
+      } else if (width < 1024) {
+        setSidebarWidth(100) // medium screens
       } else {
-        setSidebarWidth(300)
+        setSidebarWidth(300) // full sidebar
       }
     }
 
@@ -51,12 +57,12 @@ export default function Layout() {
 
         {/* Content area */}
         <div
-          className="flex-1 flex flex-col"
-          style={{ marginLeft: `${sidebarWidth - 8}px` }}
+          className="flex-1 flex flex-col transition-all duration-300"
+          style={{ marginLeft: `${sidebarWidth}px` }}
         >
-          {/* Header - connected with Sidebar */}
+          {/* Header */}
           <div
-            className="flex justify-between items-center fixed top-0 h-[70px] px-6 bg-white border-gray-200 z-[998]"
+            className="flex justify-between items-center fixed top-0 h-[70px] px-6 bg-white border-gray-200 z-[998] transition-all duration-300 pt-4 pb-2"
             style={{ left: `${sidebarWidth}px`, width: `calc(100% - ${sidebarWidth}px)` }}
           >
             <TopHeading />
@@ -64,7 +70,7 @@ export default function Layout() {
           </div>
 
           {/* Main Content */}
-          <div className="pt-[70px] min-h-screen bg-white">
+          <div className="pt-[80px] min-h-screen bg-white">
             <Outlet />
           </div>
         </div>

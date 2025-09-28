@@ -24,7 +24,7 @@ import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import ViewInvoices from "./ViewInvoices"
 
-import { MenuItem, Select, Button, TextField, Modal } from "@mui/material"
+import { MenuItem, Select, Button, TextField, Modal, InputAdornment } from "@mui/material"
 import { useTopHeading } from "../../Components/Layout"
 import { TopHeadingProvider } from "../../Components/Layout"
 
@@ -425,7 +425,18 @@ export default function ManageLinks() {
         <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-7">
           <div className="flex flex-col md:flex-row md:items-stretch md:space-x-4 mb-6">
             <div className="flex items-center border border-[#A2A1A81A] rounded-[10px] px-3 py-2 flex-1 h-[50px]">
-              <FontAwesomeIcon className="text-gray-500 mr-2" icon={faMagnifyingGlass} />
+              <svg
+                className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
+                viewBox="0 0 22 22"
+                fill="#16151C"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
+                />
+              </svg>
               <input
                 onChange={handleSearch}
                 placeholder="Search"
@@ -440,12 +451,14 @@ export default function ManageLinks() {
                   setActive(active === "Active Links" ? "Deactivated Links" : "Active Links")
                 }
                 sx={{
+                  fontWeight: 600,
                   color: "#4071B6",
                   backgroundColor: "#4071B60D",
                   border: "1px solid #4071B6",
                   height: "50px",
                   borderRadius: "10px",
                   padding: 0,
+                  textTransform: "none",
                   "&:hover": {
                     color: "#4071B6",
                     backgroundColor: "#4071B60D",
@@ -454,8 +467,11 @@ export default function ManageLinks() {
                 }}
               >
                 <span className="flex items-center gap-2">
-                  {active === "Active Links" ? "Deactivated Links" : "Active Links"}
-                  <FontAwesomeIcon icon={faRepeat} className="text-blue-600 text-lg" />
+                  {active === "Active Links" ? "Active Links" : "Deactivated Links"}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.81934 11.9997V8.76865C4.81934 7.66408 5.71477 6.76865 6.81934 6.76865H18.7689L15.2815 3.28125" stroke="#4071B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M18.7686 12.0003V15.2313C18.7686 16.3359 17.8731 17.2314 16.7686 17.2314H4.81896L8.30636 20.7188" stroke="#4071B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
                 </span>
               </Button>
             </div>
@@ -472,22 +488,30 @@ export default function ManageLinks() {
 
                 >
                   <div className="flex items-center mb-3">
-                    <FontAwesomeIcon icon={faBook} className="text-blue-500 mr-2" />
-                    <span className="font-semibold text-[#16151C]">{item?.subject}</span>
+                    <div className="h-[45px] w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center">
+                      <svg
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 6H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M6 10H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M6 14H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M6 18H12" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                      </svg>
+                    </div>
+                    <span className="font-semibold text-[#16151C] text-[16px]">{item?.subject}</span>
                   </div>
                   <div className="flex justify-between items-end">
                     <div className="flex flex-col text-sm text-[#16151C] space-y-1">
                       <div className="flex">
-                        <span className="font-light w-28">Subscription:</span>
-                        <span className="font-medium">#{item?.id}</span>
+                        <span className="font-light text-[14px] w-28">Subscription:</span>
+                        <span className="font-medium text-[14px]">#{item?.id}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-light w-28">Student:</span>
-                        <span className="font-medium">{item?.studentName}</span>
+                        <span className="font-light text-[14px] w-28">Student:</span>
+                        <span className="font-medium text-[14px]">{item?.studentName}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-light w-28">Tutor:</span>
-                        <span className="font-medium">{item?.teacherName}</span>
+                        <span className="font-light text-[14px] w-28">Tutor:</span>
+                        <span className="font-medium text-[14px]">{item?.teacherName}</span>
                       </div>
                     </div>
 
@@ -503,6 +527,7 @@ export default function ManageLinks() {
                           color: "#4071B6",
                           backgroundColor: "#4071B60D",
                           border: "1px solid #4071B6",
+                          textTransform: "none",
                           "&:hover": {
                             color: "#4071B6",
                             backgroundColor: "#4071B60D",
@@ -536,15 +561,20 @@ export default function ManageLinks() {
                 <>
                   <div className="bg-[#A2A1A80D] rounded-lg px-6 py-4 h-[518px]">
                     <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center space-x-2">
-                        <FontAwesomeIcon icon={faSuitcase} className="text-blue-600 text-lg" />
-                        <span className="text-lg font-semibold text-gray-800">{link?.subject}</span>
+                      <div className="flex items-center space-x-3">
+                        <div className="h-[45px] w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                            <path d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z" stroke="#16151C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </div>
+                        <span className="font-semibold text-[#16151C] text-[16px]">{link?.subject}</span>
                       </div>
                       {!link?.studentDeactivated ? (
                         <Button
                           sx={{
                             fontSize: "12px",
-                            width: "120px",
+                            width: "150px",
                             height: "32px",
                             borderRadius: "4px",
                             padding: "10px",
@@ -552,6 +582,9 @@ export default function ManageLinks() {
                             color: "#A81E1E",
                             backgroundColor: "#A81E1E0D",
                             border: "1px solid #A81E1E",
+                            minWidth: "unset",
+                            textTransform: "none",
+                            boxSizing: "border-box",
                             "&:hover": {
                               color: "#A81E1E",
                               backgroundColor: "#A81E1E0D",
@@ -581,28 +614,15 @@ export default function ManageLinks() {
                               height: "32px",
                               borderRadius: "6px",
                               cursor: "pointer",
-                              border: "1px solid #E5E7EB",
-                              backgroundColor: "#F9FAFB",
                               transition: "background-color 0.2s ease",
                             }}
                             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F3F4F6")}
                             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F9FAFB")}
                           >
-                            <svg
-                              width="20"
-                              height="22"
-                              viewBox="0 0 20 22"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1"
-                                stroke="#28303F"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
+                            <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1" stroke="#A2A1A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
+
                           </div>
                         )
 
@@ -611,43 +631,43 @@ export default function ManageLinks() {
 
                     <div className="space-y-1 text-sm text-gray-700">
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Subscription:</span>
+                        <span className="font-light text-[14px] w-40">Subscription:</span>
                         <span className="text-[#16151C] font-medium">#{link?.id}</span>
                       </div>
 
                       <div className="h-5" />
 
                       <div className="flex ">
-                        <span className="font-light text-sm w-40">Student:</span>
+                        <span className="font-light text-[14px] w-40">Student:</span>
                         <span className="text-[#16151C] font-medium">{link?.studentName}</span>
                       </div>
                       <div className="flex ">
-                        <span className="font-light text-sm w-40">Email:</span>
-                        <span className="text-[#16151C] font-medium">{link?.studentEmail}</span>
+                        <span className="font-light text-[14px] w-40">Email:</span>
+                        <span className="text-[#16151C] text-[14px] font-medium">{link?.studentEmail}</span>
                       </div>
 
                       <div className="h-5" />
 
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Tutor:</span>
-                        <span className="text-[#16151C] font-medium">{link?.teacherName}</span>
+                        <span className="font-light text-[14px] w-40">Tutor:</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">{link?.teacherName}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Email:</span>
-                        <span className="text-[#16151C] font-medium">{link?.teacherEmail || "N/A"}</span>
+                        <span className="font-light text-[14px] w-40">Email:</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">{link?.teacherEmail || "N/A"}</span>
                       </div>
 
                       <div className="h-5" />
 
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Start Date:</span>
-                        <span className="text-[#16151C] font-medium">
+                        <span className="font-light text-[14px] w-40">Start Date:</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">
                           {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Credits:</span>
-                        <span className="text-[#16151C] font-medium">
+                        <span className="font-light text-[14px] w-40">Credits:</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">
                           {fetchingCredits
                             ? "Fetching..."
                             : calculateHoursLeft(
@@ -657,19 +677,19 @@ export default function ManageLinks() {
                         </span>
                       </div>
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Hourly Rate (USD):</span>
-                        <span className="text-[#16151C] font-medium">${link?.price}</span>
+                        <span className="font-light text-[14px] w-40">Hourly Rate (USD):</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">${link?.price}</span>
                       </div>
                       <div className="flex">
-                        <span className="font-light text-sm  w-40">Tutor Hourly Rate (USD):</span>
-                        <span className="text-[#16151C] font-medium">${link?.tutorHourlyRate}</span>
+                        <span className="font-light text-[14px] w-40">Tutor Hourly Rate (USD):</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">${link?.tutorHourlyRate}</span>
                       </div>
 
                       <div className="h-5" />
 
                       <div className="flex">
-                        <span className="font-light text-sm w-40">Balance (GBP):</span>
-                        <span className="text-[#16151C] font-medium">
+                        <span className="font-light text-[14px] w-40">Balance (GBP):</span>
+                        <span className="text-[#16151C] font-medium text-[14px]">
                           {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
                         </span>
                       </div>
@@ -683,6 +703,8 @@ export default function ManageLinks() {
                           border: '1px solid #F49342',
                           fontSize: '12px',
                           fontWeight: '600',
+                          padding: 0,
+                          textTransform: "none",
                           '&:hover': {
                             color: '#F49342',
                             backgroundColor: '#F493420D',
@@ -709,6 +731,7 @@ export default function ManageLinks() {
                             border: '1px solid #3FC28A',
                             fontSize: '12px',
                             fontWeight: '600',
+                            textTransform: "none",
                             '&:hover': {
                               color: '#3FC28A',
                               backgroundColor: '#3FC28A0D',
@@ -732,6 +755,7 @@ export default function ManageLinks() {
                             border: '1px solid #3FC28A',
                             fontSize: '12px',
                             fontWeight: '600',
+                            textTransform: "none",
                             '&:hover': {
                               color: '#3FC28A',
                               backgroundColor: '#3FC28A0D',
@@ -753,6 +777,7 @@ export default function ManageLinks() {
                           border: '1px solid #4071B6',
                           fontSize: '12px',
                           fontWeight: '600',
+                          textTransform: "none",
                           '&:hover': {
                             color: '#4071B6',
                             backgroundColor: '#4071B60D',
@@ -771,13 +796,13 @@ export default function ManageLinks() {
 
 
                   <CustomModal open={showReactivateModal} onClose={() => setShowReactivateModal(false)}>
-                    <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
-                      Reactivate Student
+                    <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+                      Reactivate
                     </h2>
 
                     <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
                     <p className="text-lg text-center font-light text-[#16151C] mb-12">
-                      Are you sure you want to reactivate this student?
+                      Are you sure you want to Reactivate this student?
                     </p>
                     <div className="flex gap-3 justify-end">
                       <Button
@@ -791,6 +816,7 @@ export default function ManageLinks() {
                           fontSize: "16px",
                           fontWeight: 300,
                           color: "#16151C",
+                          textTransform: "none",
                         }}
                       >
                         Close
@@ -805,10 +831,11 @@ export default function ManageLinks() {
                           fontSize: "20px",
                           fontWeight: 300,
                           color: "#FFFFFF",
+                          textTransform: "none",
                         }}
                         onClick={() => reactivateStudent(selectedLink)}
                       >
-                        Reactivate
+                        Yes
                       </Button>
                     </div>
                   </CustomModal>
@@ -850,7 +877,7 @@ export default function ManageLinks() {
 
                   <CustomModal open={showModal} onClose={() => setShowModal(false)}>
                     <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
-                      Enter Balance Amount
+                      Add Credit
                     </h2>
 
                     <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
@@ -859,9 +886,49 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter Amount in GBP"
+                      label="Enter amount in GBP"
                       fullWidth
-                      sx={{ mb: 7 }}
+                      sx={{
+                        borderColor: "#A2A1A833",
+                        mb: 7,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "10px", // 👈 custom radius
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#A2A1A8CC", // 👈 default label color
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#4071B6", // 👈 label color when focused
+                        },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M7 12H17"
+                                stroke="#16151C"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
+                                stroke="#16151C"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
 
                     <div className="flex gap-3 justify-end">
@@ -879,6 +946,8 @@ export default function ManageLinks() {
                           fontSize: "16px",
                           fontWeight: 300,
                           color: "#16151C",
+                          textTransform: "none",
+
                         }}
                       >
                         Cancel
@@ -894,10 +963,11 @@ export default function ManageLinks() {
                           fontSize: "20px",
                           fontWeight: 300,
                           color: "#FFFFFF",
+                          textTransform: "none",
                         }}
                         onClick={handleModalSubmit}
                       >
-                        {loading ? "Submitting" : "Submit"}
+                        {loading ? "Adding" : "Add"}
                       </Button>
                     </div>
                   </CustomModal>
@@ -914,9 +984,49 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter Amount in GBP"
+                      label="Enter amount in GBP"
                       fullWidth
-                      sx={{ mb: 7 }}
+                      sx={{
+                        borderColor: "#A2A1A833",
+                        mb: 7,
+                        "& .MuiOutlinedInput-root": {
+                          borderRadius: "10px", // 👈 custom radius
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: "#A2A1A8CC", // 👈 default label color
+                        },
+                        "& .MuiInputLabel-root.Mui-focused": {
+                          color: "#4071B6", // 👈 label color when focused
+                        },
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M7 12H17"
+                                stroke="#16151C"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
+                                stroke="#16151C"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
 
                     <div className="flex gap-3 justify-end">
@@ -959,13 +1069,13 @@ export default function ManageLinks() {
 
                   <CustomModal open={showDeactivateModal} onClose={() => setShowDeactivateModal(false)}>
                     <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
-                      Deactivate Student
+                      Deactivate
                     </h2>
 
                     <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
                     <p className="text-lg text-center font-light text-[#16151C] mb-12">
-                      Are you sure you want to deactivate this student?
+                      Are you sure you want to Deactivate this student?
                     </p>
 
                     <div className="flex gap-3 justify-end">
@@ -980,6 +1090,7 @@ export default function ManageLinks() {
                           fontSize: "16px",
                           fontWeight: 300,
                           color: "#16151C",
+                          textTransform: "none",
                         }}
                       >
                         Cancel
@@ -995,6 +1106,7 @@ export default function ManageLinks() {
                           fontSize: "20px",
                           fontWeight: 300,
                           color: "#FFFFFF",
+                          textTransform: "none",
                         }}
                         onClick={() => handleDeactivate(selectedLink.id)}
                       >
@@ -1026,6 +1138,7 @@ export default function ManageLinks() {
                           fontSize: "16px",
                           fontWeight: 300,
                           color: "#16151C",
+                          textTransform: "none",
                         }}
                       >
                         Cancel
@@ -1041,6 +1154,7 @@ export default function ManageLinks() {
                           fontSize: "20px",
                           fontWeight: 300,
                           color: "#FFFFFF",
+                          textTransform: "none",
                         }}
                         onClick={handleDeleteModalSubmit}
                       >

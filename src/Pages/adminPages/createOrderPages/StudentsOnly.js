@@ -90,7 +90,18 @@ export function StudentsOnly() {
       {students.length !== 0 && (
         <div className="relative mb-6">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FontAwesomeIcon className="text-gray-400" icon={faMagnifyingGlass} />
+            <svg
+              className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
+              viewBox="0 0 22 22"
+              fill="#16151C"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
+              />
+            </svg>
           </div>
           <input
             onChange={handleSearch}
@@ -104,44 +115,61 @@ export function StudentsOnly() {
       <div className="space-y-4">
         {displayedSessions.map((student, index) => (
           <div
-            className="bg-white border-b border-gray-200  p-4 flex items-center justify-between hover:shadow-md transition-shadow"
             key={index}
+            className="flex items-stretch p-4 border-b border-gray-200"
           >
-            <div className="flex items-center space-x-4 flex-1">
-              <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
-                <img
-                  src={`/profile-picture-of-.jpg?key=i60jq&height=48&width=48&query=profile+picture+of+${student?.userName || "student"}`}
-                  alt={student?.userName}
-                  className="w-12 h-12 rounded-lg object-cover"
-                />
-              </div>
-
+            {/* Info + Button */}
+            <div className="flex justify-between w-full">
+              {/* Student Info */}
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{student?.userName}</h3>
-                <div className="space-y-1 text-sm text-gray-600">
-                  <div>
-                    <span className="font-medium">Email:</span> {student?.email}
+                {/* Avatar + Name */}
+                <div className="flex items-center">
+                  {/* Avatar */}
+                  <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                    <img
+                      src={`/profile-picture-of-.jpg?key=i60jq&height=48&width=48&query=profile+picture+of+${student?.userName || "student"}`}
+                      alt={student?.userName}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
                   </div>
-                  <div>
-                    <span className="font-medium">User ID:</span> {student?.userId}
+                  {/* Student Name aligned with avatar bottom */}
+                  <h3 className="font-semibold text-[#16151C] text-[18px]">
+                    {student?.userName}
+                  </h3>
+                </div>
+
+                {/* Email + User ID + Balance aligned with student name (indented) */}
+                <div className="text-sm text-gray-600 mt-1 pl-[4rem] space-y-1">
+                  <div className="flex">
+                    <span className="w-24 font-light text-[#16151C] text-[14px] ">Email:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">{student?.email}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">Balance:</span> ${" "}
-                    {student?.credits && student?.credits > 0 ? student?.credits?.toFixed(2) : "N/A"}
+                  <div className="flex">
+                    <span className="w-24 font-light text-[#16151C] text-[14px] ">User ID:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">{student?.userId}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="w-24 font-light text-[#16151C] text-[14px] ">Balance:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">
+                      ${student?.credits && student?.credits > 0 ? student?.credits?.toFixed(2) : "N/A"}
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
-              onClick={() => {
-                setSelectedStudent(student)
-                setShowModal(true)
-              }}
-            >
-              Create Job
-            </button>
+              {/* Button aligned with Student info */}
+              <div className="flex items-end">
+                <button
+                  className="ml-4 bg-[#4071B6] hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-[12px] text-base transition-colors"
+                  onClick={() => {
+                    setSelectedStudent(student)
+                    setShowModal(true)
+                  }}
+                >
+                  Create Job
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

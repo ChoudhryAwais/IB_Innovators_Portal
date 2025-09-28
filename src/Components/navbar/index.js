@@ -67,6 +67,20 @@ const NavBar = () => {
         )
       }
     } else if (userType === "admin") {
+      if (userDetails.userId) {
+        // Fetch admin details from userList (same as student/teacher)
+        const userListRef = collection(db, "userList")
+        const q = query(userListRef, where("userId", "==", userDetails.userId))
+
+        unsubscribe = onSnapshot(
+          q,
+          (querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              const adminDetails = doc.data()
+            })
+          }
+        )
+      }
       fetchAdminNotifications()
     }
 
@@ -106,7 +120,7 @@ const NavBar = () => {
       <div className="flex items-center gap-4">
         {/* Profile section */}
         <div
-          className="flex items-center gap-3 bg-purple-100 rounded-lg px-3 py-2 cursor-pointer hover:bg-purple-200 transition-colors"
+          className="flex items-center gap-3 border border-[#A2A1A833] rounded-lg px-3 py-2 cursor-pointer hover: transition-colors"
           onClick={(e) => {
             if (userType === "teacher") {
               handleChange(e, "profileAndFinance")
@@ -134,26 +148,77 @@ const NavBar = () => {
 
         {/* Notification bell */}
         <div
-          className="relative p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+          className="relative h-[50px] w-[50px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center"
           onClick={(e) => handleChange(e, "notifications")}
         >
-          <FontAwesomeIcon icon={faBell} className="text-gray-600 text-lg" />
+          {/* Bell SVG */}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5.67964 8.79403C6.05382 5.49085 8.77095 3 12 3C15.2291 3 17.9462 5.49085 18.3204 8.79403L18.6652 11.8385C18.7509 12.595 19.0575 13.3069 19.5445 13.88C20.5779 15.0964 19.7392 17 18.1699 17H5.83014C4.26081 17 3.42209 15.0964 4.45549 13.88C4.94246 13.3069 5.24906 12.595 5.33476 11.8385L5.67964 8.79403Z"
+              stroke="#16151C"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M15 19C14.5633 20.1652 13.385 21 12 21C10.615 21 9.43668 20.1652 9 19"
+              stroke="#16151C"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* Notification badge */}
           {notifications?.length > 0 && (
             <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex justify-center items-center text-xs font-medium">
               {notifications?.length}
             </div>
           )}
         </div>
-
         {/* Additional action button */}
         <div
-          className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+          className="h-[50px] w-[50px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center"
           onClick={() => {
             setShowModal(true)
           }}
         >
-          <FontAwesomeIcon icon={faArrowRightFromBracket} className="text-gray-600 text-lg" />
+          {/* Logout SVG */}
+          <svg
+            width="21"
+            height="21"
+            viewBox="0 0 21 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.0155 5.38948V4.45648C13.0155 2.42148 11.3655 0.771484 9.33048 0.771484H4.45548C2.42148 0.771484 0.771484 2.42148 0.771484 4.45648V15.5865C0.771484 17.6215 2.42148 19.2715 4.45548 19.2715H9.34048C11.3695 19.2715 13.0155 17.6265 13.0155 15.5975V14.6545"
+              stroke="#16151C"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M19.8086 10.0215H7.76758"
+              stroke="#16151C"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16.8809 7.10547L19.8089 10.0205L16.8809 12.9365"
+              stroke="#16151C"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
+
       </div>
 
       {/* Logout confirmation modal */}
@@ -163,16 +228,17 @@ const NavBar = () => {
             height: "auto",
             overflow: "hidden",
             borderRadius: "20px",
+            width: "383px"
           },
         }}
       >
-        <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">
+        <h2 className="text-[20px] font-semibold text-center text-[#16151C] mb-7">
           Logout
         </h2>
 
         <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
 
-        <p className="text-lg text-center font-light text-[#16151C] mt-4 mb-12">
+        <p className="text-[18px] text-center font-light text-[#16151C] mt-4 mb-12">
           Are you sure you want to Logout?
         </p>
 
