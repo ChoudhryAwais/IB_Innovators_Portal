@@ -102,13 +102,13 @@ export default function Balance({ userDetails, userId }) {
   return (
     <div className="">
       {/* Credits Left */}
-      <h2 style={{ textAlign: "left" }}>
+      {/* <h2 style={{ textAlign: "left" }}>
           Credits Left{" "}
           <span style={{ fontSize: "large" }}>
             (worth £ {userDetails?.credits?.toFixed(2)})
           </span>
-        </h2>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Payment History</h1>
+        </h2> */}
+      <h1 className="text-left text-[24px] font-semibold mb-6">Credits Details</h1>
       <div className="space-y-4">
         {result.map((item) => {
           const monthKey = `${item.month}-${item.year}`
@@ -139,11 +139,11 @@ export default function Balance({ userDetails, userId }) {
                 id={`panel-${monthKey}`}
                 className="px-6 py-4 hover:bg-gray-50"
                 sx={{
-                  minHeight: "72px !important",
-                  maxHeight: "72px",
+                  minHeight: "60px !important",
+                  maxHeight: "60px",
                   "&.Mui-expanded": {
-                    minHeight: "72px !important",
-                    maxHeight: "72px",
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
                     "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
                       color: "#4071B6",
                     },
@@ -170,7 +170,7 @@ export default function Balance({ userDetails, userId }) {
                     {months[item?.month - 1]} {item?.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    £ {calculateMonthlyInvoice(userDetails?.balanceHistory || [], item?.month, item?.year)}
+                    $ {calculateMonthlyInvoice(userDetails?.balanceHistory || [], item?.month, item?.year)}
                   </div>
                 </div>
               </AccordionSummary>
@@ -183,18 +183,19 @@ export default function Balance({ userDetails, userId }) {
                     sx={{
                       backgroundColor: "#f9fafb",
                       borderBottom: "1px solid #e5e7eb",
-                      fontWeight: 500,
-                      color: "#4b5563",
+                      fontWeight: 300,
+                      color: "#A2A1A8",
                       p: 1.5,
+                      fontSize: '14px'
                     }}
                   >
                     <Grid item xs={4}>
                       Date
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={6.2}>
                       Time
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={1.8}>
                       Amount
                     </Grid>
                   </Grid>
@@ -225,13 +226,13 @@ export default function Balance({ userDetails, userId }) {
                         }}
                       >
                         <Grid item xs={4}>
-                          <div className="text-gray-900">{date}</div>
+                          <div className="text-[14px] font-light text-[#16151C]">{date}</div>
                         </Grid>
-                        <Grid item xs={4}>
-                          <div className="text-gray-900">{time}</div>
+                        <Grid item xs={5.5}>
+                          <div className="text-[14px] font-light text-[#16151C]">{time}</div>
                         </Grid>
-                        <Grid item xs={4}>
-                          <div className="font-bold text-gray-900">£ {inv?.amount}</div>
+                        <Grid item xs={1.7}>
+                          <div className="text-[14px] font-light text-[#16151C] text-end">$ {inv?.amount}</div>
                         </Grid>
                       </Grid>
                     )

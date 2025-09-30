@@ -12,7 +12,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import Slide from "@mui/material/Slide"
 import toast from "react-hot-toast"
 import Divider from "@mui/material/Divider"
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
+import { FormControl, InputLabel, MenuItem, Select, TextField, InputAdornment } from "@mui/material"
 import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -136,24 +136,24 @@ const FormComponent = () => {
         {receivedData.length === 0 ? (
           <div className="flex flex-col border border-[#A2A1A833] rounded-[10px] items-center justify-center min-h-[70vh] gap-6">
             <Button
-                variant="contained"
-                onClick={() => setShowCreateModal(true)}
-                sx={{
-                  backgroundColor: "#4071B6",
-                  width: "250px",
-                  height: "50px",
-                  "&:hover": { backgroundColor: "#427ac9ff" },
-                  color: "white",
-                  px: 3,
-                  py: 1.5,
-                  borderRadius: "0.5rem",
-                  fontWeight: 500,
-                  textTransform: "none",
-                  fontSize: "16px",
-                }}
-              >
-                + Create a new Course
-              </Button>
+              variant="contained"
+              onClick={() => setShowCreateModal(true)}
+              sx={{
+                backgroundColor: "#4071B6",
+                width: "250px",
+                height: "50px",
+                "&:hover": { backgroundColor: "#427ac9ff" },
+                color: "white",
+                px: 3,
+                py: 1.5,
+                borderRadius: "0.5rem",
+                fontWeight: 600,
+                textTransform: "none",
+                fontSize: "16px",
+              }}
+            >
+              + Create a new Course
+            </Button>
             <p className="text-[#16151C] text-2xl font-light">No Courses Yet!</p>
           </div>
         ) : (
@@ -174,7 +174,7 @@ const FormComponent = () => {
                   px: 3,
                   py: 1.5,
                   borderRadius: "0.5rem",
-                  fontWeight: 500,
+                  fontWeight: 600,
                   textTransform: "none",
                   fontSize: "16px",
                 }}
@@ -187,29 +187,29 @@ const FormComponent = () => {
               {upcomingDisplayedSessions.map((item, index) => (
                 <div key={index} className="bg-white border-b border-gray-200 pb-6 last:border-b-0">
                   <div className="flex flex-col">
-                    <h3 className="text-lg font-semibold text-[#4071B6] mb-1">{item.heading}</h3>
-                    <p className="text-[#16151C] text-lg">
+                    <h3 className="text-[18px] font-semibold text-[#4071B6] mb-2">{item.heading}</h3>
+                    <p className="text-[#16151C] text-[16px]">
                       <span className="font-light">Tagline:</span>{" "}
                       <span className="font-bold">{item.tagline}</span>
                     </p>
 
                     <div className="flex justify-between items-center">
-                      <div className="flex gap-8 text-lg">
-                        <span className="text-[#16151C]">
+                      <div className="flex gap-8 text-[18px]">
+                        <span className="text-[#16151C] text-[16px]">
                           <span className="font-light">Start Date:</span>{" "}
                           <span className="font-bold">{item.startDate}</span>
                         </span>
-                        <span className="text-[#16151C]">
+                        <span className="text-[#16151C] text-[16px]">
                           <span className="font-light">End Date:</span>{" "}
                           <span className="font-bold">{item.endDate}</span>
                         </span>
-                        <span className="text-[#16151C]">
+                        <span className="text-[#16151C] text-[16px]">
                           <span className="font-light">Last Date:</span>{" "}
                           <span className="font-bold text-[#A81E1E]">{item.lastDate}</span>
                         </span>
                       </div>
 
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 mb-2">
                         <Button
                           variant="outlined"
                           color="error"
@@ -296,7 +296,7 @@ const FormComponent = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-6">Create a new Course</h2>
             <Divider sx={{ borderColor: "#E5E7EB", mb: 3 }} />
             {/* Course selection buttons */}
-            <p className="text-xs font-medium text-gray-800 mb-2">Select Course*</p>
+            <p className="text-[12px] font-light text-[#16151C] mb-2">Select Course*</p>
             <div className="flex justify-between gap-3 mb-6">
               {options?.map((option) => (
                 <Button
@@ -325,7 +325,7 @@ const FormComponent = () => {
 
             <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
               <div>
-                <p className="text-xs font-medium text-gray-800 mb-1">Tagline *</p>
+                <p className="text-[12px] font-light text-[#16151C] mb-1">Tagline *</p>
                 <TextField
                   name="tagline"
                   value={formData.tagline}
@@ -343,8 +343,9 @@ const FormComponent = () => {
                 />
               </div>
 
-              <div>
-                <p className="text-xs font-medium text-gray-800 mb-1">Start Date *</p>
+              {/* Start Date */}
+              <div style={{ position: "relative" }}>
+                <p className="text-[12px] font-light text-[#16151C] mb-1">Start Date *</p>
                 <TextField
                   name="startDate"
                   type="date"
@@ -355,16 +356,46 @@ const FormComponent = () => {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
-                      "& fieldset": {
-                        borderColor: "#A2A1A833",   // default border
+                      "& fieldset": { borderColor: "#A2A1A833" },
+                      "& input::-webkit-calendar-picker-indicator": {
+                        opacity: 0,
+                        display: "block",
+                        cursor: "pointer",
                       },
+                      paddingRight: "36px", // space for the SVG
                     },
+                  }}
+                />
+                {/* Custom SVG icon */}
+                <div
+                  onClick={() => document.querySelector('input[name="startDate"]').showPicker?.()}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)", // centers vertically
+                    cursor: "pointer",
+                    width: "24px",
+                    height: "24px",
+                    marginTop: "10px",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="#16151C" stroke-width="1.5"/>
+                      <path d="M3 9H21" stroke="#16151C" stroke-width="1.5" stroke-linecap="round"/>
+                      <path d="M8 2L8 5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M16 2V5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="12" cy="15" r="1" fill="#16151C"/>
+                      <circle cx="16" cy="15" r="1" fill="#16151C"/>
+                      <circle cx="8" cy="15" r="1" fill="#16151C"/>
+                    </svg>`,
                   }}
                 />
               </div>
 
-              <div>
-                <p className="text-xs font-medium text-gray-800 mb-1">End Date *</p>
+              {/* End Date */}
+              <div style={{ position: "relative", marginTop: "16px" }}>
+                <p className="text-[12px] font-light text-[#16151C] mb-1">End Date *</p>
                 <TextField
                   name="endDate"
                   type="date"
@@ -375,16 +406,46 @@ const FormComponent = () => {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
-                      "& fieldset": {
-                        borderColor: "#A2A1A833",   // default border
+                      "& fieldset": { borderColor: "#A2A1A833" },
+                      "& input::-webkit-calendar-picker-indicator": {
+                        opacity: 0,
+                        display: "block",
+                        cursor: "pointer",
                       },
+                      paddingRight: "36px",
                     },
+                  }}
+                />
+                <div
+                  onClick={() => document.querySelector('input[name="endDate"]').showPicker?.()}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    width: "24px",
+                    height: "24px",
+                    marginTop: "10px",
+
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="#16151C" stroke-width="1.5"/>
+                    <path d="M3 9H21" stroke="#16151C" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 2L8 5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 2V5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="15" r="1" fill="#16151C"/>
+                    <circle cx="16" cy="15" r="1" fill="#16151C"/>
+                    <circle cx="8" cy="15" r="1" fill="#16151C"/>
+                  </svg>`,
                   }}
                 />
               </div>
 
-              <div>
-                <p className="text-xs font-medium text-gray-800 mb-1">Last Date *</p>
+              {/* Last Date */}
+              <div style={{ position: "relative", marginTop: "16px" }}>
+                <p className="text-[12px] font-light text-[#16151C] mb-1">Last Date *</p>
                 <TextField
                   name="lastDate"
                   type="date"
@@ -395,16 +456,45 @@ const FormComponent = () => {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "10px",
-                      "& fieldset": {
-                        borderColor: "#A2A1A833",   // default border
+                      "& fieldset": { borderColor: "#A2A1A833" },
+                      "& input::-webkit-calendar-picker-indicator": {
+                        opacity: 0,
+                        display: "block",
+                        cursor: "pointer",
                       },
+                      paddingRight: "36px",
                     },
+                  }}
+                />
+                <div
+                  onClick={() => document.querySelector('input[name="lastDate"]').showPicker?.()}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    width: "24px",
+                    height: "24px",
+                    marginTop: "10px",
+
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="#16151C" stroke-width="1.5"/>
+                        <path d="M3 9H21" stroke="#16151C" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M8 2L8 5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 2V5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="15" r="1" fill="#16151C"/>
+                        <circle cx="16" cy="15" r="1" fill="#16151C"/>
+                        <circle cx="8" cy="15" r="1" fill="#16151C"/>
+                      </svg>`,
                   }}
                 />
               </div>
 
               <div>
-                <p className="text-xs font-medium text-gray-800 mb-1">Session Number *</p>
+                <p className="text-[12px] font-light text-[#16151C] mb-1">Session Number *</p>
                 <TextField
                   name="sessionNumber"
                   value={formData.sessionNumber}
@@ -443,6 +533,7 @@ const FormComponent = () => {
                     height: 50,
                     color: "#FFFFFF",
                     backgroundColor: "#4071B6",
+                    fontWeight: 600,
                   }}
                 >
                   {isEditMode ? "Update Course" : "Create Course"}

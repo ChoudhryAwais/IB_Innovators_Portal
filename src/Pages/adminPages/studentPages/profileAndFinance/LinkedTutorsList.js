@@ -92,10 +92,10 @@ export default function LinkedTutorsList({ userId }) {
             />
           </svg>
 
-          <span className="font-semibold">
+          <span className="font-semibold text-[18px]">
             {viewType === "classes" ? "Classes Taken" : "Balance History"}
           </span>
-          <span className="font-medium">
+          <span className="font-light text-[16px]">
             {categorizedClasses[selectedTutor]?.tutorName
               ? ` (${categorizedClasses[selectedTutor].tutorName})`
               : ""}
@@ -113,7 +113,7 @@ export default function LinkedTutorsList({ userId }) {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Tutors List</h1>
+      <h1 className="text-[24px] font-semibold text-[#16151C] mb-6">Tutors List</h1>
 
       <div className="space-y-4">
         {Object.entries(categorizedClasses).map(([tutorId, tutorData]) => (
@@ -127,7 +127,7 @@ export default function LinkedTutorsList({ userId }) {
                   {tutorData.tutorName?.charAt(0) || "T"}
                 </span>
               </div>
-              <span className="text-lg font-medium text-gray-900">
+              <span className="text-[18px] font-light text-[#16151C]">
                 {tutorData.tutorName}
               </span>
             </div>
@@ -138,33 +138,17 @@ export default function LinkedTutorsList({ userId }) {
                 className="bg-[#4071B60D] h-[36px] border-1 border-[#4071B6] font-semibold text-[#4071B6] px-2 py-2 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
                 Classes Taken
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8.26685 15L13.2668 10L8.26685 5" stroke="#4071B6" stroke-width="1.69163" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </button>
               <button
                 onClick={() => handleViewBalance(tutorId)}
                 className="bg-[#4071B60D] h-[36px] border-1 border-[#4071B6] font-semibold text-[#4071B6] px-2 py-2 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
-                Balance History
-                <svg
-                  className="w-4 h-4"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
+                Credit History
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8.26685 15L13.2668 10L8.26685 5" stroke="#4071B6" stroke-width="1.69163" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </button>
             </div>

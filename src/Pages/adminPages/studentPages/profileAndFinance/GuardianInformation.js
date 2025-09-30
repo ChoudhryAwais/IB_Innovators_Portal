@@ -79,205 +79,130 @@ export function GuardianInformation({ userDetails, userId }) {
     }
   }
 
-  return (
-    <div className="flex flex-col items-start gap-6">
+    return (
+    <div>
       {/* Profile Image */}
-      <div className="flex-shrink-0">
-        <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300">
-          <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            />
-          </svg>
+      <div className="flex flex-col items-start gap-6">
+        <div className="flex-shrink-0">
+          <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300">
+            <svg
+              className="w-12 h-12 text-gray-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
 
-      {/* Profile Details Grid */}
-      <div className="w-full">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-          {/* First Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">First Name</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+        {/* Profile Details Grid */}
+        <div className="w-full">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+            
+            {/* First Name */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                First Name
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {firstName || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter Guardian First Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Last Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Last Name</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Last Name */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Last Name
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {lastName || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter Guardian Last Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Phone */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Phone
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {phone || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter Guardian Phone"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Email */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Email
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {email || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter Guardian Email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Relation */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Relation</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Relation */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Relation
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {relation || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={relation}
-                onChange={(e) => setRelation(e.target.value)}
-                placeholder="Enter relation with guardian"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Gender</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Gender */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Gender
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {gender || "Not entered"}
               </div>
-            ) : (
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            )}
-          </div>
+            </div>
 
-          {/* City */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">City</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* City */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                City
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {city || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter City"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* State */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">State</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* State */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                State
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {state || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                placeholder="Enter State"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Address */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Address</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Address */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Address
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {address || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter Address"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
-          </div>
+            </div>
 
-          {/* Zip */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">Zip Code</label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            {/* Zip */}
+            <div>
+              <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+                Zip Code
+              </label>
+              <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
                 {zip || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-                placeholder="Enter Zip Code"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
+            </div>
+
           </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ function RegisterTutor() {
   const [userName, setUserName] = useState("");
   const [subjectsToTeach, setSubjectsToTeach] = useState("");
   const [showPassword, setShowPassword] = useState(false); // 👈 same as code1
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 👈 same as code1
 
   // Tutor signup handler
   const handleTutorSignUp = async (e) => {
@@ -77,8 +78,8 @@ function RegisterTutor() {
   return (
     <div className="w-[450px] mx-auto bg-white rounded-lg p-6">
       {/* Title */}
-      <h2 className="text-2xl font-bold text-gray-900">Tutor Signup</h2>
-      <p className="text-gray-400 text-sm mb-6">Please Signup Here</p>
+      <h2 className="text-[30px] font-semibold text-[#16151C]">Tutor Signup</h2>
+      <p className="text-[#A2A1A8] font-light text-[16px] mb-6  normal-case">Please Signup Here</p>
 
       {/* FORM */}
       <form onSubmit={handleTutorSignUp} className="w-full space-y-4">
@@ -92,6 +93,7 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              fontWeight: 300,
               zIndex: 1,
               color:
                 userName.length > 0
@@ -159,6 +161,7 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              fontWeight: 300,
               zIndex: 1, color:
                 signUpEmail.length > 0
                   ? "#4071B6" // highlighted when has value
@@ -226,6 +229,7 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              fontWeight: 300,
               zIndex: 1, color:
                 signUpPassword.length > 0
                   ? "#4071B6" // highlighted when has value
@@ -261,6 +265,7 @@ function RegisterTutor() {
                     sx={{
                       mb: "15px"
                     }}>
+                      {showPassword ? (
                     <svg
                       width="24"
                       height="25"
@@ -311,6 +316,59 @@ function RegisterTutor() {
                         strokeLinejoin="round"
                       />
                     </svg>
+                    ) : (
+                      // 👁️‍🗨️ Eye Off SVG
+                      <svg
+                        width="24"
+                        height="25"
+                        viewBox="0 0 24 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14.5299 9.80781L9.46992 14.8678C8.81992 14.2178 8.41992 13.3278 8.41992 12.3378C8.41992 10.3578 10.0199 8.75781 11.9999 8.75781C12.9899 8.75781 13.8799 9.15781 14.5299 9.80781Z"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M17.8198 6.10836C16.0698 4.78836 14.0698 4.06836 11.9998 4.06836C8.46984 4.06836 5.17984 6.14836 2.88984 9.74836C1.98984 11.1584 1.98984 13.5284 2.88984 14.9384C3.67984 16.1784 4.59984 17.2484 5.59984 18.1084"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M8.41992 19.8676C9.55992 20.3476 10.7699 20.6076 11.9999 20.6076C15.5299 20.6076 18.8199 18.5276 21.1099 14.9276C22.0099 13.5176 22.0099 11.1476 21.1099 9.73758C20.7799 9.21758 20.4199 8.72758 20.0499 8.26758"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M15.5095 13.0371C15.2495 14.4471 14.0995 15.5971 12.6895 15.8571"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M9.47 14.8672L2 22.3372"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21.9993 2.33789L14.5293 9.80789"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      )}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -354,6 +412,7 @@ function RegisterTutor() {
               fontSize: "11px",
               color: "#A2A1A8",
               pointerEvents: "none",
+              fontWeight: 300,
               zIndex: 1, color:
                 confirmPassword.length > 0
                   ? "#4071B6" // highlighted when has value
@@ -370,7 +429,7 @@ function RegisterTutor() {
           <TextField
             fullWidth
             placeholder="••••••••••••••••"
-            type={showPassword ? "text" : "password"}
+            type={showConfirmPassword ? "text" : "password"}
             variant="outlined"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -385,10 +444,11 @@ function RegisterTutor() {
               sx: { paddingTop: "15px" },
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end"
+                  <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end"
                     sx={{
                       mb: "15px"
                     }}>
+                      {showConfirmPassword ? (
                     <svg
                       width="24"
                       height="25"
@@ -439,6 +499,59 @@ function RegisterTutor() {
                         strokeLinejoin="round"
                       />
                     </svg>
+                    ) : (
+                      // 👁️‍🗨️ Eye Off SVG
+                      <svg
+                        width="24"
+                        height="25"
+                        viewBox="0 0 24 25"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14.5299 9.80781L9.46992 14.8678C8.81992 14.2178 8.41992 13.3278 8.41992 12.3378C8.41992 10.3578 10.0199 8.75781 11.9999 8.75781C12.9899 8.75781 13.8799 9.15781 14.5299 9.80781Z"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M17.8198 6.10836C16.0698 4.78836 14.0698 4.06836 11.9998 4.06836C8.46984 4.06836 5.17984 6.14836 2.88984 9.74836C1.98984 11.1584 1.98984 13.5284 2.88984 14.9384C3.67984 16.1784 4.59984 17.2484 5.59984 18.1084"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M8.41992 19.8676C9.55992 20.3476 10.7699 20.6076 11.9999 20.6076C15.5299 20.6076 18.8199 18.5276 21.1099 14.9276C22.0099 13.5176 22.0099 11.1476 21.1099 9.73758C20.7799 9.21758 20.4199 8.72758 20.0499 8.26758"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M15.5095 13.0371C15.2495 14.4471 14.0995 15.5971 12.6895 15.8571"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M9.47 14.8672L2 22.3372"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21.9993 2.33789L14.5293 9.80789"
+                          stroke="#16151C"
+                          strokeWidth="1.67528"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      )}
                   </IconButton>
                 </InputAdornment>
               ),
@@ -477,7 +590,7 @@ function RegisterTutor() {
           fullWidth
           variant="contained"
           type="submit"
-          sx={{ backgroundColor: "#4071B6", textTransform: "none", py: 1.5, borderRadius: "10px" }}
+          sx={{ fontWeight: 600, backgroundColor: "#4071B6", textTransform: "none", py: 1.5, borderRadius: "10px",color: "#FFFFFF",}}
         >
           Register Tutor
         </Button>

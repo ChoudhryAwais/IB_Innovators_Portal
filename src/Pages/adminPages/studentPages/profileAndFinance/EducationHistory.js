@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React from "react";
 
 export function EducationHistory({ userDetails }) {
   const educationRecords = userDetails?.educationRecords
@@ -7,28 +7,46 @@ export function EducationHistory({ userDetails }) {
 
   const renderEducationRecords = () => {
     return educationRecords.map((record) => (
-      <div key={record.id} className="flex-1 mb-5">
-        <div className="flex flex-wrap flex-1">
-          <div className="flex-1">
-            <div className="text-xs">Qualification Title</div>
-            <div className="text-base">{record.qualificationTitle}</div>
+      <div key={record.id} className="w-full mb-6">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+          {/* Qualification Title */}
+          <div>
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+              Qualification Title
+            </label>
+            <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
+              {record.qualificationTitle || "Not entered"}
+            </div>
           </div>
 
-          <div className="flex-1">
-            <div className="text-xs">Year of Graduation</div>
-            <div className="text-base">{record.yearOfGraduation}</div>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap flex-1">
-          <div className="flex-1">
-            <div className="text-xs">University</div>
-            <div className="text-base">{record.university}</div>
+          {/* Year of Graduation */}
+          <div>
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+              Year of Graduation
+            </label>
+            <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
+              {record.yearOfGraduation || "Not entered"}
+            </div>
           </div>
 
-          <div className="flex-1">
-            <div className="text-xs">Grade (Or in progress)</div>
-            <div className="text-base">{record.grade}/4</div>
+          {/* University */}
+          <div>
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+              University
+            </label>
+            <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
+              {record.university || "Not entered"}
+            </div>
+          </div>
+
+          {/* Grade */}
+          <div>
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
+              Grade (Or in progress)
+            </label>
+            <div className="text-[16px] font-light text-[#16151C] border-b border-gray-200 pb-2">
+              {record.grade ? `${record.grade}/4` : "Not entered"}
+            </div>
           </div>
         </div>
       </div>
@@ -36,18 +54,20 @@ export function EducationHistory({ userDetails }) {
   };
 
   return (
-    <div className="pb-2.5 border-b border-gray-300">
-      <div className="flex flex-1 justify-between items-center flex-wrap mb-5">
-        <div className="text-left text-2xl font-bold">
-          Education History
+    <div>
+      <div className="flex flex-col items-start gap-6">
+        <div className="w-full">
+          <div className="grid grid-cols-1 gap-y-6">
+            {educationRecords.length !== 0 ? (
+              renderEducationRecords()
+            ) : (
+              <div className="text-[16px] font-light text-[#16151C]">
+                No Educational History
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {educationRecords.length !== 0 ? (
-        renderEducationRecords()
-      ) : (
-        <div className="mb-2.5">No Educational History</div>
-      )}
     </div>
   );
 }

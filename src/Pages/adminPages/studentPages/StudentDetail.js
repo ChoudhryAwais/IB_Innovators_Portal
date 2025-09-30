@@ -35,7 +35,11 @@ const StudentDetail = () => {
       try {
         setLoading(true)
         const userListRef = collection(db, "userList")
-        const q = query(userListRef, where("userId", "==", studentId), where("type", "==", "student"))
+        const q = query(
+          userListRef,
+          where("userId", "==", studentId),
+          where("type", "==", "student")
+        )
 
         unsubscribe = onSnapshot(q, (querySnapshot) => {
           if (!querySnapshot.empty) {
@@ -62,6 +66,86 @@ const StudentDetail = () => {
   const handleBackToList = () => {
     navigate("/students")
   }
+
+  const tabs = [
+    {
+      id: "profile",
+      label: "Profile",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="12" cy="17.5" rx="7" ry="3.5" stroke="#16151C" stroke-width="1.5" stroke-linejoin="round" />
+          <circle cx="12" cy="7" r="4" stroke="#16151C" stroke-width="1.5" stroke-linejoin="round" />
+        </svg>
+
+      ),
+      activeIcon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11ZM12 21C15.866 21 19 19.2091 19 17C19 14.7909 15.866 13 12 13C8.13401 13 5 14.7909 5 17C5 19.2091 8.13401 21 12 21Z" fill="white" />
+        </svg>
+
+      ),
+    },
+    {
+      id: "credits",
+      label: "Credits Usage",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 2V5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 2V5" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="#16151C" stroke-width="1.5" />
+          <path d="M9 15L10.7528 16.4023C11.1707 16.7366 11.7777 16.6826 12.1301 16.2799L15 13" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M3 9H21" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+      ),
+      activeIcon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 2V5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 2V5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="white" stroke-width="1.5" />
+          <path d="M9 15L10.7528 16.4023C11.1707 16.7366 11.7777 16.6826 12.1301 16.2799L15 13" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M3 9H21" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+
+
+      ),
+    },
+    {
+      id: "payments",
+      label: "Payments",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 22C8.86748 22 10.4361 20.7202 10.8766 18.9899C11.0128 18.4547 11.4477 18 12 18H19M7 22C4.79086 22 3 20.2091 3 18V5C3 3.34315 4.34315 2 6 2H16C17.6569 2 19 3.34315 19 5V18M7 22H19C20.8675 22 22.4361 20.7202 22.8766 18.9899C23.0128 18.4547 22.5523 18 22 18H19M15 7H7M11 12H7" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+      ),
+      activeIcon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 22C8.86748 22 10.4361 20.7202 10.8766 18.9899C11.0128 18.4547 11.4477 18 12 18H19M7 22C4.79086 22 3 20.2091 3 18V5C3 3.34315 4.34315 2 6 2H16C17.6569 2 19 3.34315 19 5V18M7 22H19C20.8675 22 22.4361 20.7202 22.8766 18.9899C23.0128 18.4547 22.5523 18 22 18H19M15 7H7M11 12H7" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+
+      ),
+    },
+    {
+      id: "tutors",
+      label: "Tutors",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 10H16M8 14H16M8 18H12M8 4C8 5.10457 8.89543 6 10 6H14C15.1046 6 16 5.10457 16 4M8 4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4M8 4H7C4.79086 4 3 5.79086 3 8V18C3 20.2091 4.79086 22 7 22H17C19.2091 22 21 20.2091 21 18V8C21 5.79086 19.2091 4 17 4H16" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+      ),
+      activeIcon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 10H16M8 14H16M8 18H12M8 4C8 5.10457 8.89543 6 10 6H14C15.1046 6 16 5.10457 16 4M8 4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4M8 4H7C4.79086 4 3 5.79086 3 8V18C3 20.2091 4.79086 22 7 22H17C19.2091 22 21 20.2091 21 18V8C21 5.79086 19.2091 4 17 4H16" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+
+
+      ),
+    },
+  ]
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -113,38 +197,48 @@ const StudentDetail = () => {
                   <FontAwesomeIcon icon={faUser} className="text-2xl text-gray-500" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                  <h1 className="text-[24px] font-semibold text-[#16151C] mb-1">
                     {studentData?.userName || "N/A"}
                   </h1>
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <div className="flex items-center gap-2 text-[16px] font-light text-[#16151C] mb-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
+                      <path d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z" stroke="#16151C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span>Enrolled Student</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  <div className="flex items-center gap-2 text-[16px] font-light text-[#16151C]">
+                    <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="3" width="20" height="18" rx="4" stroke="#16151C" strokeWidth="1.5" />
+                      <path
+                        d="M2 7l7.5 6a4 4 0 0 0 5 0L22 7"
+                        stroke="#16151C"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     <span>{studentData?.email || "N/A"}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Button on the right, aligned with email */}
+              {/* Button on the right */}
               <Button
                 variant="outlined"
                 color="primary"
                 startIcon={
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 19H19M11.7844 3.31171C11.7844 3.31171 11.7844 4.94634 13.419 6.58096C15.0537 8.21559 16.6883 8.21559 16.6883 8.21559M5.31963 15.9881L8.75234 15.4977C9.2475 15.4269 9.70636 15.1975 10.06 14.8438L18.3229 6.58096C19.2257 5.67818 19.2257 4.21449 18.3229 3.31171L16.6883 1.67708C15.7855 0.774305 14.3218 0.774305 13.419 1.67708L5.15616 9.93996C4.80248 10.2936 4.57305 10.7525 4.50231 11.2477L4.01193 14.6804C3.90295 15.4432 4.5568 16.097 5.31963 15.9881Z" stroke="#4071B6" stroke-width="1.5" stroke-linecap="round" />
                   </svg>
                 }
                 sx={{
                   backgroundColor: "#4071B60D",
-                  borderColor: "primary.main",
-                  color: "primary.main",
+                  borderColor: "#4071B6",
+                  color: "#4071B6",
+                  borderRadius: "10px",
+                  width: "156px",
+                  height: "50px",
                   textTransform: "none",
                   "&:hover": {
                     backgroundColor: "#4071b62a",
@@ -157,81 +251,34 @@ const StudentDetail = () => {
             </div>
           </div>
 
+          {/* Tabs & Content */}
           <div className="flex gap-6">
-            <div className="w-64 rounded-lg border border-gray-200 p-0 h-fit overflow-hidden">
+            <div className="w-64 rounded-lg border border-gray-200 h-fit overflow-hidden">
               <div className="space-y-0">
-                <button
-                  onClick={() => setActiveTab("profile")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "profile"
-                      ? "bg-[#4071B6] text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Profile
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab("credits")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium  ${activeTab === "credits"
-                      ? "bg-[#4071B6] text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Credits Usage
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab("payments")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "payments"
-                      ? "bg-[#4071B6] text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" />
-                    </svg>
-                    Payments
-                  </div>
-                </button>
-                <button
-                  onClick={() => setActiveTab("tutors")}
-                  className={`w-full text-left px-6 py-4 transition-all duration-200 font-medium ${activeTab === "tutors"
-                      ? "bg-[#4071B6] text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-                    </svg>
-                    Tutors
-                  </div>
-                </button>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full text-left px-6 py-4 transition-all duration-200 text-[16px] ${activeTab === tab.id
+                      ? "bg-[#4071B6] text-white font-semibold"
+                      : "bg-white font-light text-[#16151C] hover:bg-gray-50"
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      {activeTab === tab.id ? tab.activeIcon : tab.icon}
+                      {tab.label}
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div className="flex-1 bg-white rounded-lg overflow-hidden">
-              {renderTabContent()}
-            </div>
+            <div className="flex-1 bg-white rounded-lg overflow-hidden">{renderTabContent()}</div>
           </div>
         </div>
       </div>
     </TopHeadingProvider>
   )
-
 }
 
 export default StudentDetail

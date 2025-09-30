@@ -206,33 +206,33 @@ export function AddSubjectsApplication({ userDetails, userId }) {
     <>
       {/* Approved Subjects */}
       <div className="bg-white rounded-lg">
-        <div className="text-left text-2xl font-bold mb-6">Subjects</div>
+        <div className="text-left text-[24px] font-semibold mb-2">Subjects</div>
 
         <div className="w-full">
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-2 -ml-2">
             {Object.keys(userDetails?.subjects ? userDetails?.subjects : {})
               .sort((a, b) => a.localeCompare(b))
               .map((subject, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center p-2 hover:bg-gray-50"
+                  className="-mb-2 flex justify-between items-center pr-2 hover:bg-gray-50"
                 >
                   <label className="flex items-center cursor-pointer">
                     <Checkbox
-              checked={subjectsToTeach[subject]}
-              onChange={() => handleChange(subject)}
-              sx={{
+                      checked={subjectsToTeach[subject]}
+                      onChange={() => handleChange(subject)}
+                      sx={{
 
-                color: "#A2A1A833",              // unchecked border color
-                "&.Mui-checked": {
-                  color: "#4071B6",            // checked color
-                },
-                "& .MuiSvgIcon-root": {        // ensures icon is 20x20
-                  fontSize: 26,
-                },
-              }}
-            />
-                    <span className="text-gray-900 ml-2">{subject}</span>
+                        color: "#A2A1A833",              // unchecked border color
+                        "&.Mui-checked": {
+                          color: "#4071B6",            // checked color
+                        },
+                        "& .MuiSvgIcon-root": {        // ensures icon is 20x20
+                          fontSize: 26,
+                        },
+                      }}
+                    />
+                    <span className="font-light text-[14px] text-[#16151C] ml-2">{subject}</span>
                   </label>
                   {/* <button onClick={() => handleDelete(subject)} className="text-red-500 hover:text-red-700 p-1">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,12 +276,16 @@ export function AddSubjectsApplication({ userDetails, userId }) {
                   color: "#fff",
                   width: "152px",
                   height: "50px",
+                  textTransform:"none",
+                  fontWeight:"600",
+                  borderRadius:"10px",
+                  fontSize:"16px",
                   "&:hover": {
                     backgroundColor: "#305a91",
                   },
                 }}
               >
-                SAVE
+                Save Changes
               </Button>
             )}
           </div>

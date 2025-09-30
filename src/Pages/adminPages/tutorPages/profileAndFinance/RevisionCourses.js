@@ -40,7 +40,7 @@ export function RevisionCourses({ userDetails, userId }) {
   return (
     <div className="bg-white p-6 rounded-lg">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Revision Courses</h2>
+        <h2 className="text-[24px] font-semibold text-[#16151C]">Revision Courses</h2>
 
         {/* Toggle Switch */}
         <div className="relative">
@@ -53,13 +53,13 @@ export function RevisionCourses({ userDetails, userId }) {
           />
           <label
             htmlFor="revision-toggle"
-            className={`flex items-center cursor-pointer w-12 h-6 rounded-full transition-colors duration-200 ${
-              wantToTeachRevisionCourse ? "bg-green-500" : "bg-gray-300"
+            className={`flex items-center cursor-pointer w-[51px] h-[31px] rounded-full transition-colors duration-200 ${
+              wantToTeachRevisionCourse ? "bg-[#34C759]" : "bg-gray-300"
             }`}
           >
             <span
-              className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-200 ${
-                wantToTeachRevisionCourse ? "translate-x-6" : "translate-x-1"
+              className={`w-[27px] h-[27px] bg-white rounded-full shadow-md transform transition-transform duration-200 ${
+                wantToTeachRevisionCourse ? "translate-x-5" : "translate-x-1"
               }`}
             />
           </label>
@@ -67,14 +67,14 @@ export function RevisionCourses({ userDetails, userId }) {
       </div>
 
       <div className="mb-4">
-        <p className="text-gray-700 mb-2">I'm interested in teaching a revision course</p>
+        <p className="text-[16px] font-light text-[#16151C] mb-4">I'm interested in teaching a revision course</p>
 
         {wantToTeachRevisionCourse ? (
           <p className="font-semibold">
-            <span className="text-green-600">Yes,</span> I am able to teach them at the moment.
+            <span className="font-semibold text-[20px] text-[#3FC28A]">Yes, </span><span className="font-semibold text-[20px]">I am able to teach them at the moment.</span>
           </p>
         ) : (
-          <p className="text-gray-600 font-semibold">No, I am unable to teach them at the moment.</p>
+          <p className="font-semibold text-[20px]">No, I am unable to teach them at the moment.</p>
         )}
       </div>
 

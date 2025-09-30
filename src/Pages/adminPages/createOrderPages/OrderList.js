@@ -51,6 +51,7 @@ export function OrderList() {
     } catch (e) {
       console.error("Error fetching data:", e)
     }
+
   }
 
   useEffect(() => {
@@ -133,7 +134,18 @@ export function OrderList() {
       {data.length !== 0 && (
         <div className="relative mb-6">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FontAwesomeIcon className="text-gray-400" icon={faMagnifyingGlass} />
+            <svg
+              className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
+              viewBox="0 0 22 22"
+              fill="#16151C"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
+              />
+            </svg>
           </div>
           <input
             onChange={handleSearch}
@@ -146,65 +158,109 @@ export function OrderList() {
 
       <div className="space-y-4">
         {displayedSessions.map((item, index) => (
-          <div key={item?.id} className="bg-white border-b border-gray-200 p-6">
-            <div className="flex items-start space-x-4">
-              {/* Profile Picture */}
-              <div className="flex-shrink-0">
-                <img
-                  src="/profile-picture-of-.jpg"
-                  alt={item?.studentName}
-                  className="w-16 h-16 rounded-lg object-cover bg-gray-200"
-                />
-              </div>
-
-              {/* Main Content */}
-              <div className="flex-1 min-w-0">
-                {/* Student Name Header */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">{item?.studentName}</h3>
-
-                {/* Order Information */}
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <span className="text-sm text-gray-600 w-32">Order ID:</span>
-                    <span className="text-sm font-medium text-gray-900">{item?.id}</span>
+          <div
+            key={item?.id}
+            className="flex items-stretch p-4 border-b border-gray-200 bg-white"
+          >
+            {/* Info + Actions */}
+            <div className="flex justify-between w-full">
+              {/* Left Side - Avatar + Info */}
+              <div className="flex-1">
+                {/* Avatar + Student Name */}
+                <div className="flex items-center">
+                  <div className="w-14 h-14 bg-gray-300 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                    <img
+                      src="/profile-picture-of-.jpg"
+                      alt={item?.studentName}
+                      className="w-14 h-14 rounded-lg object-cover"
+                    />
                   </div>
-                  <div className="flex items-center">
-                    <span className="text-sm text-gray-600 w-32">Country:</span>
-                    <span className="text-sm font-medium text-gray-900">{item?.country}</span>
+                  <h3 className="font-semibold text-[#16151C] text-[18px]">
+                    {item?.studentName}
+                  </h3>
+                </div>
+
+                {/* Order Details (indented under name) */}
+                <div className="text-sm text-gray-600 mt-2 pl-[4.5rem] space-y-1">
+                  <div className="flex">
+                    <span className="w-40 font-light text-[#16151C] text-[14px]">Order ID:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">{item?.id}</span>
                   </div>
-                  <div className="flex items-center">
-                    <span className="text-sm text-gray-600 w-32">Course Requested:</span>
-                    <span className="text-sm font-medium text-gray-900">{item?.subject}</span>
+                  <div className="flex">
+                    <span className="w-40 font-light text-[#16151C] text-[14px]">Country:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">{item?.country}</span>
+                  </div>
+                  <div className="flex">
+                    <span className="w-40 font-light text-[#16151C] text-[14px]">Course Requested:</span>
+                    <span className="text-[#16151C] text-[14px] font-medium">{item?.subject}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Right Side Info and Actions */}
-              <div className="flex-shrink-0 text-right">
-                <div className="mb-4">
-                  <div className="text-sm text-gray-700 mb-1">Required by {item?.studentName}</div>
-                  <div className="text-sm font-medium text-gray-900">Hourly Rate(USD): ${item?.tutorHourlyRate}</div>
-                </div>
+              {/* Right Side - Buttons */}
+              <div className="flex items-end flex-shrink-0">
+                <div className="flex flex-col items-center flex-shrink-0 text-center space-y-3">
+                  {/* Info Section */}
+                  <div className="flex flex-col space-y-1 w-[270px]">
+                    <div className="flex justify-center space-x-1">
+                      <span className="font-light text-[#16151C] text-[12px]">Required by:</span>
+                      <span className="font-light text-[#16151C] text-[12px]">
+                        {item?.studentName}
+                      </span>
+                    </div>
+                    <div className="flex justify-center space-x-1">
+                      <span className="font-light text-[#16151C] text-[12px]">Hourly Rate (USD):</span>
+                      <span className="font-light text-[#16151C] text-[12px]">
+                        ${item?.tutorHourlyRate}
+                      </span>
+                    </div>
+                  </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleDeleteClick(item?.id)}
-                    className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => handleViewApplicants(item.id)}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                  >
-                    View Applicants
-                  </button>
+                  {/* Buttons Section */}
+                  <div className="flex space-x-2">
+                    <Button
+                      onClick={() => handleDeleteClick(item?.id)}
+                      variant="outlined"
+                      sx={{
+                        borderRadius: "8px",
+                        width: "130px",
+                        height: "40px",
+                        color: "#A81E1E",
+                        backgroundColor: "#A81E1E0D",
+                        borderColor: "#A81E1E",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        textTransform: "none",
+                      }}
+                    >
+                      Delete
+                    </Button>
+
+                    <Button
+                      onClick={() => handleViewApplicants(item.id)}
+                      variant="contained"
+                      sx={{
+                        borderRadius: "8px",
+                        width: "130px",
+                        height: "40px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#4071B6",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        textTransform: "none",
+                      }}
+                    >
+                      View Applicants
+                    </Button>
+                  </div>
                 </div>
               </div>
+
+
             </div>
           </div>
         ))}
+
       </div>
 
       {searchedData?.length > itemsPerPage && (
@@ -264,7 +320,7 @@ export function OrderList() {
               width: 166,
               height: 50,
               borderRadius: "10px",
-              backgroundColor: "#4071B6", // blue for delete action
+              backgroundColor: "#4071B6",
               fontSize: "20px",
               fontWeight: 300,
               color: "#FFFFFF",

@@ -86,170 +86,112 @@ export function ContactInformation({ userDetails, userId }) {
         <div className="grid grid-cols-2 gap-x-8 gap-y-6">
           {/* First Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               First Name
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.userName?.split(" ")[0] || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={name?.split(" ")[0] || ""}
-                onChange={(e) => {
-                  const lastName = name?.split(" ").slice(1).join(" ") || ""
-                  setName(
-                    e.target.value + (lastName ? " " + lastName : "")
-                  )
-                }}
-                placeholder="Enter First Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
           </div>
 
           {/* Last Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Last Name
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.userName?.split(" ").slice(1).join(" ") ||
                   "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={name?.split(" ").slice(1).join(" ") || ""}
-                onChange={(e) => {
-                  const firstName = name?.split(" ")[0] || ""
-                  setName(
-                    firstName +
-                      (e.target.value ? " " + e.target.value : "")
-                  )
-                }}
-                placeholder="Enter Last Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
           </div>
 
           {/* Mobile Number */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Mobile Number
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.phone || "not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter Phone Number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
+            
           </div>
 
           {/* Email Address */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Email Address
             </label>
-            <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
               {userDetails?.email || "Not entered"}
             </div>
           </div>
 
           {/* Date of Birth */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Date of Birth
             </label>
-            <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">{userDetails?.dob || "Not entered"}</div>
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
+              {userDetails?.dob || "Not entered"}
+              </div>
           </div>
 
           {/* Gender */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Gender
             </label>
-            <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">{userDetails?.gender || "Not entered"}</div>
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
+              {userDetails?.gender || "Not entered"}
+              </div>
           </div>
 
           {/* City */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               City
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.city || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter City"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
+            
           </div>
 
           {/* State */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               State
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+          
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.state || "Not entered"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                placeholder="Enter State"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
+            
           </div>
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Address
             </label>
-            <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
               {userDetails?.address || "Not added"}
             </div>
           </div>
 
           {/* Zip Code */}
           <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">
+            <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">
               Zip Code
             </label>
-            {editing === false ? (
-              <div className="text-gray-900 font-medium border-b border-gray-200 pb-2">
+            
+              <div className="text-[16px] font-light  text-[#16151C] border-b border-gray-200 pb-2">
                 {userDetails?.zip || "Not added"}
               </div>
-            ) : (
-              <input
-                type="text"
-                value={postal}
-                onChange={(e) => setPostal(e.target.value)}
-                placeholder="Enter Postal Code"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            )}
           </div>
         </div>
 

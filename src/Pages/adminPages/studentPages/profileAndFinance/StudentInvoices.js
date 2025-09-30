@@ -14,6 +14,7 @@ import {
   AccordionDetails,
   Box,
   Grid,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -56,6 +57,7 @@ export default function StudentInvoices({ userDetails, userId }) {
       console.error("Error updating invoice:", error);
     }
   };
+  
 
   // --- Helper Functions ---
   const months = [
@@ -115,10 +117,10 @@ export default function StudentInvoices({ userDetails, userId }) {
   const result = getUniqueMonthsAndYears(allInvoices);
 
   return (
-    <div className="p-4">
+    <div className="">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">My Invoices</h1>
+        <h1 className="text-left text-[24px] font-semibold">Credits Details</h1>
       </div>
 
       {/* Accordion Style Invoices */}
@@ -155,11 +157,11 @@ export default function StudentInvoices({ userDetails, userId }) {
                 id={`panel-${monthKey}`}
                 className="px-6 py-4 hover:bg-gray-50"
                 sx={{
-                  minHeight: "72px !important",
-                  maxHeight: "72px",
+                  minHeight: "60px !important",
+                  maxHeight: "60px",
                   "&.Mui-expanded": {
-                    minHeight: "72px !important",
-                    maxHeight: "72px",
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
                     "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
                       color: "#4071B6",
                     },
@@ -186,7 +188,7 @@ export default function StudentInvoices({ userDetails, userId }) {
                     {months[item?.month - 1]} {item?.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    £ {calculateMonthlyInvoice(allInvoices, item?.month, item?.year)}
+                     {calculateMonthlyInvoice(allInvoices, item?.month, item?.year)}
                   </div>
                 </div>
               </AccordionSummary>
@@ -201,22 +203,23 @@ export default function StudentInvoices({ userDetails, userId }) {
                     sx={{
                       backgroundColor: "#f9fafb",
                       borderBottom: "1px solid #e5e7eb",
-                      fontWeight: 500,
-                      color: "#4b5563",
+                      fontWeight: 300,
+                      color: "#A2A1A8",
                       p: 1.5,
+                      fontSize: '14px'
                     }}
                   >
                     <Grid item xs={3}>
                       Date
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3.5}>
                       Tutor
+                    </Grid>
+                    <Grid item xs={2.5}>
+                      Amount
                     </Grid>
                     <Grid item xs={3}>
                       Status
-                    </Grid>
-                    <Grid item xs={3}>
-                      Amount
                     </Grid>
                   </Grid>
 
@@ -241,26 +244,53 @@ export default function StudentInvoices({ userDetails, userId }) {
                         }}
                       >
                         <Grid item xs={3}>
-                          <div className="text-gray-900">{date}</div>
+                          <div className="font-light text-[12px] text-[#16151C]">{date}</div>
+                        </Grid>
+                        <Grid item xs={3.5}>
+                          <div className="font-light text-[12px] text-[#16151C]">{inv?.teacherName}</div>
+                        </Grid>
+
+                        <Grid item xs={2.5}>
+                          <div className="font-light text-[12px] text-[#16151C]">
+                            $ {inv?.amount}
+                          </div>
                         </Grid>
                         <Grid item xs={3}>
-                          <div className="text-gray-900">{inv?.teacherName}</div>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <div
-                            className={`font-medium ${
-                              inv?.status === "Pending"
+                          {/* <div
+                            className={`font-medium ${inv?.status === "Pending"
                                 ? "text-red-600"
                                 : "text-green-600"
-                            }`}
+                              }`}
                           >
                             {inv?.status}
-                          </div>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <div className="font-bold text-gray-900">
-                            £ {inv?.amount}
-                          </div>
+                          </div> */}
+                          {inv?.status === "Pending" ? (
+                            <Button
+                              variant="contained"
+
+                              sx={{
+                                backgroundColor: "#4071B6",
+                                width: "116px",
+                                height: "40px",
+                                borderRadius: "4px",
+                                fontSize: "12px",
+                                fontWeight: 600,
+                                padding: 0,
+                                "&:hover": { backgroundColor: "#305a91" },
+                                textTransform: "none",
+                              }}
+                              onClick={() => markInvoicePaid(inv?.linkId, inv?.id)}
+                            >
+                              Approve Payment
+                            </Button>
+                          ) : (
+                            <div className="flex items-center gap-2 ">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 3.33782C15.5291 2.48697 13.8214 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 10.7687 21.7775 9.58934 21.3704 8.5M7 10L10.5264 12.8211C11.3537 13.483 12.5536 13.3848 13.2624 12.5973L21 4" stroke="#3FC28A" stroke-width="1.5" stroke-linecap="round" />
+                              </svg>
+                              <span className="text-[14px] text-[#3FC28A] font-semibold ">Approved</span>
+                            </div>
+                          )}
                         </Grid>
                       </Grid>
                     );

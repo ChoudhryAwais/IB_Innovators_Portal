@@ -143,7 +143,7 @@ export default function TeacherInvoices({ userDetails, userId }) {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Payments Details</h1>
+      <h1 className="text-2xl font-semibold text-[#16151C] mb-6">Payments Details</h1>
 
       <div className="space-y-4">
         {result.map((item) => {
@@ -170,12 +170,11 @@ export default function TeacherInvoices({ userDetails, userId }) {
                 id={`panel-${monthKey}`}
                 className="px-6 py-4 hover:bg-gray-50"
                 sx={{
-                  minHeight: "72px !important", // collapsed height
-                  maxHeight: "72px",
+                  minHeight: "60px !important", // collapsed height
+                  maxHeight: "60px",
                   "&.Mui-expanded": {
-                    minHeight: "72px !important",
-                    maxHeight: "72px",
-                    maxHeight: "72px",
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
                     "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
                       color: "#4071B6",
                     },
@@ -198,10 +197,10 @@ export default function TeacherInvoices({ userDetails, userId }) {
                 }}
               >
                 <div className="flex w-full justify-between items-center summary-text" >
-                  <div className="text-lg font-light ">
+                  <div className="text-[18px] font-semibold">
                     {months[item?.month - 1]} {item?.year} Detail View
                   </div>
-                  <div className="text-2xl font-semibold ">
+                  <div className="text-[24px] font-semibold ">
                     $ {calculateMonthlyInvoice(invoices, item?.month, item?.year)}
                   </div>
                 </div>
@@ -214,13 +213,13 @@ export default function TeacherInvoices({ userDetails, userId }) {
                     container
                     sx={{
                       backgroundColor: "#f9fafb",
-                      borderBottom: "1px solid #e5e7eb",
-                      fontWeight: 500,
-                      color: "#4b5563",
+                      borderBottom: "1px solid #A2A1A833",
+                      fontWeight: 300,
+                      color: "#A2A1A8",
                       p: 1.5,
                     }}
                   >
-                    <Grid item xs={2.6}>
+                    <Grid item xs={2.7}>
                       Student Name
                     </Grid>
                     <Grid item xs={2.6}>
@@ -232,7 +231,7 @@ export default function TeacherInvoices({ userDetails, userId }) {
                     <Grid item xs={1.9}>
                       Amount
                     </Grid>
-                    <Grid item xs={2.4}>
+                    <Grid item xs={2.3}>
                       Session Status
                     </Grid>
                   </Grid>
@@ -250,37 +249,43 @@ export default function TeacherInvoices({ userDetails, userId }) {
                       }}
                     >
                       {/* Student */}
-                      <Grid item xs={2.6} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Grid item xs={2.7} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Avatar sx={{ width: 32, height: 32, bgcolor: "#d1d5db", fontSize: 12 }}>
                           {inv?.studentName?.charAt(0) || "S"}
                         </Avatar>
-                        <div className="font-medium text-gray-900">{inv?.studentName}</div>
+                        <div className="font-light text-[12px] text-[#16151C]">{inv?.studentName}</div>
                       </Grid>
 
                       {/* Subject */}
-                      <Grid item xs={2.6}>
-                        <div className="text-gray-900">{inv?.subject}</div>
+                      <Grid item xs={2.7}>
+                        <div className="font-light text-[12px] text-[#16151C]">{inv?.subject}</div>
                       </Grid>
 
                       {/* Date/Time */}
                       <Grid item xs={2.6}>
-                        <div className="text-sm text-gray-600">{inv?.sessionInfo?.date}</div>
-                        <div className="text-sm text-gray-600">{convertToAMPM(inv?.sessionInfo?.time)}</div>
+                        <div className="font-light text-[12px] text-[#16151C]">{inv?.sessionInfo?.date}</div>
+                        <div className="font-light text-[12px] text-[#16151C]">{convertToAMPM(inv?.sessionInfo?.time)}</div>
                       </Grid>
 
                       {/* Amount */}
                       <Grid item xs={1.7}>
-                        <div className="font-bold text-gray-900">$ {inv?.sessionInfo?.tutorHourlyRate}</div>
+                        <div className="font-light text-[18px] text-[#16151C]">$ {inv?.sessionInfo?.tutorHourlyRate}</div>
                       </Grid>
 
                       {/* Status */}
-                      <Grid item xs={2.5}>
+                      <Grid item xs={2.3}>
                         {inv?.status === "Pending" ? (
                           <Button
                             variant="contained"
-                            size="small"
+                            
                             sx={{
                               backgroundColor: "#4071B6",
+                              width: "116px",
+                              height: "40px",
+                              borderRadius: "4px",
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              padding: 0,
                               "&:hover": { backgroundColor: "#305a91" },
                               textTransform: "none",
                             }}
@@ -289,21 +294,11 @@ export default function TeacherInvoices({ userDetails, userId }) {
                             Approve Session
                           </Button>
                         ) : (
-                          <div className="flex items-center gap-2 text-green-600">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clipRule="evenodd"
-                              />
+                          <div className="flex items-center gap-2 ">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M17 3.33782C15.5291 2.48697 13.8214 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 10.7687 21.7775 9.58934 21.3704 8.5M7 10L10.5264 12.8211C11.3537 13.483 12.5536 13.3848 13.2624 12.5973L21 4" stroke="#3FC28A" stroke-width="1.5" stroke-linecap="round" />
                             </svg>
-                            <span className="text-sm font-medium">Approved</span>
+                            <span className="text-[14px] text-[#3FC28A] font-semibold ">Approved</span>
                           </div>
                         )}
                       </Grid>

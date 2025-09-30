@@ -80,7 +80,7 @@ export default function SupportBlogsPreview() {
         <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
           {/* Header Section */}
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-[24px] font-semibold text-[#16151C]">
               Support Blogs Preview
             </h1>
           </div>
@@ -105,10 +105,10 @@ export default function SupportBlogsPreview() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <p className="text-sm text-[#16151C]">
+                        <p className="text-[14px] font-light text-[#16151C]">
                           {blog.writtenBy || "N/A"}
                         </p>
-                        <p className="text-sm text-[#757575]">
+                        <p className="text-[14px] font-light text-[#757575]">
                           - {blog.createdOn
                             ? `${Math.floor(
                               (new Date() - blog.createdOn.toDate()) / (1000 * 60 * 60 * 24)
@@ -119,27 +119,27 @@ export default function SupportBlogsPreview() {
                     </div>
 
                     {/* Blog Title */}
-                    <h3 className="text-lg text-[#16151C] mb-2">
+                    <h3 className="text-[18px] font-light text-[#16151C] mb-2">
                       {blog.header}
                     </h3>
 
                     {/* Blog Content */}
-                    <p className="text-[#16151C] text-base leading-relaxed">
+                    <p className="text-[#16151C] text-[16px] font-light leading-relaxed">
                       {blog?.content ? (
                         <div
-                          className="text-[#16151C] text-base leading-relaxed"
+                          className="text-[#16151C] font-light text-[16px] leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: blog.content.slice(0, 200) + "...",
                           }}
                         />
                       ) : (
-                        <p className="text-[#16151C] text-base leading-relaxed">No content available</p>
+                        <p className="text-[#16151C] font-base leading-relaxed">No content available</p>
                       )}
                     </p>
                   </div>
 
                   {/* Blog Image */}
-                  <div className="w-[140px] h-full bg-black rounded-lg overflow-hidden ml-4">
+                  <div className="w-[200px] h-full bg-black rounded-lg overflow-hidden ml-4">
                     {blog.image ? (
                       <img
                         src={blog.image || "/placeholder.svg"}

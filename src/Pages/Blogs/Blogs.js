@@ -205,7 +205,7 @@ export default function Blogs() {
         <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
           {/* Header Section */}
           <div className="flex justify-between items-center  mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Existing Blogs</h1>
+            <h1 className="text-[24px] font-semibold text-[#16151C]">Existing Blogs</h1>
             <Button
               variant="contained"
               onClick={() => navigate("/blogs/new")}
@@ -218,7 +218,7 @@ export default function Blogs() {
                 px: 3,
                 py: 1.5,
                 borderRadius: "0.5rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 textTransform: "none",
                 fontSize: "16px",
               }}
@@ -245,10 +245,10 @@ export default function Blogs() {
                         </span>
                       </div>
                       <div flex className="flex items-center gap-1">
-                        <p className="text-sm  text-#16151C">
+                        <p className="text-[14px] font-light text-[#16151C]">
                           {blog.writtenBy || "Admin"}
                         </p>
-                        <p className="text-sm text-[#757575]">
+                        <p className="text-[14px] font-light text-[#757575]">
                           - {blog.createdOn
                             ? `${Math.floor(
                               (new Date() - blog.createdOn.toDate()) / (1000 * 60 * 60 * 24)
@@ -259,19 +259,19 @@ export default function Blogs() {
                     </div>
 
                     {/* Blog Title */}
-                    <h3 className="text-lg text-[#16151C] mb-2">
+                    <h3 className="text-[18px] font-light text-[#16151C] mb-2">
                       {blog.header}
                     </h3>
 
                     {/* Blog Content */}
-                    <p className="text-[#16151C] text-base leading-relaxed">
+                    <p className="text-[#16151C] text-[16px] font-light leading-relaxed">
                       {blog.description ||
                         "N/A"}
                     </p>
                   </div>
 
                   {/* Blog Image */}
-                  <div className="w-[140px] h-full bg-black rounded-lg overflow-hidden ml-4">
+                  <div className="w-[140px] h-[139px] bg-black rounded-lg overflow-hidden ml-4">
                     {blog.image ? (
                       <img
                         src={blog.image || "/placeholder.svg"}
@@ -279,7 +279,7 @@ export default function Blogs() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                      <div className="w-[140px] h-[139px] bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                         <div className="text-green-200">
                           <svg
                             className="w-8 h-8"

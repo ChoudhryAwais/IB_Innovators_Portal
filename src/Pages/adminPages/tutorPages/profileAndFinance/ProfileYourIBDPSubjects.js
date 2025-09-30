@@ -5,23 +5,23 @@ export function ProfileYourIBDPSubjects({ userDetails }) {
 
   const renderIBDPSubjects = () => {
     return ibdpSubjects.map((record) => (
-      <div key={record.id} className="flex-1 mb-5">
+      <div key={record.id} className="flex-1 mb-4">
         <div className="flex flex-wrap flex-1">
-          <div className="flex-1">
-            <div className="text-sm">Subject</div>
-            <div className="text-base">{record.subject}</div>
+          <div className="flex-1 border-b border-[#A2A1A81A] pb-1 mr-2">
+            <div className="text-[14px] font-light text-[#A2A1A8]">Subject</div>
+            <div className="text-base">{record.subject || "Not entered"}</div>
           </div>
 
-          <div className="flex-1">
-            <div className="text-sm">Score</div>
-            <div className="text-base">{record.score}</div>
+          <div className="flex-1 border-b border-[#A2A1A81A] pb-1 mr-2">
+            <div className="text-[14px] font-light text-[#A2A1A8]">Score</div>
+            <div className="text-base">{record.score || "Not entered"}</div>
           </div>
         </div>
 
         <div className="flex flex-wrap flex-1">
-          <div className="flex-1">
-            <div className="text-sm">Level</div>
-            <div className="text-base">{record.level}</div>
+          <div className="flex-1 border-b border-[#A2A1A81A] pb-1 mr-2">
+            <div className="text-[14px] font-light text-[#A2A1A8]">Level</div>
+            <div className="text-base">{record.level || "Not entered"}</div>
           </div>
         </div>
       </div>
@@ -29,8 +29,8 @@ export function ProfileYourIBDPSubjects({ userDetails }) {
   };
 
   return (
-    <div className="pb-2 border-b border-gray-300 mt-5">
-      <div className="text-left text-xl font-bold mb-5">
+    <div className="pb-2 border-b border-gray-300 mt-4">
+      <div className="text-left text-[#16151C] text-[18px] font-semibold mb-2">
         Your IBDP Subjects
       </div>
 

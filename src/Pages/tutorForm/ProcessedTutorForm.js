@@ -98,8 +98,8 @@ const ProcessedTutorForm = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 w-full">
       <div className="mb-6 pb-2 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
-        <span className="text-sm text-[#16151C]">
+        <h2 className="text-[20px] font-semibold text-[#16151C]">Processed Forms</h2>
+        <span className="text-[14px] font-light text-[#A2A1A8]">
           {String(tutors?.length).padStart(2, "0")} Forms
         </span>
       </div>
@@ -115,6 +115,7 @@ const ProcessedTutorForm = () => {
             sx={{
               borderRadius: "8px",
               p: 1,
+              pl: 0,
               cursor: "pointer",
               "&:hover": { backgroundColor: "#F9FAFB" },
               display: "flex",
@@ -123,10 +124,10 @@ const ProcessedTutorForm = () => {
             }}
           >
             <div className="flex flex-col">
-              <span className="font-medium text-[#16151C]">
+              <span className="font-light text-[16px] text-[#16151C]">
                 {tutor?.firstName} {tutor?.lastName}
               </span>
-              <span className="text-sm text-[#16151C]">{tutor?.email || "N/A"}</span>
+              <span className="text-[12px] font-light text-[#A2A1A8]">{tutor?.email || "N/A"}</span>
             </div>
             <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
           </ListItemButton>
@@ -222,81 +223,55 @@ const ProcessedTutorForm = () => {
             <Divider sx={{ borderColor: "#E5E7EB", mb: 3 }} />
 
             {/* Main Grid - Two Column Key-Value Layout */}
-            <div className="grid grid-cols-[auto_1fr] gap-y-3 gap-x-12 text-sm">
-              <span className="text-[#16151C] font-medium">Name:</span>
-              <span className="text-[#16151C] font-semibold">
+            <div className="grid grid-cols-[auto_1fr] gap-y-3 gap-x-20 text-[14px]">
+              <span className="text-[#16151C] font-light">Name:</span>
+              <span className="text-[#16151C] font-medium">
                 {selectedLink?.firstName} {selectedLink?.lastName}
               </span>
 
               {/* <span className="text-[#16151C] font-medium">Submission Date:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.submittedOn
-                  ? new Date(
-                    selectedLink?.submittedOn.seconds * 1000 +
-                    selectedLink?.submittedOn.nanoseconds / 1000000
-                  ).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })
-                  : "N/A"}
+                <span className="text-[#16151C] font-semibold">
+                  {formatDateTime(selectedLink?.submittedAt)?.split(" - ")[1] || "N/A"}
+                </span>
+
+                <span className="text-[#16151C] font-medium">Submission Time:</span>
+                <span className="text-[#16151C] font-semibold">
+                  {formatDateTime(selectedLink?.submittedAt)?.split(" - ")[0] || "N/A"}
+                </span> */}
+
+              <span className="text-[#16151C] font-light">Email:</span>
+              <span className="text-[#16151C] font-medium">{selectedLink?.email || "N/A"}</span>
+
+              <span className="text-[#16151C] font-light">City:</span>
+              <span className="text-[#16151C] font-medium">{selectedLink?.city || "N/A"}</span>
+
+              <span className="text-[#16151C] font-light">State:</span>
+              <span className="text-[#16151C] font-medium">{selectedLink?.state || "N/A"}</span>
+
+              <span className="text-[#16151C] font-light">Zip:</span>
+              <span className="text-[#16151C] font-medium">{selectedLink?.zip || "N/A"}</span>
+
+              <span className="text-[#16151C] font-light">Programmes:</span>
+              <span className="text-[#16151C] font-medium">
+                {selectedLink?.programmes?.join(", ") || "--------"}
               </span>
 
-              <span className="text-[#16151C] font-medium">Submission Time:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.submittedOn
-                  ? new Date(
-                    selectedLink?.submittedOn.seconds * 1000 +
-                    selectedLink?.submittedOn.nanoseconds / 1000000
-                  ).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })
-                  : "N/A"}
-              </span> */}
-
-              <span className="text-[#16151C] font-medium">City:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.city || "N/A"}
-              </span>
-
-              <span className="text-[#16151C] font-medium">State:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.state || "N/A"}
-              </span>
-
-              <span className="text-[#16151C] font-medium">Zip:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.zip || "N/A"}
-              </span>
-
-              <span className="text-[#16151C] font-medium">Email:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.email || "N/A"}
-              </span>
-
-              <span className="text-[#16151C] font-medium">Programmes:</span>
-              <span className="text-[#16151C] font-semibold">
-                {selectedLink?.programmes?.join(", ") || "N/A"}
-              </span>
-
-              <span className="text-[#16151C] font-medium">Subjects:</span>
-              <span className="text-[#16151C] font-semibold">
+              <span className="text-[#16151C] font-light">Subjects:</span>
+              <span className="text-[#16151C] font-medium">
                 {selectedLink?.subjects?.join(", ") || "N/A"}
               </span>
 
-              <span className="text-[#16151C] font-medium">Assignments:</span>
-              <span className="text-[#16151C] font-semibold">
+              <span className="text-[#16151C] font-light">Assignments:</span>
+              <span className="text-[#16151C] font-medium">
                 {selectedLink?.assignments?.join(", ") || "N/A"}
               </span>
 
-              <span className="text-[#16151C] font-medium">Curricula:</span>
-              <span className="text-[#16151C] font-semibold">
+              <span className="text-[#16151C] font-light">Curricula:</span>
+              <span className="text-[#16151C] font-medium">
                 {selectedLink?.curricula?.join(", ") || "N/A"}
               </span>
 
-              
+
             </div>
 
             {/* Footer Buttons */}
@@ -309,7 +284,7 @@ const ProcessedTutorForm = () => {
                   download
                   variant="outlined"
                   sx={{
-                    width: 166,
+                    width: 215,
                     height: 50,
                     borderRadius: "8px",
                     borderColor: "#4071B6",
@@ -325,13 +300,19 @@ const ProcessedTutorForm = () => {
                     },
                   }}
                 >
-                  Download Resume
+                  <span className="flex items-center gap-2">
+                    Download Resume
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 12L12 15M12 15L15 12M12 15L12 3" stroke="#4071B6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M7.5 9L7 9C4.79086 9 3 10.7909 3 13L3 17C3 19.2091 4.79086 21 7 21L17 21C19.2091 21 21 19.2091 21 17L21 13C21 10.7909 19.2091 9 17 9L16.5 9" stroke="#4071B6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
                 </Button>
               )}
 
               {/* Right side - Cancel + Delete */}
               <div className="flex gap-3">
-                
+
                 <Button
                   disabled={loading}
                   variant="outlined"
@@ -342,7 +323,7 @@ const ProcessedTutorForm = () => {
                     borderRadius: "8px",
                     backgroundColor: "#A81E1E0D",
                     fontSize: "16px",
-                    fontWeight: 500,
+                    fontWeight: 400,
                     color: "#A81E1E",
                     borderColor: "#A81E1E",
                     textTransform: "none",

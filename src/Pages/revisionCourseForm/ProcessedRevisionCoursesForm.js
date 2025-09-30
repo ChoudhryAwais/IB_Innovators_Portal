@@ -105,8 +105,8 @@ const ProcessedRevisionCoursesForm = () => {
         {/* Processed Forms Column */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="mb-6 pb-2 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
-            <span className="text-sm text-[#16151C]">
+            <h2 className="text-[20px] font-semibold text-[#16151C]">Processed Forms</h2>
+            <span className="text-[14px] font-light text-[#A2A1A8]">
               {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
             </span>
           </div>
@@ -122,6 +122,7 @@ const ProcessedRevisionCoursesForm = () => {
                 sx={{
                   borderRadius: "8px",
                   p: 1,
+                  pl: 0,
                   cursor: "pointer",
                   "&:hover": {
                     backgroundColor: "#F9FAFB",
@@ -132,10 +133,10 @@ const ProcessedRevisionCoursesForm = () => {
                 }}
               >
                 <div className="flex flex-col">
-                  <span className="font-medium text-[#16151C]">
+                  <span className="font-light text-[16px] text-[#16151C]">
                     {item.userDetails?.firstName} {item.userDetails?.lastName}
                   </span>
-                  <span className="text-sm text-[#16151C]">{item.userDetails?.email}</span>
+                  <span className="text-[12px] font-light text-[#A2A1A8]">{item.userDetails?.email}</span>
                 </div>
                 <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
               </ListItemButton>
@@ -175,6 +176,40 @@ const ProcessedRevisionCoursesForm = () => {
                 <span className="font-light text-lg">(Revision Courses Forms)</span>
               </h2>
               <div className="flex items-center gap-2">
+                <Button
+                  variant="text"
+                  size="small"
+                  sx={{
+                    color: "#16151C",
+                    textTransform: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    minWidth: "unset",
+                    padding: "4px 8px",
+                    borderRadius: "6px",
+                    "&:hover": { backgroundColor: "#f5f5f5" },
+                  }}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    width="16"
+                    height="18"
+                    viewBox="0 0 16 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ color: "#16151C" }}
+                  >
+                    <path
+                      d="M11 3H11.75C13.4069 3 14.75 4.34315 14.75 6V13.5C14.75 15.1569 13.4069 16.5 11.75 16.5H4.25C2.59315 16.5 1.25 15.1569 1.25 13.5V6C1.25 4.34315 2.59315 3 4.25 3H5M11 3C11 3.82843 10.3284 4.5 9.5 4.5H6.5C5.67157 4.5 5 3.82843 5 3M11 3C11 2.17157 10.3284 1.5 9.5 1.5H6.5C5.67157 1.5 5 2.17157 5 3M5 7.5H11M5 10.5H11M5 13.5H8"
+                      stroke="#16151C"
+                      strokeWidth="1.125"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="font-light text-xs">Copy Text</span>
+                </Button>
                 <button
                   onClick={() => setShowModal(false)}
                   className="p-1 hover:bg-gray-100 rounded"
@@ -201,65 +236,66 @@ const ProcessedRevisionCoursesForm = () => {
               {/* Left Column */}
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                  <span className="text-[#16151C]">Submitted By:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Submitted By:</span>
+                  <span className="text-[#16151C] font-medium">
                     {selectedLink?.userType || "Student"}
                   </span>
 
-                  <span className="text-[#16151C]">Time Zone:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Time Zone:</span>
+                  <span className="text-[#16151C] font-medium">
                     {selectedLink?.timeZone || "N/A"}
                   </span>
 
-                  <span className="text-[#16151C]">Objective:</span>
-                  <div className="font-semibold text-[#16151C] space-y-1">
+                  <span className="text-[#16151C] font-light text-[14px]">Objective:</span>
+                  <div className="text-[#16151C] space-y-1 font-medium">
                     {selectedLink?.objective?.map((obj, i) => (
                       <div key={i}>{obj}</div>
                     ))}
                   </div>
 
-                  <span className="text-[#16151C]">Seeking Tutoring For:</span>
-                  <div className="font-semibold text-[#16151C] space-y-1"> 
-                   {selectedLink?.seekingTutoringFor?.map(
-                            (subj, index) => (
-                              <div key={index} className="flex items-center">
-                                <span className="w-1 h-1 bg-gray-900 rounded-full mr-2"></span>
-                                {subj}
-                              </div>
-                            )
-                          )}
+                  <span className="text-[#16151C] font-light text-[14px]">Seeking Tutoring For:</span>
+                  <div className="text-[#16151C] space-y-1 font-medium">
+                    {selectedLink?.seekingTutoringFor?.map(
+                      (subj, index) => (
+                        <div key={index} className="flex items-center">
+                          <span className="w-1 h-1 bg-gray-900 rounded-full mr-2"></span>
+                          {subj}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Middle Column */}
               <div className="space-y-2">
+
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                   <span className="text-[#16151C]">Tutor Support Type:</span>
-                  <span className="font-semibold text-[#16151C]">
-                    {selectedLink?.tutorSupportType || "Certified IB Examiner"}
+                  <span className="text-[#16151C] font-light text-[14px]">Tutor Support Type:</span>
+                  <span className="text-[#16151C] font-medium">
+                    {selectedLink?.tutorSupportType || "N/A"}
                   </span>
 
-                  <span className="text-[#16151C]">Course Type:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Course Type:</span>
+                  <span className="text-[#16151C] font-medium">
                     {selectedLink?.selectedCourse?.title || "N/A"}
                   </span>
 
-                  <span className="text-[#16151C]">Final Exam Date:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Final Exam Date:</span>
+                  <span className=" text-[#16151C] font-medium">
                     {selectedLink?.finalExamDate || "N/A"}
                   </span>
 
-                  <div className="col-span-2 h-2"></div>
+                  <div className="col-span-2 h-4"></div>
 
-                  <span className="text-[#16151C]">Total Teaching Hours:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Total Teaching Hours:</span>
+                  <span className=" text-[#16151C] font-medium">
                     {selectedLink?.selectedCourse?.hours *
-                      (selectedLink?.seekingTutoringFor?.length || 0)}
+                      (selectedLink?.seekingTutoringFor?.length || 0)} Hours Course
                   </span>
 
-                  <span className="text-[#16151C]">Price:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light text-[14px]">Price:</span>
+                  <span className=" text-[#16151C] font-medium">
                     £ {selectedLink?.quotedPrice || "N/A"}
                   </span>
                 </div>
@@ -267,18 +303,18 @@ const ProcessedRevisionCoursesForm = () => {
 
               {/* Right Column */}
               <div className="space-y-2">
-                <div className="font-semibold text-[#16151C] mb-2">
+                <div className=" font-medium text-[#16151C] mb-2">
                   How Often to Take Lessons
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   {selectedLink?.howOftenToTakeLesson?.map((freq, i) => {
-                    const [day, time] = freq.split("-").map((s) => s.trim())
+                    const [day, time] = freq.split("-").map((s) => s.trim());
                     return (
                       <React.Fragment key={i}>
-                        <span className="text-[#16151C]">{day}:</span>
-                        <span className="text-[#16151C]">{time}</span>
+                        <span className="text-[#16151C]  font-light text-[14px]">{day}:</span>
+                        <span className="text-[#16151C]  font-light text-[14px]">{time}</span>
                       </React.Fragment>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -286,84 +322,153 @@ const ProcessedRevisionCoursesForm = () => {
 
             {/* Guidance & Support */}
             <div className="mt-8 pt-6 border-t border-gray-200 text-sm">
-              <h3 className="font-bold text-[#16151C] mb-4">
+              <h3 className=" font-medium text-[#16151C] mb-4">
                 Guidance & Support Details:
               </h3>
-              {selectedLink?.wantGuidanceAndSupport === "yes" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <div className="flex">
-                      <span className="text-[#16151C] w-44">Subjects:</span>
-                      <div className="font-semibold text-[#16151C] space-y-1">
-                        {selectedLink?.guidanceAndSupportSubjects?.map((sub, index) => (
-                          <div key={index}>{sub}</div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex">
-                      <span className="text-[#16151C] w-44">Objective:</span>
-                      <span className="font-semibold text-[#16151C]">
-                        {selectedLink?.guidanceObjectiveTitle || "N/A"}
-                      </span>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <div className="flex">
+                    <span className="text-[#16151C] w-44 font-light">Need Support:</span>
+                    <span className=" text-[#16151C] font-medium">
+                      {selectedLink?.wantGuidanceAndSupport === "yes" ? "Yes" : "No"}
+                    </span>
                   </div>
+                  {selectedLink?.wantGuidanceAndSupport === "yes" && (
+                    <>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44 font-light">Subjects:</span>
+                        <div className=" text-[#16151C] space-y-1 font-medium">
+                          {selectedLink?.guidanceAndSupportSubjects?.map(
+                            (sub, index) => (
+                              <div key={index} className="flex items-center">
+                                <span className="w-1 h-1 bg-gray-900 rounded-full mr-2"></span>
+                                {sub}
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <span className="text-[#16151C] w-44 font-light">Objective:</span>
+                        <span className=" text-[#16151C] font-medium">
+                          {selectedLink?.guidanceObjectiveTitle || "N/A"}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {selectedLink?.wantGuidanceAndSupport === "yes" && (
                   <div className="space-y-2">
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Tutor Level:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Tutor Level:</span>
+                      <span className=" text-[#16151C] font-medium">
                         {selectedLink?.guidanceObjective?.level || "N/A"}
                       </span>
                     </div>
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Support Type:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Tutor Support Type:</span>
+                      <span className=" text-[#16151C] font-medium">
                         {selectedLink?.guidanceObjective?.diploma || "N/A"}
                       </span>
                     </div>
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Price:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Price:</span>
+                      <span className=" text-[#16151C] font-medium">
                         £ {selectedLink?.guidancePrice || "N/A"}
                       </span>
                     </div>
                   </div>
-                </div>
-              ) : (
-                 <div className="flex">
-                      <span className="text-[#16151C] w-44">Need Support:</span>
-                      <span className="font-semibold text-[#16151C]">
-                        {selectedLink?.wantGuidanceAndSupport}
-                      </span>
-                    </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Student & Parent Info */}
-            <div className="mt-8 pt-6 border-t border-gray-200 text-md">
+            <div className="mt-8 pt-6 border-t border-gray-200 text-[14px]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-semibold text-[#16151C] mb-4">
-                    Student Info:
-                  </h3>
+                  <h3 className="font-medium text-[#16151C] mb-4">Student Info:</h3>
                   <div className="space-y-3">
-                    <div>First Name: {selectedLink?.userDetails?.firstName} {selectedLink?.userDetails?.lastName}</div>
-                    <div>Email: {selectedLink?.userDetails?.email}</div>
-                    <div>Phone: {selectedLink?.userDetails?.phone}</div>
-                    <div>Address: {selectedLink?.userDetails?.address || "N/A"}</div>
-                    <div>City: {selectedLink?.userDetails?.city || "N/A"}</div>
-                    <div>ZIP: {selectedLink?.userDetails?.zip || "N/A"}</div>
-                    <div>Country: {selectedLink?.userDetails?.country?.label || "N/A"}</div>
-                    <div>GMT: {selectedLink?.userDetails?.gmtTimezone || "N/A"}</div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.firstName}{" "}
+                        {selectedLink?.userDetails?.lastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Email: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.email}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Phone: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.phone}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Address: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.address || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">City: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.city || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">ZIP: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.zip || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Country: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.country?.label || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">GMT: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.gmtTimezone || "N/A"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-[#16151C] mb-4">Parent Info:</h3>
+                  <h3 className="font-medium text-[#16151C] mb-4">Parent Info:</h3>
                   <div className="space-y-3">
-                    <div>First Name: {selectedLink?.userDetails?.parentFirstName} {selectedLink?.userDetails?.parentLastName}</div>
-                    <div>Email: {selectedLink?.userDetails?.parentEmail}</div>
-                    <div>Phone: {selectedLink?.userDetails?.parentPhone}</div>
-                    <div>Relationship: {selectedLink?.userDetails?.relation || "N/A"}</div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.parentFirstName}{" "}
+                        {selectedLink?.userDetails?.parentLastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Email: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.parentEmail}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Phone: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.parentPhone}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Relation: </span>
+                      <span className="text-[#16151C]  font-light">
+                        {selectedLink?.userDetails?.relation || "N/A"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -378,10 +483,10 @@ const ProcessedRevisionCoursesForm = () => {
                   width: 166,
                   height: 50,
                   borderRadius: "8px",
-                  borderColor: "#D1D5DB",
+                  borderColor: "#A2A1A833",
                   fontSize: "16px",
                   fontWeight: 500,
-                  color: "#374151",
+                  color: "#16151C",
                   textTransform: "none",
                   "&:hover": {
                     borderColor: "#9CA3AF",

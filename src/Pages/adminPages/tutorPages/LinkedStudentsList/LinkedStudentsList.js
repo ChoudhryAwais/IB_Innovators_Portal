@@ -90,7 +90,7 @@ export default function LinkedStudentsList({ userId }) {
           </svg>
 
           {/* Text next to the SVG */}
-          <span className="font-semibold">{viewType === "classes" ? "Classes Taken" : "Balance History"} </span><span className="font-medium">{categorizedClasses[selectedStudent]?.studentName ? ` (${categorizedClasses[selectedStudent].studentName})` : ""}</span>
+          <span className="font-semibold text-[18px]">{viewType === "classes" ? "Classes Taken" : "Balance History"} </span><span className="font-light text-[16px]">{categorizedClasses[selectedStudent]?.studentName ? ` (${categorizedClasses[selectedStudent].studentName})` : ""}</span>
         </div>
 
         <StudentDetails
@@ -104,7 +104,7 @@ export default function LinkedStudentsList({ userId }) {
 
   return (
     <div className="">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Students List</h1>
+      <h1 className="text-[24px] font-semibold text-[#16151C] mb-6">Students List</h1>
 
       <div className="space-y-4">
         {Object.entries(categorizedClasses).map(([studentId, studentData]) => (
@@ -116,7 +116,7 @@ export default function LinkedStudentsList({ userId }) {
               <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-gray-600">{studentData.studentName?.charAt(0) || "S"}</span>
               </div>
-              <span className="text-lg font-medium text-gray-900">{studentData.studentName}</span>
+              <span className="text-[18px] font-light text-[#16151C]">{studentData.studentName}</span>
             </div>
 
             <div className="flex gap-3">
@@ -125,26 +125,20 @@ export default function LinkedStudentsList({ userId }) {
                 className="bg-[#4071B60D] h-[36px] border-1 border-[#4071B6] font-semibold text-[#4071B6] px-2 py-2 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
                 Classes Taken
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8.26685 15L13.2668 10L8.26685 5" stroke="#4071B6" stroke-width="1.69163" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
+
               </button>
               <button
                 onClick={() => handleViewBalance(studentId)}
                 className="bg-[#4071B60D] h-[36px] border-1 border-[#4071B6] font-semibold text-[#4071B6] px-2 py-2 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
                 Balance History
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8.26685 15L13.2668 10L8.26685 5" stroke="#4071B6" stroke-width="1.69163" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
+
               </button>
             </div>
           </div>

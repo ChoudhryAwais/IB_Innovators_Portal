@@ -139,13 +139,13 @@ function SignupForm() {
     <div className="p-6">
       <div className="bg-white rounded-lg border border-gray-200 p-8">
         {/* Heading */}
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Request Tutor</h1>
+        <h1 className="text-[20px] font-semibold text-[#16151C] mb-4">Request Tutor</h1>
         <Divider sx={{ borderColor: "#E5E7EB", mb: 3 }} />
 
         <form className="space-y-6">
           {/* Full Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-4">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
               Full Name
             </label>
             <input
@@ -154,14 +154,14 @@ function SignupForm() {
               placeholder="Enter Full Name"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+              className="w-full px-3 text-[16px] font-light py-3 rounded-[10px] border border-[#A2A1A833] focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-[#16151C]"
             />
           </div>
 
           {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
+          <div className="mb-4">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Email Address
             </label>
             <input
               required
@@ -169,19 +169,19 @@ function SignupForm() {
               placeholder="Enter email address"
               value={signUpEmail}
               onChange={(e) => setSignUpEmail(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+              className="w-full px-3 py-3 text-[16px] font-light rounded-[10px] border border-[#A2A1A833] focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-[#16151C]"
             />
           </div>
 
 
           {/* Tutor Tier */}
           <div>
-            <p className="text-xs font-medium text-gray-800 mb-2">Tutor Tier*</p>
+            <p className="text-[12px] font-light text-[#A2A1A8] mb-2">Tutor Tier</p>
             <div className="flex flex-wrap gap-3 mb-6">
               {[
-                { label: "Standard ($24)", value: "Standard" },
-                { label: "Top ($28)", value: "Top" },
-                { label: "Enter hourly rate", value: "Other" }, // 👈 changed label here
+                { label: "Standard ($24)", value: "Standard", width: "w-[160px]" },
+                { label: "Top ($28)", value: "Top", width: "w-[160px]" },
+                { label: "Enter hourly rate", value: "Other", width: "w-[300px]" },
               ].map((option) => (
                 <button
                   key={option.value}
@@ -192,15 +192,16 @@ function SignupForm() {
                     else setHourlyRate(0);
                     setTutorTier(option.value);
                   }}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all w-40 h-14
-          ${tutorTier === option.value
-                      ? "bg-blue-600 text-white border border-transparent"
-                      : "bg-transparent text-gray-900 border border-gray-300 hover:bg-gray-100"
+                  className={`${option.width} h-14 rounded-lg text-[12px]  transition-all
+                    ${tutorTier === option.value
+                      ? "bg-[#4071B6] text-white border border-transparent font-medium"
+                      : "bg-transparent text-[#16151C] font-light border border-gray-300 hover:bg-gray-100"
                     }`}
                 >
                   {option.label}
                 </button>
-              ))}
+              ))
+              }
             </div>
           </div>
 
@@ -208,7 +209,7 @@ function SignupForm() {
           {/* Hourly Rate (if Other) */}
           {tutorTier === "Other" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
                 Hourly Rate in USD ($)
               </label>
               <input
@@ -217,23 +218,23 @@ function SignupForm() {
                 placeholder="Enter hourly rate"
                 value={hourlyRate}
                 onChange={(e) => setHourlyRate(e.target.value)}
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                className="w-full px-3 py-3 text-[16px] font-light border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
               />
             </div>
           )}
 
           {/* Subjects to Teach */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Subjects to Teach
+            <label className="block text-[12px] font-light  text-[#A2A1A8] mb-2">
+              Subjects to teach
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-6">
               {Object.entries(subjectsToTeach).map(([subject, value]) => (
                 <div
                   key={subject}
-                  className="flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2"
+                  className="flex items-center gap-28 rounded-lg pl-0 py-2"
                 >
-                  <label className="flex items-center gap-2 text-gray-900 cursor-pointer">
+                  <label className="flex items-center font-light text-[14px] text-[#16151C] gap-2 cursor-pointer">
                     <Checkbox
                       checked={value}
                       onChange={() => handleChange(subject)}
@@ -275,20 +276,17 @@ function SignupForm() {
             </div>
           </div>
 
-
-
           {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-7">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
               Password
             </label>
             <input
               required
-              type="text"
               placeholder="Enter password"
               value={signUpPassword}
               onChange={(e) => setSignUpPassword(e.target.value)}
-              className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+              className="w-full px-3 py-3 text-[16px] font-light rounded-[10px] border border-[#A2A1A833] focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-[#16151C]"
             />
           </div>
 
@@ -329,7 +327,7 @@ function SignupForm() {
                   color: "#FFFFFF",
                   textTransform: "none",
                   "&:hover": { backgroundColor: "#4071B6" },
-                  "&:disabled": { backgroundColor: "#9CA3AF" },
+                  "&:disabled": { backgroundColor: "#A2A1A833" },
                 }}
                 onClick={SignUpHandler}
               >

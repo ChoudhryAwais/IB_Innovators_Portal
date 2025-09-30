@@ -20,7 +20,7 @@ function SignUpOnly() {
   const tabs = [
     {
       id: "admin",
-      label: "Admin SignUp",
+      label: "Register Admin",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -35,7 +35,7 @@ function SignUpOnly() {
     },
     {
       id: "teacher",
-      label: "Tutor SignUp",
+      label: "Register Tutor",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -49,7 +49,7 @@ function SignUpOnly() {
     },
     {
       id: "student",
-      label: "Student SignUp",
+      label: "Register Student",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -81,7 +81,7 @@ function SignUpOnly() {
     
     <div className="min-h-screen p-6">
       <div className="mr-[10px] pt-0">
-        <div className="bg-white rounded-lg border border-gray-200 shadow-md">
+        <div className="bg-white rounded-lg border-1 border-[#A2A1A833]">
           {/* Tabs header */}
           <div className="flex border-b border-gray-200 mx-4">
             {tabs.map((tab) => (
@@ -89,13 +89,12 @@ function SignUpOnly() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 type="button"
-                className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                className={`flex items-center gap-2 px-6 py-3 text-[16px] transition-colors duration-200 border-b-2 ${
                   activeTab === tab.id
-                    ? "text-blue-600 border-blue-600"
-                    : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300"
+                    ? "text-[#4071B6] font-semibold border-[#4071B6]"
+                    : "text-[#16151C] font-light border-transparent hover:border-gray-300"
                 }`}
               >
-                {tab.icon}
                 {tab.label}
               </button>
             ))}

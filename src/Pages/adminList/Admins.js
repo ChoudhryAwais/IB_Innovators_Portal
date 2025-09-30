@@ -81,7 +81,18 @@ export const Admins = () => {
             <div className="mb-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon className="text-gray-400" icon={faMagnifyingGlass} />
+                  <svg
+                    className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
+                    viewBox="0 0 22 22"
+                    fill="#16151C"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
+                    />
+                  </svg>
                 </div>
                 <input
                   onChange={handleSearch}
@@ -101,24 +112,24 @@ export const Admins = () => {
                   <div className="flex-1">
                     <div className="flex items-center">
                       {/* Avatar */}
-                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                      <div className="w-12 h-12 bg-[#4071B6] rounded-full flex items-center justify-center mr-4 flex-shrink-0">
                         <FontAwesomeIcon icon={faUserShield} className="text-white" />
                       </div>
                       {/* Name */}
-                      <h3 className="font-semibold text-gray-900 text-lg">
+                      <h3 className="font-semibold text-[#16151C] text-[18px]">
                         {admin?.userName}
                       </h3>
                     </div>
 
                     {/* Email + ID */}
-                    <div className="text-sm text-gray-600 mt-1 pl-[4rem]">
+                    <div className="text-sm text-[#16151C] mt-1 pl-[4rem]">
                       <div className="flex">
-                        <span className="w-24">Email: </span>
-                        <span className="text-gray-800">{admin?.email}</span>
+                        <span className="w-24 font-light">Email: </span>
+                        <span className="font-medium">{admin?.email}</span>
                       </div>
                       <div className="flex">
-                        <span className="w-24">Admin ID: </span>
-                        <span className="text-gray-800">{admin?.userId}</span>
+                        <span className="w-24 font-light">Admin ID: </span>
+                        <span className="font-medium">{admin?.userId}</span>
                       </div>
                     </div>
                   </div>
@@ -128,7 +139,16 @@ export const Admins = () => {
                     <Button
                       variant="contained"
                       className="ml-4 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
-                      style={{ backgroundColor: "#4071B6", textTransform: "none" }}
+                      style={{
+                        borderRadius: "8px",
+                        width: "130px",
+                        height: "40px",
+                        color: "#FFFFFF",
+                        backgroundColor: "#4071B6",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        textTransform: "none", 
+                      }}
                     >
                       View Details
                     </Button>

@@ -112,8 +112,8 @@ const RequestCoursesForm = () => {
         {/* Pending Forms Column */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="mb-6 pb-2 border-b border-gray-200 ">
-            <h2 className="text-lg font-semibold text-[#16151C]">Pending Forms</h2>
-            <span className="text-sm text-[#16151C]">
+            <h2 className="text-[20px] font-semibold text-[#16151C]">Pending Forms</h2>
+            <span className="text-[14px] font-light text-[#A2A1A8]">
               {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
             </span>
           </div>
@@ -129,6 +129,7 @@ const RequestCoursesForm = () => {
                 sx={{
                   borderRadius: "8px",
                   p: 1,
+                  p:0,
                   cursor: "pointer",
                   "&:hover": {
                     backgroundColor: "#F9FAFB",
@@ -139,10 +140,10 @@ const RequestCoursesForm = () => {
                 }}
               >
                 <div className="flex flex-col">
-                  <span className="font-medium text-[#16151C]">
+                  <span className="font-light text-[16px] text-[#16151C]">
                     {item.userDetails?.firstName} {item.userDetails?.lastName}
                   </span>
-                  <span className="text-sm text-[#16151C]">{item.userDetails?.email}</span>
+                  <span className="text-[12px] font-light text-[#A2A1A8]">{item.userDetails?.email}</span>
                 </div>
                 <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
               </ListItemButton>
@@ -243,29 +244,29 @@ const RequestCoursesForm = () => {
             </div>
 
             {/* Main Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[14px]">
               {/* Left Column */}
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                  <span className="text-[#16151C]">Submitted By:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Submitted By:</span>
+                  <span className="font-medium text-[#16151C]">
                     {selectedLink?.userType || "Student"}
                   </span>
 
-                  <span className="text-[#16151C]">Time Zone:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Time Zone:</span>
+                  <span className="font-medium text-[#16151C]">
                     {selectedLink?.timeZone || "N/A"}
                   </span>
 
-                  <span className="text-[#16151C]">Objective:</span>
-                  <div className="font-semibold text-[#16151C] space-y-1">
+                  <span className="text-[#16151C] font-light">Objective:</span>
+                  <div className="font-medium text-[#16151C] space-y-1">
                     {selectedLink?.objective?.map((obj, i) => (
                       <div key={i}>{obj}</div>
                     ))}
                   </div>
 
-                  <span className="text-[#16151C]">Seeking Tutoring For:</span>
-                  <div className="font-semibold text-[#16151C] space-y-1">
+                  <span className="text-[#16151C] font-light">Seeking Tutoring For:</span>
+                  <div className="font-medium text-[#16151C] space-y-1">
                     {selectedLink?.seekingTutoringFor?.map(
                       (subj, index) => (
                         <div key={index} className="flex items-center">
@@ -280,43 +281,43 @@ const RequestCoursesForm = () => {
               </div>
 
               {/* Middle Column */}
-              <div className="space-y-2">
-                <div className="font-semibold text-[#16151C]">
+              <div className="space-y-2 -mr-8">
+                <div className="font-medium text-[#16151C]">
                   Desired Course Attributes
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                  <span className="text-[#16151C]">Start Date & Time:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Start Date & Time:</span>
+                  <span className="font-medium text-[#16151C]">
                     {formatDateTime(selectedLink?.startDateAndTime)}
                   </span>
 
-                  <span className="text-[#16151C]">End Date & Time:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">End Date & Time:</span>
+                  <span className="font-medium text-[#16151C]">
                     {formatDateTime(selectedLink?.endDateAndTime)}
                   </span>
 
-                  <span className="text-[#16151C]">Final Exam Date:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Final Exam Date:</span>
+                  <span className="font-medium text-[#16151C]">
                     {selectedLink?.finalExamDate || "N/A"}
                   </span>
 
-                  <div className="col-span-2 h-2"></div>
+                  <div className="col-span-2 h-4"></div>
 
-                  <span className="text-[#16151C]">Hours:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Hours:</span>
+                  <span className="font-medium text-[#16151C]">
                     {selectedLink?.desiredCourse?.courseHours || "N/A"}
                   </span>
 
-                  <span className="text-[#16151C]">Price:</span>
-                  <span className="font-semibold text-[#16151C]">
+                  <span className="text-[#16151C] font-light">Price:</span>
+                  <span className="font-medium text-[#16151C]">
                     £ {selectedLink?.desiredCourse?.price || "N/A"}
                   </span>
                 </div>
               </div>
 
               {/* Right Column */}
-              <div className="space-y-2">
-                <div className="font-semibold text-[#16151C] mb-2">
+              <div className="space-y-2 pl-12">
+                <div className="font-medium text-[#16151C] mb-2">
                   How Often to Take Lessons
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
@@ -324,8 +325,8 @@ const RequestCoursesForm = () => {
                     const [day, time] = freq.split("-").map((s) => s.trim())
                     return (
                       <React.Fragment key={i}>
-                        <span className="text-[#16151C]">{day}:</span>
-                        <span className=" text-[#16151C]">{time}</span>
+                        <span className="text-[#16151C]  font-light">{day}:</span>
+                        <span className=" text-[#16151C] font-light">{time}</span>
                       </React.Fragment>
                     )
                   })}
@@ -335,22 +336,22 @@ const RequestCoursesForm = () => {
 
             {/* Guidance & Support */}
             <div className="mt-8 pt-6 border-t border-gray-200 text-sm">
-              <h3 className="font-bold text-[#16151C] mb-4">
+              <h3 className="font-medium text-[#16151C] mb-4">
                 Guidance & Support Details:
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <div className="flex">
-                    <span className="text-[#16151C] w-44">Need Support:</span>
-                    <span className="font-semibold text-[#16151C]">
+                    <span className="text-[#16151C] w-44 font-light">Need Support:</span>
+                    <span className="font-medium text-[#16151C]">
                       {selectedLink?.wantGuidanceAndSupport === "yes" ? "Yes" : "No"}
                     </span>
                   </div>
                   {selectedLink?.wantGuidanceAndSupport === "yes" && (
                     <>
                       <div className="flex">
-                        <span className="text-[#16151C] w-44">Subjects:</span>
-                        <div className="font-semibold text-[#16151C] space-y-1">
+                        <span className="text-[#16151C] w-44 font-light">Subjects:</span>
+                        <div className="font-medium text-[#16151C] space-y-1">
                           {selectedLink?.guidanceAndSupportSubjects?.map(
                             (sub, index) => (
                               <div key={index} className="flex items-center">
@@ -362,8 +363,8 @@ const RequestCoursesForm = () => {
                         </div>
                       </div>
                       <div className="flex">
-                        <span className="text-[#16151C] w-44">Objective:</span>
-                        <span className="font-semibold text-[#16151C]">
+                        <span className="text-[#16151C] w-44 font-light">Objective:</span>
+                        <span className="font-medium text-[#16151C]">
                           {selectedLink?.guidanceObjectiveTitle || "N/A"}
                         </span>
                       </div>
@@ -374,20 +375,20 @@ const RequestCoursesForm = () => {
                 {selectedLink?.wantGuidanceAndSupport === "yes" && (
                   <div className="space-y-2">
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Tutor Level:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Tutor Level:</span>
+                      <span className="font-medium text-[#16151C]">
                         {selectedLink?.guidanceObjective?.level || "N/A"}
                       </span>
                     </div>
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Tutor Support Type:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Tutor Support Type:</span>
+                      <span className="font-medium text-[#16151C]">
                         {selectedLink?.guidanceObjective?.diploma || "N/A"}
                       </span>
                     </div>
                     <div className="flex">
-                      <span className="text-[#16151C] w-44">Price:</span>
-                      <span className="font-semibold text-[#16151C]">
+                      <span className="text-[#16151C] w-44 font-light">Price:</span>
+                      <span className="font-medium text-[#16151C]">
                         £ {selectedLink?.guidancePrice || "N/A"}
                       </span>
                     </div>
@@ -397,59 +398,59 @@ const RequestCoursesForm = () => {
             </div>
 
             {/* Student & Parent Info */}
-            <div className="mt-8 pt-6 border-t border-gray-200 text-md">
+            <div className="mt-8 pt-6 border-t border-gray-200 text-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-semibold text-[#16151C] mb-4">
+                  <h3 className="font-medium text-[#16151C] mb-4">
                     Student Info:
                   </h3>
                   <div className="space-y-3">
                     <div>
-                      <span className="text-[#16151C]">Name: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
                         {selectedLink?.userDetails?.firstName}{" "}
                         {selectedLink?.userDetails?.lastName}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Email: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Email: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.email}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Contact No: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Contact No: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.phone}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Address: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Address: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.address || "N/A"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">City: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">City: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.city || "N/A"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">ZIP: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">ZIP: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.zip || "N/A"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Country: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Country: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.country?.label || "N/A"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">GMT: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">GMT: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.gmtTimezone || "N/A"}
                       </span>
                     </div>
@@ -457,30 +458,30 @@ const RequestCoursesForm = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-[#16151C] mb-4">Parent Info:</h3>
+                  <h3 className="font-medium text-[#16151C] mb-4">Parent Info:</h3>
                   <div className="space-y-3">
                     <div>
-                      <span className="text-[#16151C]">Name: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Name: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.parentFirstName}{" "}
                         {selectedLink?.userDetails?.parentLastName}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Email: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Email: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.parentEmail}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Contact No: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Contact No: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.parentPhone}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#16151C]">Relationship: </span>
-                      <span className="text-[#16151C]">
+                      <span className="text-[#16151C]  font-light">Relation: </span>
+                      <span className="text-[#16151C]  font-light">
                         {selectedLink?.userDetails?.relation || "N/A"}
                       </span>
                     </div>
@@ -498,10 +499,10 @@ const RequestCoursesForm = () => {
                   width: 166,
                   height: 50,
                   borderRadius: "8px",
-                  borderColor: "#D1D5DB",
+                  borderColor: "#A2A1A833",
                   fontSize: "16px",
                   fontWeight: 500,
-                  color: "#374151",
+                  color: "#16151C",
                   textTransform: "none",
                   "&:hover": {
                     borderColor: "#9CA3AF",

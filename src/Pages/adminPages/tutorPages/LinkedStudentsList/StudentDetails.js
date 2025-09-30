@@ -177,12 +177,11 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               id={`panel-class-${index}`}
               className="px-6 py-4 hover:bg-gray-50"
               sx={{
-                  minHeight: "72px !important", // collapsed height
-                  maxHeight: "72px",
+                  minHeight: "60px !important", // collapsed height
+                  maxHeight: "60px",
                   "&.Mui-expanded": {
-                    minHeight: "72px !important",
-                    maxHeight: "72px",
-                    maxHeight: "72px",
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
                     "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
                       color: "#4071B6",
                     },
@@ -206,7 +205,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
             >
               <div className="flex w-full justify-between items-center summary-text">
                 <div className="text-lg font-light">
-                  {months[item.month - 1]} {item.year} Classes
+                  {months[item.month - 1]} {item.year} Detail View
                 </div>
               </div>
             </AccordionSummary>
@@ -214,7 +213,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
             <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
               <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
                 {/* Header */}
-                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 500, color: "#4b5563", p: 1.5 }}>
+                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 300, color: "#A2A1A8", p: 1.5 ,fontSize: '14px'}}>
                   <Grid item xs={4}>Date</Grid>
                   <Grid item xs={4}>Time</Grid>
                   <Grid item xs={4}>Subject</Grid>
@@ -222,9 +221,9 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
                 {/* Rows */}
                 {filterClassesByMonth(studentData.classes, item.month, item.year).map((cls, idx) => (
                   <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
-                    <Grid item xs={4}><div className="text-sm text-gray-600">{formatDate(cls.sessionInfo.date)}</div></Grid>
-                    <Grid item xs={4}><div className="text-sm text-gray-600">{formatTimeTo12Hour(cls.sessionInfo.time)}</div></Grid>
-                    <Grid item xs={4}><div className="font-medium text-gray-900">{cls.subject}</div></Grid>
+                    <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(cls.sessionInfo.date)}</div></Grid>
+                    <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatTimeTo12Hour(cls.sessionInfo.time)}</div></Grid>
+                    <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{cls.subject}</div></Grid>
                   </Grid>
                 ))}
               </Box>
@@ -264,12 +263,11 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
               id={`panel-balance-${index}`}
               className="px-6 py-4 hover:bg-gray-50"
               sx={{
-                  minHeight: "72px !important", // collapsed height
-                  maxHeight: "72px",
+                  minHeight: "60px !important", // collapsed height
+                  maxHeight: "60px",
                   "&.Mui-expanded": {
-                    minHeight: "72px !important",
-                    maxHeight: "72px",
-                    maxHeight: "72px",
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
                     "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
                       color: "#4071B6",
                     },
@@ -293,7 +291,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
             >
               <div className="flex w-full justify-between items-center summary-text">
                 <div className="text-lg font-light">
-                  {months[item.month - 1]} {item.year} Balance Details
+                  {months[item.month - 1]} {item.year} Detail View
                 </div>
                 <div className="text-2xl font-semibold">
                   $ {calculateMonthlyInvoice(balanceHistory, item.month, item.year)}
@@ -304,19 +302,19 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
             <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
               <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
                 {/* Header */}
-                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 500, color: "#4b5563", p: 1.5 }}>
+                <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 300, color: "#A2A1A8", p: 1.5,fontSize: '14px' }}>
                   <Grid item xs={4}>Date</Grid>
-                  <Grid item xs={4}>Time</Grid>
-                  <Grid item xs={4}>Amount</Grid>
+                  <Grid item xs={6.2}>Time</Grid>
+                  <Grid item xs={1.8}>Amount</Grid>
                 </Grid>
                 {/* Rows */}
                 {filterInvoicesByMonth(balanceHistory, item.month, item.year).map((inv, idx) => {
                   const dateObj = inv.createdAt.toDate()
                   return (
                     <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
-                      <Grid item xs={4}><div className="text-sm text-gray-600">{formatDate(dateObj)}</div></Grid>
-                      <Grid item xs={4}><div className="text-sm text-gray-600">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
-                      <Grid item xs={4}><div className="font-medium">$ {inv.amount}</div></Grid>
+                      <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(dateObj)}</div></Grid>
+                      <Grid item xs={5.5}><div className="text-[14px] font-light text-[#16151C]">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
+                      <Grid item xs={1.7}><div className="text-[14px] font-light text-[#16151C] text-end">$ {inv.amount}</div></Grid>
                     </Grid>
                   )
                 })}

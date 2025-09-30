@@ -10,6 +10,7 @@ import { db } from "../../../firebase";
 import { collection, addDoc, doc, setDoc, getDocs } from "firebase/firestore";
 import { useTopHeading } from "../../../Components/Layout";
 import { TopHeadingProvider } from "../../../Components/Layout";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 export default function SEO() {
   const { setFirstMessage, setSecondMessage } = useTopHeading()
@@ -158,8 +159,8 @@ export default function SEO() {
   return (
     <TopHeadingProvider>
       <div className="min-h-screen p-6">
-        <div className="rounded-xl shadow-sm p-6 border">
-                      <h1 className="text-2xl pb-2 font-bold text-gray-900">Seo Pages</h1>
+        <div className="rounded-xl p-6 border">
+          <h1 className="text-[24px] font-semibold text-[#16151C] pb-2">Seo Pages</h1>
           <div className="flex-1 h-max mt-0 mb-2 p-2 ">
 
             {seoData.map((item, index) => (
@@ -176,12 +177,7 @@ export default function SEO() {
                 }}
               >
                 <AccordionSummary
-                  expandIcon={
-                    <ArrowDownwardIcon
-                      fontSize="inherit"
-                      className="ml-1 !text-3xl text-[#16151C]"
-                    />
-                  }
+                  expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
                   aria-controls={`panel${index}-content`}
                   id={`panel${index}-header`}
                   className="px-6 py-4 hover:bg-gray-50"

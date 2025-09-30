@@ -2,15 +2,15 @@ import React from "react";
 
 export function ProfileIBForm({ userDetails }) {
   return (
-    <div className="mt-5 pb-5 border-b border-gray-300">
-      <div className="text-left text-2xl font-bold mb-5">
+    <div className="mt-4 pb-4 border-b border-gray-300">
+      <div className="text-left text-[#16151C] text-[18px] font-semibold mb-2">
         International Baccalaureate
       </div>
 
       <p>
-        <span className="text-sm">Did you complete IB Diploma?</span>
+        <span className="text-[14px] font-light text-[#A2A1A8]">Did you complete IB Diploma?</span>
         <br />
-        <span className="font-bold">
+        <span className="text-[16px] font-normal text-[#16151C]">
           {userDetails?.ibForm?.ibDiploma === true
             ? "Yes"
             : userDetails?.ibForm?.ibDiploma === false
@@ -20,9 +20,9 @@ export function ProfileIBForm({ userDetails }) {
       </p>
 
       <p>
-        <span className="text-sm">Did you complete IB MYP?</span>
+        <span className="text-[14px] font-light text-[#A2A1A8]">Did you complete IB MYP?</span>
         <br />
-        <span className="font-bold">
+        <span className="text-[16px] font-normal text-[#16151C]">
           {userDetails?.ibForm?.ibMyp === true
             ? "Yes"
             : userDetails?.ibForm?.ibMyp === false
@@ -32,9 +32,9 @@ export function ProfileIBForm({ userDetails }) {
       </p>
 
       <p>
-        <span className="text-sm">Did you complete IB PYP?</span>
+        <span className="text-[14px] font-light text-[#A2A1A8]">Did you complete IB PYP?</span>
         <br />
-        <span className="font-bold">
+        <span className="text-[16px] font-normal text-[#16151C]">
           {userDetails?.ibForm?.ibPyp === true
             ? "Yes"
             : userDetails?.ibForm?.ibPyp === false

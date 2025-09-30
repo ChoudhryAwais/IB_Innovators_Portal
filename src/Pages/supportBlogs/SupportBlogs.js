@@ -141,7 +141,7 @@ export default function SupportBlogs() {
 
           {/* Header section */}
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Support & Training Blogs</h1>
+            <h1 className="text-[24px] font-semibold text-[#16151C]">Support & Training Blogs</h1>
             <Button
               variant="contained"
               onClick={() => navigate("/supportBlogs/new")}
@@ -154,7 +154,7 @@ export default function SupportBlogs() {
                 px: 0,
                 py: 1.5,
                 borderRadius: "0.5rem",
-                fontWeight: 500,
+                fontWeight: 600,
                 textTransform: "none",
                 fontSize: "16px",
               }}
@@ -170,11 +170,11 @@ export default function SupportBlogs() {
                 <div className="flex justify-between">
                   {/* Left: Content */}
                   <div className="flex-1 pr-6">
-                    <h3 className="text-lg text-[#16151C] mb-2">
+                    <h3 className="text-[18px] font-light text-[#16151C] mb-2">
                       {blog.header}
                     </h3>
                     <div
-                      className="text-[#16151C] text-base leading-relaxed"
+                      className="text-[#16151C] text-[16px] font-light leading-relaxed"
                       dangerouslySetInnerHTML={{
                         __html: blog?.content?.slice(0, 200) + "...",
                       }}

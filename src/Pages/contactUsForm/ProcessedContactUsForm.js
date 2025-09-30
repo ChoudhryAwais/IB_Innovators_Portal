@@ -101,8 +101,8 @@ const ProcessedContactUsForm = () => {
 
     <div className="bg-white rounded-lg border border-gray-200 p-6 w-full">
       <div className="mb-6 pb-2 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
-        <span className="text-sm text-[#16151C]">
+        <h2 className="text-[20px] font-semibold text-[#16151C]">Processed Forms</h2>
+        <span className="text-[14px] font-light text-[#A2A1A8]">
           {String(contactUsSubmissions?.length).padStart(2, "0")} Forms
         </span>
       </div>
@@ -118,6 +118,7 @@ const ProcessedContactUsForm = () => {
             sx={{
               borderRadius: "8px",
               p: 1,
+              pl: 0,
               cursor: "pointer",
               "&:hover": { backgroundColor: "#F9FAFB" },
               display: "flex",
@@ -126,10 +127,10 @@ const ProcessedContactUsForm = () => {
             }}
           >
             <div className="flex flex-col">
-              <span className="font-medium text-[#16151C]">
+              <span className="font-light text-[16px] text-[#16151C]">
                 {item?.firstName} {item?.lastName}
               </span>
-              <span className="text-sm text-[#16151C]">{item?.email || "N/A"}</span>
+              <span className="text-[12px] font-light text-[#A2A1A8]">{item?.email || "N/A"}</span>
             </div>
             <ChevronRightIcon className="w-5 h-5 text-[#16151C]" />
           </ListItemButton>
@@ -223,32 +224,38 @@ const ProcessedContactUsForm = () => {
             </div>
             <Divider sx={{ borderColor: "#E5E7EB", mb: 3 }} />
 
-            {/* Main Grid - Two Column Key-Value Layout */}
-            <div className="grid grid-cols-[auto_1fr] gap-y-3 gap-x-12 text-sm">
-              <span className="text-[#16151C] font-medium">Name:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.firstName} {selectedLink?.lastName}</span>
+           {/* Main Grid - Two Column Key-Value Layout */}
+                <div className="grid grid-cols-[auto_1fr] gap-y-3 gap-x-20 text-[14px]">
+                  <span className="text-[#16151C] font-light">Name:</span>
+                  <span className="text-[#16151C] font-medium">
+                    {selectedLink?.firstName} {selectedLink?.lastName}
+                  </span>
 
-              <span className="text-[#16151C] font-medium">Submission Date:</span>
-              <span className="text-[#16151C] font-semibold">{formatDateTime(selectedLink?.submittedAt)?.date || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Submission Date:</span>
+                  <span className="text-[#16151C] font-medium">
+                    {formatDateTime(selectedLink?.submittedAt)?.date || "N/A"}
+                  </span>
 
-              <span className="text-[#16151C] font-medium">Submission Time:</span>
-              <span className="text-[#16151C] font-semibold">{formatDateTime(selectedLink?.submittedAt)?.time || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Submission Time:</span>
+                  <span className="text-[#16151C] font-medium">
+                    {formatDateTime(selectedLink?.submittedAt)?.time || "N/A"}
+                  </span>
 
-              <span className="text-[#16151C] font-medium">Email:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.email || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Email:</span>
+                  <span className="text-[#16151C] font-medium">{selectedLink?.email || "N/A"}</span>
 
-              <span className="text-[#16151C] font-medium">Country:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.country?.label || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Country:</span>
+                  <span className="text-[#16151C] font-medium">{selectedLink?.country?.label || "N/A"}</span>
 
-              <span className="text-[#16151C] font-medium">Phone:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.phone || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Phone:</span>
+                  <span className="text-[#16151C] font-medium">{selectedLink?.phone || "N/A"}</span>
 
-              <span className="text-[#16151C] font-medium">Graduation Year:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.graduationYear || "N/A"}</span>
+                  <span className="text-[#16151C] font-light">Graduation Year:</span>
+                  <span className="text-[#16151C] font-medium">{selectedLink?.graduationYear || "N/A"}</span>
 
-              <span className="text-[#16151C] font-medium">Message:</span>
-              <span className="text-[#16151C] font-semibold">{selectedLink?.howCanWeSupport || "N/A"}</span>
-            </div>
+                  <span className="text-[#16151C] font-light">Message:</span>
+                  <span className="text-[#16151C] font-medium leading-[30px]">{selectedLink?.howCanWeSupport || "N/A"}</span>
+                </div>
 
             {/* Footer Buttons */}
             <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
@@ -262,7 +269,7 @@ const ProcessedContactUsForm = () => {
                   borderColor: "#D1D5DB",
                   fontSize: "16px",
                   fontWeight: 500,
-                  color: "#374151",
+                  color: "#16151C",
                   textTransform: "none",
                   "&:hover": {
                     borderColor: "#9CA3AF",

@@ -68,10 +68,10 @@ export const CourseTabs = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                  className={`px-6 py-3 text-[16px]  transition-colors duration-200 border-b-2 ${
                     activeTab === tab.id
-                      ? "text-blue-600 border-blue-600"
-                      : "text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300"
+                      ? "text-[#4071B6] border-[#4071B6] font-semibold"
+                      : "text-[#16151C] font-light border-transparent hover:hover:border-gray-300"
                   }`}
                 >
                   {tab.label}

@@ -19,8 +19,8 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
   const [classMonths, setClassMonths] = useState([])
 
   const months = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ]
 
   // ---------- Utilities ----------
@@ -152,8 +152,41 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                 border: "1px solid #A2A1A833",
                 borderRadius: "12px !important",
                 backgroundColor: "#A2A1A80D",
+                overflow: "hidden",
+
               }}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="px-6 py-4">
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
+                aria-controls={`panel-class-${index}-content`}
+                id={`panel-class-${index}`}
+                className="px-6 py-4 hover:bg-gray-50"
+                sx={{
+                  minHeight: "60px !important", // collapsed height
+                  maxHeight: "60px",
+                  "&.Mui-expanded": {
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
+                    "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
+                      color: "#4071B6",
+                    },
+                  },
+                  "& .MuiAccordionSummary-content": {
+                    margin: 0,
+                    my: 0,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                  "& .MuiAccordionSummary-content.Mui-expanded": {
+                    margin: 0,
+                    my: 0,
+                  },
+                  "& .MuiAccordionSummary-expandIconWrapper": {
+                    marginLeft: "16px",
+                    color: "#4071B6"
+                  },
+                }}
+              >
                 <div className="flex w-full justify-between items-center summary-text">
                   <div className="text-lg font-light">
                     {months[item.month - 1]} {item.year} Classes Taught
@@ -162,16 +195,16 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
                 <Box sx={{ borderTop: "1px solid #e5e7eb" }}>
-                  <Grid container sx={{ fontWeight: 500, p: 1.5 }}>
+                  <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 300, color: "#A2A1A8", p: 1.5, fontSize: '14px' }}>
                     <Grid item xs={4}>Date</Grid>
                     <Grid item xs={4}>Time</Grid>
                     <Grid item xs={4}>Subject</Grid>
                   </Grid>
                   {filterClassesByMonth(tutorData.classes, item.month, item.year).map((cls, idx) => (
-                    <Grid container key={idx} sx={{ p: 1.5, borderBottom: "1px solid #eee" }}>
-                      <Grid item xs={4}>{formatDate(cls.sessionInfo.date)}</Grid>
-                      <Grid item xs={4}>{formatTimeTo12Hour(cls.sessionInfo.time)}</Grid>
-                      <Grid item xs={4}>{cls.subject}</Grid>
+                    <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
+                      <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(cls.sessionInfo.date)}</div></Grid>
+                      <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatTimeTo12Hour(cls.sessionInfo.time)}</div></Grid>
+                      <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{cls.subject}</div></Grid>
                     </Grid>
                   ))}
                 </Box>
@@ -196,21 +229,53 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                 boxShadow: "none",
                 border: "1px solid #A2A1A833",
                 borderRadius: "12px !important",
+                overflow: "hidden",
                 backgroundColor: "#A2A1A80D",
               }}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} className="px-6 py-4">
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon fontSize="inherit" className="ml-1 !text-3xl text-[#16151C]" />}
+                aria-controls={`panel-balance-${index}-content`}
+                id={`panel-balance-${index}`}
+                className="px-6 py-4 hover:bg-gray-50"
+                sx={{
+                  minHeight: "60px !important", // collapsed height
+                  maxHeight: "60px",
+                  "&.Mui-expanded": {
+                    minHeight: "60px !important",
+                    maxHeight: "60px",
+                    "& .summary-text, & .MuiAccordionSummary-expandIconWrapper svg": {
+                      color: "#4071B6",
+                    },
+                  },
+                  "& .MuiAccordionSummary-content": {
+                    margin: 0,
+                    my: 0,
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                  },
+                  "& .MuiAccordionSummary-content.Mui-expanded": {
+                    margin: 0,
+                    my: 0,
+                  },
+                  "& .MuiAccordionSummary-expandIconWrapper": {
+                    marginLeft: "16px",
+                    color: "#4071B6"
+                  },
+                }}
+              >
                 <div className="flex w-full justify-between items-center summary-text">
                   <div className="text-lg font-light">
-                    {months[item.month - 1]} {item.year} Earnings
+                    {months[item.month - 1]} {item.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    £ {calculateMonthlyEarnings(earningsHistory, item.month, item.year)}
+                    $ {calculateMonthlyEarnings(earningsHistory, item.month, item.year)}
                   </div>
                 </div>
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: "#f9fafb", p: 2 }}>
-                <Box sx={{ borderTop: "1px solid #e5e7eb" }}>
-                  <Grid container sx={{ fontWeight: 500, p: 1.5 }}>
+                <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
+                  <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 300, color: "#A2A1A8", p: 1.5,fontSize: '14px' }}>
                     <Grid item xs={4}>Date</Grid>
                     <Grid item xs={4}>Time</Grid>
                     <Grid item xs={4}>Amount</Grid>
@@ -218,10 +283,10 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                   {filterInvoicesByMonth(earningsHistory, item.month, item.year).map((inv, idx) => {
                     const dateObj = inv.createdAt.toDate()
                     return (
-                      <Grid container key={idx} sx={{ p: 1.5, borderBottom: "1px solid #eee" }}>
-                        <Grid item xs={4}>{formatDate(dateObj)}</Grid>
-                        <Grid item xs={4}>{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</Grid>
-                        <Grid item xs={4}>£ {inv.amount}</Grid>
+                    <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
+                        <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(dateObj)}</div></Grid>
+                        <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
+                        <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">$ {inv.amount}</div></Grid>
                       </Grid>
                     )
                   })}

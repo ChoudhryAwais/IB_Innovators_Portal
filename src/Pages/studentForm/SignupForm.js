@@ -93,7 +93,7 @@ function SignupForm({ student, setCreateAccountModal }) {
 
   return (
     <div className="bg-white p-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-semibold text-[#16151C]">
           Register Student
         </h2>
@@ -126,10 +126,30 @@ function SignupForm({ student, setCreateAccountModal }) {
         label="Full Name"
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
-        sx={{ mb: 4 }}
+        variant="outlined"
+        InputLabelProps={{ shrink: true, required: false }}
+        InputProps={{
+          notched: false, // 🔑 removes the notch in the outline
+        }}
+        sx={{
+          mb: 4,
+          "& .MuiInputLabel-root": {
+            position: "relative",
+            marginBottom: "6px",
+            transform: "none",
+            fontWeight: 300,
+            color: "#A2A1A8",
+            fontSize: "12px",
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            "& fieldset": {
+              borderColor: "#A2A1A833",
+            }
+          },
+        }}
       />
 
-      {/* Email */}
       <TextField
         required
         fullWidth
@@ -137,10 +157,30 @@ function SignupForm({ student, setCreateAccountModal }) {
         label="Email Address"
         value={signUpEmail}
         onChange={(e) => setSignUpEmail(e.target.value)}
-        sx={{ mb: 4 }}
+        variant="outlined"
+        InputLabelProps={{ shrink: true, required: false }}
+        InputProps={{
+          notched: false,
+        }}
+        sx={{
+          mb: 4,
+          "& .MuiInputLabel-root": {
+            position: "relative",
+            marginBottom: "6px",
+            transform: "none",
+            fontWeight: 300,
+            color: "#A2A1A8",
+            fontSize: "12px",
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            "& fieldset": {
+              borderColor: "#A2A1A833",
+            }
+          },
+        }}
       />
 
-      {/* Password */}
       <TextField
         required
         fullWidth
@@ -148,8 +188,30 @@ function SignupForm({ student, setCreateAccountModal }) {
         label="Password"
         value={signUpPassword}
         onChange={(e) => setSignUpPassword(e.target.value)}
-        sx={{ mb: 7 }}
+        variant="outlined"
+        InputLabelProps={{ shrink: true, required: false }}
+        InputProps={{
+          notched: false,
+        }}
+        sx={{
+          mb: 7,
+          "& .MuiInputLabel-root": {
+            position: "relative",
+            marginBottom: "6px",
+            transform: "none",
+            fontWeight: 300,
+            color: "#A2A1A8",
+            fontSize: "12px",
+          },
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+            "& fieldset": {
+              borderColor: "#A2A1A833",
+            }
+          },
+        }}
       />
+
 
       {/* Actions */}
       <div className="flex gap-3 justify-end">
@@ -164,6 +226,10 @@ function SignupForm({ student, setCreateAccountModal }) {
             fontSize: "16px",
             fontWeight: 300,
             color: "#16151C",
+            "&:hover": {
+              borderColor: "#9CA3AF",
+              backgroundColor: "#F9FAFB",
+            },
           }}
         >
           Cancel
@@ -178,9 +244,10 @@ function SignupForm({ student, setCreateAccountModal }) {
               height: 50,
               borderRadius: "10px",
               backgroundColor: "#4071B6",
-              fontSize: "20px",
-              fontWeight: 300,
+              fontSize: "16px",
+              fontWeight: 400,
               color: "#FFFFFF",
+              textTransform: "none",
             }}
           >
             Registering...
@@ -194,9 +261,10 @@ function SignupForm({ student, setCreateAccountModal }) {
               height: 50,
               borderRadius: "10px",
               backgroundColor: "#4071B6",
-              fontSize: "20px",
-              fontWeight: 300,
+              fontSize: "16px",
+              fontWeight: 400,
               color: "#FFFFFF",
+              textTransform: "none",
             }}
           >
             Register

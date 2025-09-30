@@ -100,8 +100,8 @@ const ProcessedStudentForm = () => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6 w-full">
       <div className="mb-6 pb-2 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-[#16151C]">Processed Forms</h2>
-        <span className="text-sm text-[#16151C]">
+        <h2 className="text-[20px] font-semibold text-[#16151C]">Processed Forms</h2>
+        <span className="text-[14px] font-light text-[#A2A1A8]">
           {String(studentData?.length).padStart(2, "0")} Forms
         </span>
       </div>
@@ -117,6 +117,7 @@ const ProcessedStudentForm = () => {
             sx={{
               borderRadius: "8px",
               p: 1,
+              pl: 0,
               cursor: "pointer",
               "&:hover": { backgroundColor: "#F9FAFB" },
               display: "flex",
@@ -125,10 +126,10 @@ const ProcessedStudentForm = () => {
             }}
           >
             <div className="flex flex-col">
-              <span className="font-medium text-[#16151C]">
+              <span className="font-light text-[16px] text-[#16151C]">
                 {student?.userDetails?.firstName} {student?.userDetails?.lastName}
               </span>
-              <span className="text-sm text-[#16151C]">
+              <span className="text-[12px] font-light text-[#A2A1A8]">
                 {student?.userDetails?.email || "N/A"}
               </span>
             </div>
@@ -229,116 +230,207 @@ const ProcessedStudentForm = () => {
 
 
             {/* ---------------- Section 1 ---------------- */}
-            {selectedLink?.type === "new" ? (
-              <>
-                {/* Column Layout */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm border-b border-gray-200 pb-6">
-                  {/* Column 1 */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                    <span className="text-[#16151C]">Program:</span>
-                    <span className="font-semibold">{selectedLink?.program || "N/A"}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-36 text-sm border-b border-gray-200 pb-6">
+              {/* Column 1 */}
+              <div className="space-y-2 text-[14px]">
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-40">Program:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.program || "N/A"}
+                  </span>
+                </div>
 
-                    <span className="text-[#16151C]">Class:</span>
-                    <span className="font-semibold">{selectedLink?.class || "N/A"}</span>
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-40">Class:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.class || "N/A"}
+                  </span>
+                </div>
 
-                    <span className="text-[#16151C]">Subjects:</span>
-                    <div className="font-semibold space-y-1">
-                      {selectedLink?.selectedSubjects?.map((sub, i) => (
-                        <div key={i}>{sub}</div>
-                      ))}
-                    </div>
-
-                    <span className="text-[#16151C]">Tutoring Support:</span>
-                    <span className="font-semibold">{selectedLink?.tutoringSupport || "N/A"}</span>
-
-                    <span className="text-[#16151C]">Package:</span>
-                    <span className="font-semibold">{selectedLink?.package || "N/A"}</span>
-
-                    <span className="text-[#16151C]">Hours:</span>
-                    <span className="font-semibold">{selectedLink?.hours || "N/A"}</span>
-                  </div>
-
-                  {/* Column 2 */}
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-                    <span className="text-[#16151C]">Lesson Dates:</span>
-                    <div className="font-semibold space-y-1">
-                      {selectedLink?.lessonDates?.map((date, i) => (
-                        <div key={i}>{date}</div>
-                      ))}
-                    </div>
-
-                    <span className="text-[#16151C]">Time Zone:</span>
-                    <span className="font-semibold">{selectedLink?.timeZone || "N/A"}</span>
-
-                    <span className="text-[#16151C]">Support Needed:</span>
-                    <span className="font-semibold">
-                      {selectedLink?.guidanceAndSupport?.needed ? "Yes" : "No"}
-                    </span>
-
-                    <span className="text-[#16151C]">Total Cost:</span>
-                    <span className="font-semibold">£ {selectedLink?.totalCost || "N/A"}</span>
-
-                    <span className="text-[#16151C]">Cost After Support:</span>
-                    <span className="font-semibold">
-                      £ {selectedLink?.totalCostAfterGuidanceAndSupport || "N/A"}
-                    </span>
+                <div className="flex items-start">
+                  <span className="text-[#16151C] font-light w-40">Subjects:</span>
+                  <div className="font-medium text-[#16151C] space-y-1">
+                    {selectedLink?.selectedSubjects?.map((sub, i) => (
+                      <div key={i}>{sub}</div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Guidance & Support Details */}
-                {selectedLink?.guidanceAndSupport?.needed && (
-                  <div className="mt-8 border-b border-gray-200 pb-6">
-                    <h3 className="font-bold text-[#16151C] mb-4">
-                      Guidance & Support Details
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                      <div className="space-y-2">
-                        <div className="flex">
-                          <span className="text-[#16151C] w-44">Assignment Types:</span>
-                          <span className="font-semibold">
-                            {selectedLink?.guidanceAndSupport?.assignmentType?.join(", ") || "N/A"}
-                          </span>
-                        </div>
-                        <div className="flex">
-                          <span className="text-[#16151C] w-44">Query:</span>
-                          <span className="font-semibold">
-                            {selectedLink?.guidanceAndSupport?.query || "N/A"}
-                          </span>
-                        </div>
-                        <div className="flex">
-                          <span className="text-[#16151C] w-44">Requested Hours:</span>
-                          <span className="font-semibold">
-                            {selectedLink?.guidanceAndSupport?.hours || "N/A"}
-                          </span>
-                        </div>
-                      </div>
-                      {/* <div className="space-y-2">
-                                        
-                                      </div> */}
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-40">Tutoring Support:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.tutoringSupport || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-40">Package:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.package || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-40">Hours Requested:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.hours || "N/A"}
+                  </span>
+                </div>
+              </div>
+
+
+              {/* Column 2 */}
+              <div className="space-y-2 text-[14px]">
+                <div className="flex items-start">
+                  <span className="text-[#16151C] font-light w-52">Lesson Dates:</span>
+                  <div className="font-medium text-[#16151C] space-y-1">
+                    {selectedLink?.lessonDates?.map((date, i) => (
+                      <div key={i}>{date}</div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-52">Time Zone:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.timeZone || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-52">Support Needed:</span>
+                  <span className="font-medium text-[#16151C]">
+                    {selectedLink?.guidanceAndSupport?.needed ? "Yes" : "No"}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-52">Total Cost:</span>
+                  <span className="font-medium text-[#16151C]">
+                    £ {selectedLink?.totalCost || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex">
+                  <span className="text-[#16151C] font-light w-52">Total Cost After Support:</span>
+                  <span className="font-medium text-[#16151C]">
+                    £ {selectedLink?.totalCostAfterGuidanceAndSupport || "N/A"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* ---------------- Section 2 ---------------- */}
+            {selectedLink?.guidanceAndSupport?.needed && (
+              <div className="mt-8 border-b border-gray-200 pb-6 text-sm">
+                <h3 className="font-medium text-[#16151C] mb-4">
+                  Guidance & Support Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[14px]">
+                  <div className="space-y-2">
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44 font-light">
+                        Assignment Types:
+                      </span>
+                      <span className="font-medium text-[#16151C]">
+                        {selectedLink?.guidanceAndSupport?.assignmentType?.join(", ") ||
+                          "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44 font-light">Query:</span>
+                      <span className="font-medium text-[#16151C]">
+                        {selectedLink?.guidanceAndSupport?.query || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="text-[#16151C] w-44 font-light">
+                        Requested Hours:
+                      </span>
+                      <span className="font-medium text-[#16151C]">
+                        {selectedLink?.guidanceAndSupport?.hours || "N/A"}
+                      </span>
                     </div>
                   </div>
-                )}
-              </>
-            ) : (
-              <>
-                {/* Show all the "Other Plans" and Guidance form fields like in code2 */}
-                <div className="space-y-4 text-sm">
-                  <div>
-                    <span className="text-[#16151C]">Submission Date: </span>
-                    <span className="font-semibold">{formatDateTime(selectedLink?.submittedAt)?.date}</span>
-                  </div>
-                  <div>
-                    <span className="text-[#16151C]">Submission Time: </span>
-                    <span className="font-semibold">{formatDateTime(selectedLink?.submittedAt)?.time}</span>
-                  </div>
-                  <div>
-                    <span className="text-[#16151C]">Pricing Plan: </span>
-                    <span className="font-semibold">{selectedLink?.chosenPricingPlan}</span>
-                  </div>
-                  {/* … repeat all details from code2 in the same styled layout */}
                 </div>
-              </>
+              </div>
             )}
+
+            {/* ---------------- Section 3 ---------------- */}
+            <div className="mt-8 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+                {/* Student Info */}
+                <div>
+                  <h3 className="font-medium text-[#16151C] mb-4">Student Info</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.firstName}{" "}
+                        {selectedLink?.userDetails?.lastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Email: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.email}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Parent Info */}
+                <div>
+                  <h3 className="font-medium text-[#16151C] mb-4">Parent Info</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.parentFirstName}{" "}
+                        {selectedLink?.userDetails?.parentLastName}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Email: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.parentEmail}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Relation: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.userDetails?.relation || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Billing Info */}
+                <div>
+                  <h3 className="font-medium text-[#16151C] mb-4">Billing Info</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-[#16151C] font-light">Name: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.billingInfo?.fullName || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Email: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.billingInfo?.email || "N/A"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[#16151C] font-light">Contact No: </span>
+                      <span className="text-[#16151C] font-light">
+                        {selectedLink?.billingInfo?.contactNo || "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* ---------------- Footer Buttons ---------------- */}
             <div className="flex gap-3 justify-end mt-8 pt-6 border-t border-gray-200">
@@ -349,10 +441,10 @@ const ProcessedStudentForm = () => {
                   width: 166,
                   height: 50,
                   borderRadius: "8px",
-                  borderColor: "#D1D5DB",
+                  borderColor: "#A2A1A833",
                   fontSize: "16px",
                   fontWeight: 500,
-                  color: "#374151",
+                  color: "#16151C",
                   textTransform: "none",
                   "&:hover": {
                     borderColor: "#9CA3AF",
