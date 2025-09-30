@@ -186,16 +186,16 @@ export default function EditBlog({ item, onClose }) {
 
       <div className="p-6">
         <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
-          <h1 className="text-2xl font-semibold text-[#16151C] mb-6">
+          <h1 className="text-[24px] font-semibold text-[#16151C]  mb-6">
             {blog?.id ? "Edit Blog" : "Create a New Blog"}
           </h1>
 
           {/* Image Upload Section */}
           <div className="mb-6">
-            <label className="block text-base font-medium text-gray-700 mb-2">
+            <label className="block text-[16px] font-light text-[#16151C] mb-2">
               Choose an image for a Blog
             </label>
-            <div className="w-[510px] border-2 border-dashed border-[#4071B6] rounded-lg p-8 text-center hover:border-gray-400 transition-colors relative">
+            <div className="w-[510px] h-[133px] border-2 border-dashed border-[#4071B6] rounded-[10px] p-8 pt-3 text-center hover:border-gray-400 transition-colors relative">
               {image ? (
                 <div className="relative inline-block">
                   <img
@@ -214,25 +214,16 @@ export default function EditBlog({ item, onClose }) {
                 </div>
               ) : (
                 <label className="flex flex-col items-center justify-center cursor-pointer ">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      />
+                  <div className="flex items-center justify-center mx-auto mb-2">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="40" height="40" rx="10" fill="#4071B6" />
+                      <path d="M24.8125 17.0127C25.0818 16.7968 25.4755 16.8401 25.6914 17.1094C26.6919 18.3575 27.291 19.9434 27.291 21.667C27.2909 25.6939 24.026 28.958 19.999 28.958C15.972 28.958 12.7072 25.6939 12.707 21.667C12.707 19.9434 13.3062 18.3575 14.3066 17.1094C14.5225 16.8401 14.9162 16.7968 15.1855 17.0127C15.4546 17.2286 15.4979 17.6214 15.2822 17.8906C14.453 18.9251 13.957 20.2376 13.957 21.667C13.9572 25.0036 16.6624 27.708 19.999 27.708C23.3356 27.708 26.0409 25.0036 26.041 21.667C26.041 20.2376 25.5451 18.9251 24.7158 17.8906C24.5002 17.6214 24.5434 17.2286 24.8125 17.0127ZM19.999 11.042C20.1648 11.042 20.3242 11.1074 20.4414 11.2246L23.7744 14.5576C24.0185 14.8017 24.0185 15.1983 23.7744 15.4424C23.5304 15.6862 23.1347 15.6861 22.8906 15.4424L20.624 13.1758V23.333C20.624 23.6782 20.3442 23.958 19.999 23.958C19.6538 23.958 19.374 23.6782 19.374 23.333V13.1758L17.1074 15.4424C16.8634 15.6861 16.4676 15.6862 16.2236 15.4424C15.9796 15.1983 15.9796 14.8017 16.2236 14.5576L19.5566 11.2246C19.6739 11.1074 19.8333 11.042 19.999 11.042Z" fill="white" />
                     </svg>
                   </div>
-                  <p className="text-[#16151C] text-sm mb-2">
-                    Drag & Drop or <span className="text-blue-600 underline">choose image</span> to upload
+                  <p className="text-[#16151C] text-[14px] font-light mb-2">
+                    Drag & Drop or <span className="text-[#4071B6]">choose image</span> to upload
                   </p>
-                  <p className="text-[11px] text-[#A2A1A8]">Supported formats: Jpeg, png</p>
+                  <p className="text-[11px] font-light text-[#A2A1A8]">Supported formats: Jpeg, png</p>
                   <input type="file" onChange={handleImageChange} className="hidden" />
                 </label>
               )}
@@ -241,25 +232,25 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog URL */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
               Blog URL (without spacing, separate with "-"):
             </label>
             <input
               value={url}
               type="text"
               onChange={(e) => setUrl(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="revise-to-thrive"
             />
           </div>
 
           {/* Tags Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Select Tags</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Select Tags</label>
             <div className="relative">
               <select
                 onChange={handleSelectChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white"
+                className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white"
                 value=""
               >
                 <option value="">Select</option>
@@ -295,22 +286,22 @@ export default function EditBlog({ item, onClose }) {
           {/* Written By and Reading Duration */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Written By</label>
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Written By</label>
               <input
                 value={writtenBy}
                 type="text"
                 onChange={(e) => setWrittenBy(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="John Doe"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Reading Duration</label>
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Reading Duration</label>
               <input
                 value={duration}
                 type="text"
                 onChange={(e) => setDuration(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="Minutes"
               />
             </div>
@@ -318,26 +309,26 @@ export default function EditBlog({ item, onClose }) {
 
           {/* SEO Tags */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog SEO Tags</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Blog SEO Tags</label>
             <textarea
               value={seoTags}
               onChange={(e) => setSeoTags(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              className="w-full h-[100px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
               placeholder="Enter seo Tags"
             />
           </div>
 
           {/* Blog Header */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog Header (50 - 60 characters)</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Blog Header (50 - 60 characters)</label>
             <input
               value={header}
               type="text"
               onChange={(e) => setHeader(e.target.value)}
               minLength={50}
               maxLength={60}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="Enter blog header"
             />
             <div className="text-right text-sm text-gray-500 mt-1">{header?.length || 0}/60</div>
@@ -345,7 +336,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog Description */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
               Blog Description (70 - 160 characters)
             </label>
             <textarea
@@ -354,7 +345,7 @@ export default function EditBlog({ item, onClose }) {
               minLength={70}
               maxLength={160}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              className="w-full h-[100px] px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
               placeholder="Enter blog description"
             />
             <div className="text-right text-sm text-gray-500 mt-1">{description?.length || 0}/160</div>
@@ -362,7 +353,7 @@ export default function EditBlog({ item, onClose }) {
 
           {/* Blog Summary */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-[#A2A1A8] mb-2">Blog Summary</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">Blog Summary</label>
             <div className="rounded-lg overflow-hidden">
               <ReactQuill
                 value={editorContent}
@@ -406,6 +397,7 @@ export default function EditBlog({ item, onClose }) {
                 borderRadius: "0.5rem",
                 px: 3,
                 py: 1,
+                fontweight: 600,
                 textTransform: "none",
                 backgroundColor: "#4071B6",
                 "&:hover": {

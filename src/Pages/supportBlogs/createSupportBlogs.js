@@ -144,64 +144,53 @@ export default function CreateSupportBlog() {
       <div className="p-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           {/* Title changes based on create/edit */}
-          <h1 className="text-2xl font-bold text-gray-900 mb-8">
+          <h1 className="text-[24px] font-semibold text-[#16151C] mb-8">
             {blog?.id ? "Edit Blog" : "Create a new Blog"}
           </h1>
 
           <div className="space-y-6">
             {/* Select Category */}
-            <Autocomplete
-              freeSolo
-              options={categories}
-              value={viewers}
-              onChange={(event, newValue) => {
-                if (typeof newValue === "string") {
-                  setViewers(newValue); // typed value
-                } else if (newValue) {
-                  setViewers(newValue);
-                } else {
-                  setViewers("");
-                }
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Select Category"
-                  fullWidth
-                  sx={{
-                    background: "rgba(255,255,255,0.3)",
-                    borderRadius: "0.5rem",
-                  }}
-                />
-              )}
-            />
+            {/* Select Category */}
+            <div className="mb-6">
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
+                Select Category
+              </label>
+              <input
+                value={viewers}
+                type="text"
+                onChange={(e) => setViewers(e.target.value)}
+                className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg 
+               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="Enter or choose a category"
+                list="categories"
+              />
+              <datalist id="categories">
+                {categories.map((item) => (
+                  <option key={item} value={item} />
+                ))}
+              </datalist>
+            </div>
 
-            {/*  Subcategory */}
-            <Autocomplete
-              freeSolo
-              options={subCategories}
-              value={subCategory}
-              onChange={(event, newValue) => {
-                if (typeof newValue === "string") {
-                  setSubCategory(newValue); // typed value
-                } else if (newValue) {
-                  setSubCategory(newValue);
-                } else {
-                  setSubCategory("");
-                }
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Select Subcategory"
-                  fullWidth
-                  sx={{
-                    background: "rgba(255,255,255,0.3)",
-                    borderRadius: "0.5rem",
-                  }}
-                />
-              )}
-            />
+            {/* Select Subcategory */}
+            <div className="mb-6">
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
+                Select Subcategory
+              </label>
+              <input
+                value={subCategory}
+                type="text"
+                onChange={(e) => setSubCategory(e.target.value)}
+                className="w-full h-[56px] px-3 py-2 border border-gray-300 rounded-lg 
+               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="Enter or choose a subcategory"
+                list="subCategories"
+              />
+              <datalist id="subCategories">
+                {subCategories.map((item) => (
+                  <option key={item} value={item} />
+                ))}
+              </datalist>
+            </div>
 
             {/* Blog Header */}
             {/* <TextField
@@ -213,7 +202,7 @@ export default function CreateSupportBlog() {
 
             {/* Blog Body */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-2">
                 Blog Body
               </label>
               <ReactQuill
@@ -265,6 +254,7 @@ export default function CreateSupportBlog() {
                 py: 1,
                 textTransform: "none",
                 backgroundColor: "#4071B6",
+                fontweight: 600,
                 "&:hover": {
                   backgroundColor: "#1e40af",
                 },
