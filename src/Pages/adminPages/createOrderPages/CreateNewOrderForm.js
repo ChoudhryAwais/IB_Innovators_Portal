@@ -13,6 +13,9 @@ import toast from "react-hot-toast"
 import { Autocomplete, Box, MenuItem, Select, TextField, FormControl, Button } from "@mui/material"
 import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
 import { useEffect } from "react"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"; // optional (if you want MUI icon)
+import { InputAdornment } from "@mui/material";
+
 
 const graduationYears = ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"]
 
@@ -171,13 +174,13 @@ export function CreateNewOrderForm({ item, handleClose }) {
   }
 
   //added to bypass price problem
-useEffect(() => {
-  if (tutorHourlyRate && requestedHours) {
-    setPrice(Number(tutorHourlyRate) * Number(requestedHours))
-  } else {
-    setPrice(null)
-  }
-}, [tutorHourlyRate, requestedHours])
+  useEffect(() => {
+    if (tutorHourlyRate && requestedHours) {
+      setPrice(Number(tutorHourlyRate) * Number(requestedHours))
+    } else {
+      setPrice(null)
+    }
+  }, [tutorHourlyRate, requestedHours])
 
   return (
     <div className="w-4xl mx-auto h-full overflow-auto p-6"
@@ -186,7 +189,7 @@ useEffect(() => {
       }}
     >
       <div className="">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Create Job</h1>
+        <h1 className="text-[20px] font-semibold text-[#16151C] mb-4">Create Job</h1>
 
         {/* Student Info Section */}
         <div className="flex items-start gap-4 mb-6">
@@ -197,11 +200,11 @@ useEffect(() => {
 
           {/* Info */}
           <div className="grid grid-cols-2 gap-y-1 gap-x-4">
-            <div className="font-medium text-gray-900">Student Name:</div>
-            <div className="font-semibold text-gray-900">{item?.userName}</div>
-
-            <div className="text-gray-600">Email:</div>
-            <div className="text-gray-900">{item?.email}</div>
+            <div className="font-light text-[14px] text-[#16151C]">Student Name:</div>
+            <div className="font-medium text-text-[14px] text-[#16151C]">{item?.userName}</div>
+            
+            <div className="font-light text-[14px] text-[#16151C]">Email:</div>
+            <div className="font-medium text-text-[14px] text-[#16151C]">{item?.email}</div>
           </div>
         </div>
       </div>
@@ -209,32 +212,32 @@ useEffect(() => {
       <div className="mb-8">
         {/* Heading + Legends in one row */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Select your Timing Slots</h2>
+          <h2 className="text-[20px] font-semibold text-[#16151C]">Select your Timing Slots</h2>
           <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-gray-600">Selected by Tutor</span>
+              <div className="w-3 h-3 bg-[#57AD85] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">Selected by Tutor</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span className="text-gray-600">Selected by Student</span>
+              <div className="w-3 h-3 bg-[#F49342] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">Selected by Student</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
-              <span className="text-gray-600">Tutor and student selected same slot</span>
+              <div className="w-3 h-3 bg-[#00C8FF] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">Tutor and student selected same slot</span>
             </div>
           </div>
         </div>
 
 
         {/* Time Slots Grid */}
-        <div className="rounded-lg overflow-hidden bg-[#A2A1A80D]">
+        <div className="rounded-[10px] overflow-hidden bg-[#A2A1A80D]">
           <div className="grid grid-cols-8 ">
-            <div className="p-3 font-medium text-gray-700 text-left">Time & Day</div>
+            <div className="p-3 font-semibold text-[14px] text-[#16151C]">Time & Day</div>
             {days.map((day) => (
               <div
                 key={day}
-                className="p-3 font-medium text-gray-700 text-center"
+                className="p-3 font-semibold text-[14px] text-[#16151C] text-center"
               >
                 {day}
               </div>
@@ -243,7 +246,7 @@ useEffect(() => {
 
           {timePeriods.map((time, timeIndex) => (
             <div key={time} className="grid grid-cols-8">
-              <div className="p-3 text-gray-700 text-left">
+              <div className="p-3 text-[#16151C] font-light text-[14px] text-left">
                 {time.replace("PM", " pm").replace("AM", " am")}
               </div>
               {days.map((day) => (
@@ -253,14 +256,26 @@ useEffect(() => {
                 >
                   <div
                     onClick={() => handleSlotClick(day, time)}
-                    className={`w-6 h-6 border-2 rounded cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                      ? "bg-blue-500 border-blue-500"
+                    className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
+                      ? "bg-[#57AD85]"
                       : "bg-white hover:border-gray-400"
                       }`}
                   >
                     {isSelected(day, time) && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <svg
+                          className="w-6 h-6"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
+                            fill="white"
+                          />
+                        </svg>
                       </div>
                     )}
                   </div>
@@ -272,20 +287,33 @@ useEffect(() => {
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Additional Information</h2>
+        <h2 className="text-[20px] font-semibold text-[#16151C] mb-6">Additional Information</h2>
 
         {/* Row 1: Subject & Tutor Tier */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Subject</label>
             <FormControl fullWidth size="small">
               <Select
                 value={subject}
                 required
                 onChange={(e) => setSubject(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833]"
-                sx={{ height: 56 }}
+                className="bg-white h-14"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Subject</span>
@@ -300,14 +328,27 @@ useEffect(() => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tutor Tier</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Tutor Tier</label>
             <FormControl fullWidth size="small">
               <Select
                 value={tutorTier}
                 onChange={(e) => setTutorTier(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833]"
-                sx={{ height: 56 }}
+                className="bg-white h-14"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Tier</span>
@@ -324,14 +365,27 @@ useEffect(() => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           {/** All selects have fixed width 245px **/}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Requested Hours</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Requested Hours</label>
             <FormControl size="small" className="h-14 w-[245px]">
               <Select
                 value={requestedHours}
                 onChange={(e) => setRequestedHours(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                sx={{ height: 56 }}
+                className="bg-white h-14 "
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Hours</span>
@@ -349,15 +403,28 @@ useEffect(() => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Session</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Session</label>
             <FormControl size="small" className="h-14 w-[245px]">
               <Select
                 value={session}
                 required
                 onChange={(e) => setSession(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                sx={{ height: 56 }}
+                className="bg-white h-14  w-[245px]"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Session</span>
@@ -369,15 +436,28 @@ useEffect(() => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Year of Graduation</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Year of Graduation</label>
             <FormControl size="small" className="h-14 w-[245px]">
               <Select
                 value={yearOfGraduation}
                 required
                 onChange={(e) => setYearOfGraduation(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                sx={{ height: 56 }}
+                className="bg-white h-14 w-[245px]"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Year</span>
@@ -392,7 +472,7 @@ useEffect(() => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Country</label>
             <Autocomplete
               id="country-select-demo"
               options={countries}
@@ -401,6 +481,7 @@ useEffect(() => {
                 setCountry(newValue?.label)
                 setCountryObject(newValue)
               }}
+              IconComponent={KeyboardArrowDownIcon}
               autoHighlight
               getOptionLabel={(option) => option.label}
               renderOption={(props, option) => (
@@ -421,10 +502,27 @@ useEffect(() => {
                   placeholder="Country"
                   required
                   size="small"
-                  className="h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
+                  className="h-14  w-[245px]"
                   InputProps={{
                     ...params.InputProps,
-                    sx: { height: 56 },
+                    sx: {
+                      height: 56,
+                      borderRadius: "10px",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#A2A1A833", // custom border color
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#16151C", // border on hover
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#16151C", // border on focus
+                      },
+                    },
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ marginRight: -4 }}>
+                        <KeyboardArrowDownIcon />
+                      </InputAdornment>
+                    ),
                   }}
                 />
               )}
@@ -432,12 +530,32 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Row 3: Time Zone, Start Date, Tutor Hourly Rate */}
-        <div className="flex gap-3 mb-6">
+        {/* Row 3: Time Zone, Start Date, Other (conditionally), Tutor Hourly Rate */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          {/* Time Zone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Time Zone</label>
             <FormControl size="small" className="h-14 w-[245px]">
-              <Select value={gmt} onChange={(e) => setGmt(e.target.value)} displayEmpty className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]" sx={{ height: 56 }}>
+              <Select
+                value={gmt}
+                onChange={(e) => setGmt(e.target.value)}
+                displayEmpty
+                className="bg-white h-14 w-[245px]"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
+              >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Time</span>
                 </MenuItem>
@@ -450,16 +568,30 @@ useEffect(() => {
             </FormControl>
           </div>
 
+          {/* Start Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Start Date</label>
             <FormControl size="small" className="h-14 w-[245px]">
               <Select
                 required
                 value={startDateType}
                 onChange={handleStartDateTypeChange}
                 displayEmpty
-                className="bg-white h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                sx={{ height: 56 }}
+                className="bg-white h-14  w-[245px]"
+                sx={{
+                  height: 56,
+                  borderRadius: "10px",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#A2A1A833", // custom border color
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on hover
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#16151C", // border on focus
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
               >
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Date</span>
@@ -468,21 +600,42 @@ useEffect(() => {
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
             </FormControl>
-            {startDateType === "Other" && (
+          </div>
+
+          {/* Other Date (conditionally rendered as its own column) */}
+          {startDateType === "Other" && (
+            <div>
+              <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Start Date</label>
               <TextField
                 type="date"
                 required
                 value={customStartDate}
                 onChange={handleCustomStartDateChange}
                 size="small"
-                className="mt-2 h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                InputProps={{ sx: { height: 56 } }}
-              />
-            )}
-          </div>
+                className="h-14 w-[245px]"
+                InputProps={{
+                  sx: {
+                    height: 56,
+                    borderRadius: "10px",
+                    "& .MuiOutlinedInput-notchedOutline": {
 
+                      borderColor: "#A2A1A833", // custom border color
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C", // border on hover
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C", // border on focus
+                    },
+                  }
+                }}
+              />
+            </div>
+          )}
+
+          {/* Tutor Hourly Rate */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tutor Hourly Rate (USD)*</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Tutor Hourly Rate (USD)*</label>
             <div className="relative w-[245px]">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
               <TextField
@@ -492,12 +645,28 @@ useEffect(() => {
                 onChange={(e) => setTutorHourlyRate(e.target.value)}
                 required
                 size="small"
-                className="pl-8 h-14 rounded-lg border border-[#A2A1A833] w-[245px]"
-                InputProps={{ sx: { paddingLeft: "2rem", height: 56 } }}
+                className="pl-8 h-14  w-[245px]"
+                InputProps={{
+                  sx: {
+                    paddingLeft: "2rem", height: 56,
+                    borderRadius: "10px",
+
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A2A1A833", // custom border color
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C", // border on hover
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C", // border on focus
+                    },
+                  }
+                }}
               />
             </div>
           </div>
         </div>
+
       </div>
 
 
@@ -512,7 +681,7 @@ useEffect(() => {
             height: 50,
             textTransform: "none",
             fontSize: "16px",
-            fontWeight: 500,
+            fontWeight: 400,
             borderRadius: "8px",
             padding: "12px 32px",
             color: "#16151C",
@@ -535,12 +704,12 @@ useEffect(() => {
             height: 50,
             textTransform: "none",
             fontSize: "16px",
-            fontWeight: 500,
-            borderRadius: "8px",
+            fontWeight: 600,
+            borderRadius: "10px",
             padding: "12px 32px",
-            backgroundColor: "#2563eb",
+            backgroundColor: "#4071B6",
             "&:hover": {
-              backgroundColor: "#1d4ed8",
+              backgroundColor: "#3763a0ff",
             },
           }}
         >

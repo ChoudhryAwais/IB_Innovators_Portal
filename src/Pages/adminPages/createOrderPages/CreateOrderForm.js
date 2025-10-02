@@ -118,64 +118,83 @@ export function CreateOrderForm({ item, handleClose }) {
   }
 
   return (
-    <div className="w-4xl mx-auto h-full overflow-auto p-6 pr-7"
+    <div className="w-4xl mx-auto h-full overflow-auto p-6"
       style={{
         boxSizing: "border-box",
       }}
     >
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
+      {/* Header */}
+      <div className="">
+        <h1 className="text-[20px] font-semibold text-[#16151C] mb-4">
           Order Submission Form <span className="text-gray-500 font-normal">(Course Application)</span>
         </h1>
+
+        {/* Student Info Section */}
+        <div className="flex items-start gap-4 mb-6">
+          {/* Icon */}
+          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+            <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
+          </div>
+
+          {/* Info */}
+          <div className="grid grid-cols-2 gap-y-1 gap-x-4">
+            <div className="font-light text-[14px] text-[#16151C]">Student Name:</div>
+            <div className="font-medium text-[14px] text-[#16151C]">
+              {item?.studentInformation?.userName}
+            </div>
+
+            <div className="font-light text-[14px] text-[#16151C]">Email:</div>
+            <div className="font-medium text-[14px] text-[#16151C]">
+              {item?.studentInformation?.email}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-start gap-4 mb-8">
-        <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-          <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
-        </div>
-        <div className="grid grid-cols-2 gap-y-1 gap-x-8">
-          <div className="text-gray-600">Student Name:</div>
-          <div className="font-semibold text-gray-900">{item?.studentInformation?.userName}</div>
-          <div className="text-gray-600">Email:</div>
-          <div className="text-gray-900">{item?.studentInformation?.email}</div>
-        </div>
-      </div>
-
+      {/* Time Slots Section */}
       <div className="mb-8">
+        {/* Heading + Legends */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">Select your Timing Slots</h2>
+          <h2 className="text-[20px] font-semibold text-[#16151C]">Select your Timing Slots</h2>
           <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-gray-600">Selected by Tutor</span>
+              <div className="w-3 h-3 bg-[#57AD85] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">Selected by Tutor</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span className="text-gray-600">Selected by Student</span>
+              <div className="w-3 h-3 bg-[#F49342] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">Selected by Student</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
-              <span className="text-gray-600">Tutor and student selected same slot</span>
+              <div className="w-3 h-3 bg-[#00C8FF] rounded-full"></div>
+              <span className="text-[16px] font-light text-[#16151C]">
+                Tutor and student selected same slot
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg overflow-hidden bg-[#A2A1A80D]">
-          <div className="grid grid-cols-8 ">
-            <div className="p-3 font-medium text-gray-700 text-left">Time & Day</div>
+        {/* Time Slots Grid */}
+        <div className="rounded-[10px] overflow-hidden bg-[#A2A1A80D]">
+          {/* Days Header Row */}
+          <div className="grid grid-cols-8">
+            <div className="p-3 font-semibold text-[14px] text-[#16151C] text-left">
+              Time & Day
+            </div>
             {days.map((day) => (
               <div
                 key={day}
-                className="p-3 font-medium text-gray-700 text-center"
+                className="p-3 font-semibold text-[14px] text-[#16151C] text-center"
               >
                 {day}
               </div>
             ))}
           </div>
 
-          {timePeriods.map((time, timeIndex) => (
+          {/* Time Rows */}
+          {timePeriods.map((time) => (
             <div key={time} className="grid grid-cols-8">
-              <div className="p-3 text-gray-700 text-left">
+              <div className="p-3 text-[#16151C] font-light text-[14px] text-left">
                 {time.replace("PM", " pm").replace("AM", " am")}
               </div>
               {days.map((day) => (
@@ -184,14 +203,25 @@ export function CreateOrderForm({ item, handleClose }) {
                   className="p-2 flex justify-center items-center"
                 >
                   <div
-                    className={`w-6 h-6 border-2 rounded cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                      ? "bg-blue-500 border-blue-500"
-                      : "bg-white hover:border-gray-400"
+                    className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time) 
+                      ? "bg-[#F49342]" : "bg-white hover:border-gray-400"
                       }`}
                   >
                     {isSelected(day, time) && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <svg
+                          className="w-6 h-6"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
+                            fill="white"
+                          />
+                        </svg>
                       </div>
                     )}
                   </div>
@@ -200,197 +230,281 @@ export function CreateOrderForm({ item, handleClose }) {
             </div>
           ))}
         </div>
-
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Additional Information</h2>
+        <h2 className="text-[20px] font-semibold text-[#16151C] mb-6">
+          Additional Information
+        </h2>
 
+        {/* Row 1: Subject & Tutor Tier */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-            <div className="relative">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Subject
+            </label>
+            <div className="relative w-full">
               <select
                 value={item?.subject || ""}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
                 disabled
               >
                 <option>{item?.subject}</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tutor Tier</label>
-            <div className="relative">
-              <select
-                value={item?.tutorTier || "Foundation"}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
-                disabled
-              >
-                <option>Foundation</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Requested Hours</label>
-            <div className="relative">
-              <select
-                value={item?.requestedHours || "02"}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
-                disabled
-              >
-                <option>02</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Session</label>
-            <div className="relative">
-              <select
-                value={item?.session || "May Session"}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
-                disabled
-              >
-                <option>May Session</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Year of Graduation</label>
-            <div className="relative">
-              <select
-                value={item?.yearOfGraduation || "2027"}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
-                disabled
-              >
-                <option>2027</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-            <div className="relative">
-              <select
-                value={item?.country || "Pakistan"}
-                className="w-full h-14 px-4 border border-gray-300 rounded-lg bg-white text-gray-900 appearance-none cursor-pointer"
-                disabled
-              >
-                <option>Pakistan</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-3 mb-6">
-          {/* Time Zone */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
-            <div className="relative w-[245px]">
-              <select
-                value={item?.gmt || "GMT - 03:00 pm"}
-                disabled
-                className="w-full h-14 px-4 border border-[#A2A1A833] rounded-lg bg-white text-gray-900 appearance-none cursor-not-allowed"
-              >
-                <option>GMT - 03:00 pm</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 "
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* Start Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Tutor Tier
+            </label>
+            <div className="relative w-full">
+              <select
+                value={item?.tutorTier || "Foundation"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.tutorTier || "Foundation"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: Requested Hours, Session, Year of Graduation, Country */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Requested Hours
+            </label>
+            <div className="relative w-[245px]">
+              <select
+                value={item?.requestedHours || "02"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.requestedHours || "02"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Session
+            </label>
+            <div className="relative w-[245px]">
+              <select
+                value={item?.session || "May Session"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.session || "May Session"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Year of Graduation
+            </label>
+            <div className="relative w-[245px]">
+              <select
+                value={item?.yearOfGraduation || "N/A"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.yearOfGraduation || "N/A"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Country
+            </label>
+            <div className="relative w-[245px]">
+              <select
+                value={item?.country || "N/A"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.country || "N/A"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3: Time Zone, Start Date, Tutor Hourly Rate */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Time Zone
+            </label>
+            <div className="relative w-[245px]">
+              <select
+                value={item?.gmt || "N/A"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
+                disabled
+              >
+                <option>{item?.gmt || "N/A"}</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 "
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Start Date
+            </label>
             <div className="relative w-[245px]">
               <select
                 value={item?.startDate || "Immediately"}
+                className="w-full h-14 px-4 bg-white text-gray-900 appearance-none cursor-not-allowed rounded-[10px] border border-[#A2A1A833]"
                 disabled
-                className="w-full h-14 px-4 border border-[#A2A1A833] rounded-lg bg-white text-gray-900 appearance-none cursor-not-allowed"
               >
-                <option>Immediately</option>
+                <option>{item?.startDate || "Immediately"}</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 "
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* Tutor Hourly Rate */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
               Tutor Hourly Rate (USD)*
             </label>
             <div className="relative w-[245px]">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                $
+              </span>
               <input
                 type="number"
                 value={tutorHourlyRate}
-                onChange={(e) => {
-                  const rate = parseFloat(e.target.value) || 0
-                  setTutorHourlyRate(rate)
-                  setPrice(rate * (item?.requestedHours || 0))
-                }}
-
-                className="w-full h-14 pl-8 pr-4 border border-[#A2A1A833] rounded-lg bg-white text-gray-900 "
+                disabled
+                className="w-full h-14 pl-8 pr-4 bg-white text-gray-900 rounded-[10px] border border-[#A2A1A833] cursor-not-allowed"
                 placeholder="Tutor Rate"
               />
             </div>
           </div>
         </div>
-
       </div>
+
 
       <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
         <Button
@@ -426,12 +540,12 @@ export function CreateOrderForm({ item, handleClose }) {
             height: 50,
             textTransform: "none",
             fontSize: "16px",
-            fontWeight: 500,
+            fontWeight: 600,
             borderRadius: "8px",
             padding: "12px 32px",
-            backgroundColor: "#2563eb",
+            backgroundColor: "#4071B6",
             "&:hover": {
-              backgroundColor: "#1d4ed8",
+              backgroundColor: "#3763a0ff",
             },
           }}
         >

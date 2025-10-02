@@ -155,11 +155,11 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
         >
           <div className="flex flex-col mb-2 pb-4">
             {/* Heading stays left */}
-            <h2 className="text-2xl font-bold text-gray-900">View Applicants Details</h2>
+            <h2 className="text-[20px] font-semibold text-[#16151C]">View Applicants Details</h2>
 
             {/* Centered content */}
             <div className="mt-4 flex flex-col items-center">
-              <p className="text-[18px] font-semibold  mb-1">
+              <p className="font-semibold text-[18px] text-[#16151C]  mb-1">
                 Order ID: <span>{order?.id}</span>
               </p>
               <h3 className="text-[30px] font-light">{order?.subject}</h3>
@@ -168,7 +168,7 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
 
 
           <div className="mb-8">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Applicants</h4>
+            <h4 className="text-[20px] font-semibold text-[#16151C] mb-4">Applicants</h4>
 
             <div className="space-y-6">
               {/* Student Info */}
@@ -178,14 +178,14 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-y-1 gap-x-16">
-                  <div className="text-gray-600">Student Name:</div>
-                  <div className="font-semibold text-gray-900">{order?.studentInformation?.userName}</div>
+                  <div className="font-light text-[14px] text-[#16151C]">Student Name:</div>
+                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.studentInformation?.userName}</div>
 
-                  <div className="text-gray-600">Year of Graduation:</div>
-                  <div className="font-semibold text-gray-900">{order?.yearOfGraduation}</div>
+                  <div className="font-light text-[14px] text-[#16151C]">Year of Graduation:</div>
+                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.yearOfGraduation}</div>
 
-                  <div className="text-gray-600">Time Zone:</div>
-                  <div className="font-semibold text-gray-900">{order?.timeZone}</div>
+                  <div className="font-light text-[14px] text-[#16151C]">Time Zone:</div>
+                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.timeZone}</div>
                 </div>
               </div>
 
@@ -196,11 +196,11 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-y-1 gap-x-4">
-                  <div className="text-gray-600">Tutor Name:</div>
-                  <div className="font-semibold text-gray-900">{tutor?.tutorDetails?.userName}</div>
+                  <div className="font-light text-[14px] text-[#16151C]">Tutor Name:</div>
+                  <div className="font-medium text-text-[14px] text-[#16151C]">{tutor?.tutorDetails?.userName}</div>
 
-                  <div className="text-gray-600">Email:</div>
-                  <div className="text-gray-900">{tutor?.tutorDetails?.email}</div>
+                  <div className="font-light text-[14px] text-[#16151C]">Email:</div>
+                  <div className="font-medium text-text-[14px] text-[#16151C]">{tutor?.tutorDetails?.email}</div>
                 </div>
               </div>
             </div>
@@ -209,19 +209,19 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-semibold text-gray-900">Time Available</h4>
+              <h4 className="text-[20px] font-semibold text-[#16151C]">Time Available</h4>
               <div className="flex items-center gap-6 text-sm">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-600">Selected by Tutor</span>
+                  <div className="w-3 h-3 bg-[#57AD85] rounded-full"></div>
+                  <span className="text-[16px] font-light text-[#16151C]">Selected by Tutor</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <span className="text-gray-600">Selected by Student</span>
+                  <div className="w-3 h-3 bg-[#F49342] rounded-full"></div>
+                  <span className="text-[16px] font-light text-[#16151C]">Selected by Student</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-cyan-500 rounded-full"></div>
-                  <span className="text-gray-600">Tutor and student selected same slot</span>
+                  <div className="w-3 h-3 bg-[#00C8FF] rounded-full"></div>
+                  <span className="text-[16px] font-light text-[#16151C]">Tutor and student selected same slot</span>
                 </div>
               </div>
             </div>
@@ -229,11 +229,11 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
             <div className="rounded-lg overflow-hidden bg-[#A2A1A80D]">
               {/* Header row */}
               <div className="grid grid-cols-8">
-                <div className="p-3 font-semibold text-gray-700 text-left">Time & Day</div>
+                <div className="p-3 font-semibold text-[14px] text-[#16151C] text-left">Time & Day</div>
                 {days.map((day) => (
                   <div
                     key={day}
-                    className="p-3 font-semibold text-gray-700 text-center"
+                    className="p-3 font-semibold text-[14px] text-[#16151C] text-center"
                   >
                     {day}
                   </div>
@@ -244,7 +244,7 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
               {timePeriods.map((time) => (
                 <div key={time} className="grid grid-cols-8">
                   {/* Time label */}
-                  <div className="p-3 text-gray-700 text-left">
+                  <div className="p-3 text-[#16151C] font-light text-[14px] text-left">
                     {time.replace("PM", " pm").replace("AM", " am")}
                   </div>
 
@@ -255,19 +255,31 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
                       className="p-2 flex justify-center items-center"
                     >
                       <div
-                        className={`w-6 h-6 border-2 rounded transition-all duration-200
-              ${isSelected(day, time) && isRequired(day, time)
-                            ? "bg-cyan-500 border-cyan-500"
+                        className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] transition-all duration-200
+                          ${isSelected(day, time) && isRequired(day, time)
+                            ? "bg-[#00C8FF] "
                             : isSelected(day, time)
-                              ? "bg-green-500 border-green-500"
+                              ? "bg-[#57AD85] "
                               : isRequired(day, time)
-                                ? "bg-orange-500 border-orange-500"
-                                : "bg-white hover:border-gray-400 border-gray-300"
+                                ? "bg-[#F49342]"
+                                : "bg-white hover:border-gray-400"
                           }`}
                       >
                         {(isSelected(day, time) || isRequired(day, time)) && (
                           <div className="w-full h-full flex items-center justify-center">
-                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                            <svg
+                              className="w-6 h-6"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
+                                fill="white"
+                              />
+                            </svg>
                           </div>
                         )}
                       </div>
@@ -280,9 +292,9 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
 
           {tutor?.supportingInformation && (
             <div className="mb-8">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">Supporting Information</h4>
+              <h4 className="text-[12px] font-light text-[#A2A1A8] mb-2">Supporting Information</h4>
               <div className="border rounded-lg p-4">
-                <p className="text-gray-700">{tutor?.supportingInformation}</p>
+                <p className="text-[#16151C] font-light text-[16px]">{tutor?.supportingInformation}</p>
               </div>
             </div>
           )}
@@ -320,12 +332,12 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
                 height: '50px',
                 textTransform: "none",
                 fontSize: "16px",
-                fontWeight: 500,
+                fontWeight: 600,
                 borderRadius: "8px",
                 padding: "12px 32px",
-                backgroundColor: "#2563eb",
+                backgroundColor: "#4071B6",
                 "&:hover": {
-                  backgroundColor: "#1d4ed8",
+                  backgroundColor: "#3763a0ff",
                 },
                 "&:disabled": {
                   opacity: 0.5,
