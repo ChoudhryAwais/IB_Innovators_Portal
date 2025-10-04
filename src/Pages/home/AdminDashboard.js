@@ -127,12 +127,6 @@ const AdminDashboard = () => {
     { month: "Dec", tutors: 0, students: 0 },
   ]
 
-  const totalsFormsData = [
-    { name: "Courses Forms", value: 52.1, key: "courses" },
-    { name: "Student Forms", value: 22.8, key: "students" },
-    { name: "Tutor Forms", value: 13.9, key: "tutors" },
-    { name: "Contact Us Forms", value: 11.2, key: "contact" },
-  ]
 
   const CHART_COLORS = {
     students: "#F49342",
@@ -145,6 +139,28 @@ const AdminDashboard = () => {
     tutors: "#F49342",
     contact: "#E94234",
   }
+
+  const totalCourseForms = requestCoursesFormsCount + pendingRequestCoursesFormsCount + revisionCoursesFormsCount + pendingRevisionCoursesFormsCount + upcomingCoursesFormsCount + pendingUpcomingCoursesFormsCount;
+  const totalStudentForms = studentFormsCount + pendingStudentFormsCount;
+  const totalTutorForms = tutorFormsCount + pendingTutorFormsCount;
+  const totalContactUsForms = contactUsFormsCount + pendingContactUsFormsCount;
+
+  const totalPendingForms = pendingStudentFormsCount + pendingTutorFormsCount +
+    pendingRequestCoursesFormsCount + pendingRevisionCoursesFormsCount +
+    pendingUpcomingCoursesFormsCount + pendingContactUsFormsCount;
+
+  const totalProcessedForms = (studentFormsCount + tutorFormsCount +
+    requestCoursesFormsCount + revisionCoursesFormsCount + contactUsFormsCount +
+    upcomingCoursesFormsCount);
+
+  const totalForms = totalPendingForms + totalProcessedForms;
+
+  const totalsFormsData = [
+    { name: "Courses Forms", value: (totalCourseForms / totalForms) * 100, key: "courses" },
+    { name: "Student Forms", value: (totalStudentForms / totalForms) * 100, key: "students" },
+    { name: "Tutor Forms", value: (totalTutorForms / totalForms) * 100, key: "tutors" },
+    { name: "Contact Us Forms", value: (totalContactUsForms / totalForms) * 100, key: "contact" },
+  ]
 
   return (
     <TopHeadingProvider firstMessage={`Welcome ${userDetails?.name || "User"}`} secondMessage="Good Morning">
@@ -239,7 +255,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[16px] font-light mb-1 text-[#16151C] lg:w-44">Active Student/Tutors</span>
                       </div>
-                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">70</div>
+                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">{"N/A"}</div>
                     </div>
                     <div className="text-right flex flex-col items-end">
                       <div className="bg-[#FECACA0D] rounded-[5px] w-[54px] h-[26px] flex justify-center items-center gap-2 text-red-500 text-sm font-medium">
@@ -266,7 +282,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[16px] font-light mb-1 text-[#16151C]">Courses Form</span>
                       </div>
-                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">{requestCoursesFormsCount || 40}</div>
+                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">{totalCourseForms || "N/A"}</div>
                     </div>
                     <div className="text-right flex flex-col items-end">
                       <div className="bg-[#30BE820D] rounded-[5px] w-[54px] h-[26px] flex justify-center items-center gap-2 text-green-500 text-sm font-medium">
@@ -287,7 +303,7 @@ const AdminDashboard = () => {
           {/* RIGHT: Donut */}
           <div className="w-full lg:w-1/3 min-w-0">
             <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col lg:h-[331px]">
-              <h3 className="font-semibold mb-4 text-gray-900 items-start">Totals Forms (250)</h3>
+              <h3 className="font-semibold mb-4 text-gray-900 items-start">Totals Forms ({totalForms})</h3>
 
               <div className="w-full flex flex-col sm:flex-row  items-center gap-4">
                 <div className="flex-shrink-0 lg:w-[120px] lg:h-[120px] sm:w-40 sm:h-40 ">
@@ -302,6 +318,8 @@ const AdminDashboard = () => {
                         stroke="transparent"
                         paddingAngle={1.5}
                         cornerRadius={3}
+                        startAngle={90}
+                        endAngle={-270}
                       >
                         {totalsFormsData.map((entry) => (
                           <Cell key={entry.key} fill={CHART_COLORS2[entry.key]} />
@@ -318,7 +336,7 @@ const AdminDashboard = () => {
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: CHART_COLORS2[item.key] }}></div>
                         <span className="font-light text-[#16151C] text-[12px] truncate">{item.name}</span>
                       </div>
-                      <span className="font-semibold text-[#16151C] text-[12px]">{item.value}%</span>
+                      <span className="font-semibold text-[#16151C] text-[12px]">{item.value.toFixed(1)}%</span>
                     </div>
                   ))}
                 </div>
@@ -328,11 +346,11 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-2 gap-2 w-full mt-8">
                 <div className="border-1 border-[#A2A1A833] rounded-lg p-2">
                   <div className="font-light text-[14px] text-start">Total Pending Forms</div>
-                  <div className="text-[16px] font-semibold ml-2">204</div>
+                  <div className="text-[16px] font-semibold ml-2">{totalPendingForms}</div>
                 </div>
                 <div className="border-1 border-[#A2A1A833] rounded-lg p-2">
                   <div className="font-light text-[14px] text-start">Total Processed Forms</div>
-                  <div className="text-[16px] font-semibold ml-2">46</div>
+                  <div className="text-[16px] font-semibold ml-2">{totalProcessedForms}</div>
                 </div>
               </div>
             </div>

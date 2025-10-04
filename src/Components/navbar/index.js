@@ -268,7 +268,7 @@ const NavBar = () => {
       {isMobile && (
         <button 
           onClick={toggleNavBar} 
-          className="h-[50px] w-[50px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center navbar-toggle"
+          className="h-[40px] w-[40px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center navbar-toggle"
         >
           <FontAwesomeIcon
             icon={isNavBarOpen ? faTimes : faBars}
@@ -305,7 +305,7 @@ const NavBar = () => {
       {/* Navbar content */}
       <div className={`
         ${isMobile 
-          ? `fixed top-0 right-0 h-auto bg-white z-50 transition-transform duration-300 ease-in-out ${
+          ? `fixed p-1 top-0 right-0 h-auto bg-white z-50 transition-transform duration-300 ease-in-out ${
               isNavBarOpen ? 'translate-x-0' : 'translate-x-full'
             }` 
           : 'relative'

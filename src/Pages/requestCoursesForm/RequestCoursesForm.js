@@ -18,6 +18,8 @@ import ProcessedRequestCoursesForm from "./ProcessedRequestCoursesForm"
 import { toast } from "react-hot-toast"
 import { Button, ListItemButton } from "@mui/material"
 import CustomModal from "../../Components/CustomModal/CustomModal"
+import Stack from "@mui/material/Stack";
+
 
 const RequestCoursesForm = () => {
   const { isUserLoggedIn, setIsUserLoggedIn, setUserType, setUserDetails, userType } =
@@ -106,6 +108,26 @@ const RequestCoursesForm = () => {
     return `${formattedTime} - ${formattedDate}`
   }
 
+
+  const getVisiblePages = (currentPage, totalPages, maxVisible = 4) => {
+    let startPage = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
+    let endPage = startPage + maxVisible - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(endPage - maxVisible + 1, 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  const visiblePages = getVisiblePages(currentPage, Math.ceil(contactUsSubmissions?.length / itemsPerPage));
+
+
   return (
     <div className="min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -129,7 +151,7 @@ const RequestCoursesForm = () => {
                 sx={{
                   borderRadius: "8px",
                   p: 1,
-                  p:0,
+                  p: 0,
                   cursor: "pointer",
                   "&:hover": {
                     backgroundColor: "#F9FAFB",
@@ -154,6 +176,80 @@ const RequestCoursesForm = () => {
             <div className="text-center text-[#16151C] pb-4 mb-2">No Pending Forms</div>
           )}
         </div>
+
+        {contactUsSubmissions?.length > itemsPerPage && (
+          <div className="mt-6 flex items-center justify-center px-4 py-3 bg-white">
+            <Stack direction="row" spacing={1} alignItems="center">
+              {/* Previous button */}
+              <Button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+                sx={{ minWidth: '32px', padding: '4px' }}
+              >
+                <svg
+                  width="6"
+                  height="12"
+                  viewBox="0 0 6 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M5.46849 11.5856C5.79194 11.3269 5.84438 10.8549 5.58562 10.5315L1.96044 5.99997L5.58562 1.46849C5.84438 1.14505 5.79194 0.673077 5.46849 0.41432C5.14505 0.155562 4.67308 0.208004 4.41432 0.53145L0.414321 5.53145C0.19519 5.80536 0.19519 6.19458 0.414321 6.46849L4.41432 11.4685C4.67308 11.7919 5.14505 11.8444 5.46849 11.5856Z"
+                    fill="#16151C"
+                  />
+                </svg>
+              </Button>
+
+              {/* Page numbers */}
+              {visiblePages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  sx={{
+                    width: page === currentPage ? 35 : 32,
+                    minWidth: 'unset',
+                    height: 36,
+                    borderRadius: page === currentPage ? '8px' : '50px',
+                    padding: '7px 12px',
+                    gap: '10px',
+                    borderWidth: page === currentPage ? 1 : 0,
+                    border: page === currentPage ? '1px solid #4071B6' : 'none',
+                    background: '#FFFFFF',
+                    color: page === currentPage ? '#4071B6' : '#16151C',
+                    fontWeight: page === currentPage ? 600 : 300,
+                    fontSize: '14px',
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
+
+              {/* Next button */}
+              <Button
+                disabled={currentPage === Math.ceil(contactUsSubmissions?.length / itemsPerPage)}
+                onClick={() => setCurrentPage(currentPage + 1)}
+                sx={{ minWidth: '32px', padding: '4px' }}
+              >
+                <svg
+                  width="6"
+                  height="12"
+                  viewBox="0 0 6 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M0.531506 11.5856C0.20806 11.3269 0.155619 10.8549 0.414376 10.5315L4.03956 5.99997L0.414376 1.46849C0.155618 1.14505 0.208059 0.673077 0.531506 0.41432C0.854952 0.155562 1.32692 0.208004 1.58568 0.53145L5.58568 5.53145C5.80481 5.80536 5.80481 6.19458 5.58568 6.46849L1.58568 11.4685C1.32692 11.7919 0.854953 11.8444 0.531506 11.5856Z"
+                    fill="#16151C"
+                  />
+                </svg>
+              </Button>
+            </Stack>
+          </div>
+        )}
 
         <ProcessedRequestCoursesForm />
       </div>

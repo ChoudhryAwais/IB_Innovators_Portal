@@ -103,12 +103,12 @@ export function ManageSubjects() {
   const displayedSessions = subjects?.slice(startIndex, endIndex);
 
   return (
-    <div className="p-6">
-      <div className="flex-1 mt-0 mb-2 p-6 rounded-lg border border-[#A2A1A833] bg-white/50">
+    <div className="p-4 sm:p-6">
+      <div className="flex-1 mt-0 mb-2 p-4 sm:p-6 rounded-lg border border-[#A2A1A833] bg-white/50">
 
         {/* Header Row */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
             Subjects ({subjects?.length || 0})
           </h2>
 
@@ -117,8 +117,8 @@ export function ManageSubjects() {
             onClick={() => setOpenDialog(true)}
             sx={{
               backgroundColor: "#4071B6",
-              width: "250px",
-              height: "50px",
+              width: { xs: "100%", sm: "250px" },
+              height: { xs: "44px", sm: "50px" },
               "&:hover": { backgroundColor: "#427ac9ff" },
               color: "white",
               px: 3,
@@ -126,7 +126,7 @@ export function ManageSubjects() {
               borderRadius: "0.5rem",
               fontWeight: 500,
               textTransform: "none",
-              fontSize: "16px",
+              fontSize: { xs: "14px", sm: "16px" },
             }}
           >
             + Add a new subject
@@ -134,10 +134,22 @@ export function ManageSubjects() {
         </div>
 
         {/* Subjects List */}
-        <List>
+        <List sx={{ padding: { xs: 0, sm: 1 } }}>
           {displayedSessions.map((subject) => (
-            <ListItem key={subject}>
-              <ListItemText primary={subject} />
+            <ListItem 
+              key={subject}
+              sx={{
+                padding: { xs: '12px 8px', sm: '16px' }
+              }}
+            >
+              <ListItemText 
+                primary={subject} 
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    fontSize: { xs: '14px', sm: '16px' }
+                  }
+                }}
+              />
               <ListItemSecondaryAction>
                 {/* Action buttons can go here later if needed */}
               </ListItemSecondaryAction>
@@ -153,20 +165,36 @@ export function ManageSubjects() {
                 count={Math.ceil(subjects?.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handleChangePage}
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    fontSize: { xs: '12px', sm: '14px' },
+                    minWidth: { xs: '32px', sm: '36px' },
+                    height: { xs: '32px', sm: '36px' },
+                  }
+                }}
               />
             </Stack>
           </div>
         )}
 
         {/* Create Subject Modal */}
-        {/* Create Subject Modal */}
-        <CustomModal open={openDialog} onClose={() => setOpenDialog(false)}>
+        <CustomModal 
+          open={openDialog} 
+          onClose={() => setOpenDialog(false)}
+          PaperProps={{
+            sx: {
+              width: { xs: "90%", sm: "500px" },
+              maxWidth: { xs: "400px", sm: "500px" },
+              margin: { xs: "20px", sm: "auto" }
+            },
+          }}
+        >
           {/* Title */}
-          <h2 className="text-xl font-semibold text-start text-[#16151C] mb-7">
+          <h2 className="text-lg sm:text-xl font-semibold text-start text-[#16151C] mb-4 sm:mb-7">
             Add New Subject
           </h2>
 
-          <Divider sx={{ borderColor: "#E5E7EB", mb: 5 }} />
+          <Divider sx={{ borderColor: "#E5E7EB", mb: 3, sm: 5 }} />
 
           {/* Input Field */}
           <TextField
@@ -175,11 +203,12 @@ export function ManageSubjects() {
             onChange={(e) => setNewSubject(e.target.value)}
             label="Enter Subject Name"
             fullWidth
-            sx={{ mb: 7 }}
+            sx={{ mb: 4, sm: 7 }}
+            size="small"
           />
 
           {/* Buttons */}
-          <div className="flex gap-3 justify-end">
+          <div className="flex flex-col sm:flex-row gap-3 justify-end">
             <Button
               onClick={() => {
                 setNewSubject("")
@@ -187,11 +216,11 @@ export function ManageSubjects() {
               }}
               variant="outlined"
               sx={{
-                width: 166,
-                height: 50,
+                width: { xs: "100%", sm: 166 },
+                height: { xs: 44, sm: 50 },
                 borderRadius: "10px",
                 borderColor: "#A2A1A833",
-                fontSize: "16px",
+                fontSize: { xs: "14px", sm: "16px" },
                 fontWeight: 300,
                 color: "#16151C",
                 textTransform: "none",
@@ -203,11 +232,11 @@ export function ManageSubjects() {
               variant="contained"
               onClick={handleAddSubject}
               sx={{
-                width: 166,
-                height: 50,
+                width: { xs: "100%", sm: 166 },
+                height: { xs: 44, sm: 50 },
                 borderRadius: "10px",
                 backgroundColor: "#4071B6",
-                fontSize: "20px",
+                fontSize: { xs: "16px", sm: "20px" },
                 fontWeight: 300,
                 color: "#FFFFFF",
                 textTransform: "none",

@@ -198,6 +198,22 @@ export default function Blogs() {
   const upcomingStartIndex = (upcomingCurrentPage - 1) * upcomingItemsPerPage
   const upcomingEndIndex = upcomingStartIndex + upcomingItemsPerPage
   const upcomingDisplayedSessions = blogs?.slice(upcomingStartIndex, upcomingEndIndex)
+  
+  const getVisiblePages = (currentPage, totalPages, maxVisible = 4) => {
+    let startPage = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
+    let endPage = startPage + maxVisible - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(endPage - maxVisible + 1, 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
   return (
     <TopHeadingProvider>
@@ -346,18 +362,82 @@ export default function Blogs() {
 
           {/* Pagination */}
           {blogs?.length > upcomingItemsPerPage && (
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6 px-4 py-3 bg-white">
-              <div className="text-sm text-gray-700 text-center md:text-left">
-                Showing {upcomingStartIndex + 1} to {Math.min(upcomingEndIndex, blogs.length)} out of {blogs.length} records
-              </div>
-              <Stack spacing={2} className="items-center">
-                <Pagination
-                  count={Math.ceil(blogs?.length / upcomingItemsPerPage)}
-                  page={upcomingCurrentPage}
-                  onChange={handleUpcomingChangePage}
-                  color="primary"
-                  size="small"
-                />
+            <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-center gap-4 px-4 py-3 bg-white">
+              
+
+              {/* Pagination buttons */}
+              <Stack direction="row" spacing={1} alignItems="center" className="justify-center md:justify-end">
+                {/* Previous button */}
+                <Button
+                  disabled={upcomingCurrentPage === 1}
+                  onClick={() => setUpcomingCurrentPage(upcomingCurrentPage - 1)}
+                  sx={{ minWidth: '32px', padding: '4px' }}
+                >
+                  <svg
+                    width="6"
+                    height="12"
+                    viewBox="0 0 6 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M5.46849 11.5856C5.79194 11.3269 5.84438 10.8549 5.58562 10.5315L1.96044 5.99997L5.58562 1.46849C5.84438 1.14505 5.79194 0.673077 5.46849 0.41432C5.14505 0.155562 4.67308 0.208004 4.41432 0.53145L0.414321 5.53145C0.19519 5.80536 0.19519 6.19458 0.414321 6.46849L4.41432 11.4685C4.67308 11.7919 5.14505 11.8444 5.46849 11.5856Z"
+                      fill="#16151C"
+                    />
+                  </svg>
+                </Button>
+
+                {/* Page numbers */}
+                {getVisiblePages(
+                  upcomingCurrentPage,
+                  Math.ceil(blogs.length / upcomingItemsPerPage),
+                  4
+                ).map((page) => (
+                  <Button
+                    key={page}
+                    onClick={() => setUpcomingCurrentPage(page)}
+                    sx={{
+                      width: page === upcomingCurrentPage ? 35 : 32,
+                      minWidth: 'unset',
+                      height: 36,
+                      borderRadius: page === upcomingCurrentPage ? '8px' : '50px',
+                      padding: '7px 12px',
+                      gap: '10px',
+                      borderWidth: page === upcomingCurrentPage ? 1 : 0,
+                      border: page === upcomingCurrentPage ? '1px solid #4071B6' : 'none',
+                      background: '#FFFFFF',
+                      color: page === upcomingCurrentPage ? '#4071B6' : '#16151C',
+                      fontWeight: page === upcomingCurrentPage ? 600 : 300,
+                      fontSize: '14px',
+                    }}
+                  >
+                    {page}
+                  </Button>
+                ))}
+
+                {/* Next button */}
+                <Button
+                  disabled={upcomingCurrentPage === Math.ceil(blogs.length / upcomingItemsPerPage)}
+                  onClick={() => setUpcomingCurrentPage(upcomingCurrentPage + 1)}
+                  sx={{ minWidth: '32px', padding: '4px' }}
+                >
+                  <svg
+                    width="6"
+                    height="12"
+                    viewBox="0 0 6 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M0.531506 11.5856C0.20806 11.3269 0.155619 10.8549 0.414376 10.5315L4.03956 5.99997L0.414376 1.46849C0.155618 1.14505 0.208059 0.673077 0.531506 0.41432C0.854952 0.155562 1.32692 0.208004 1.58568 0.53145L5.58568 5.53145C5.80481 5.80536 5.80481 6.19458 5.58568 6.46849L1.58568 11.4685C1.32692 11.7919 0.854953 11.8444 0.531506 11.5856Z"
+                      fill="#16151C"
+                    />
+                  </svg>
+                </Button>
               </Stack>
             </div>
           )}
