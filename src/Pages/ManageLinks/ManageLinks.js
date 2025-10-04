@@ -420,379 +420,391 @@ export default function ManageLinks() {
   const displayedSessions = currentSearched?.slice(startIndex, endIndex);
 
   return (
-    <TopHeadingProvider firstMessage="Manage Links" secondMessage="Show all managed links">
-      <div className="min-h-screen p-6">
-        <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-7">
-          <div className="flex flex-col md:flex-row md:items-stretch md:space-x-4 mb-6">
-            <div className="flex items-center border border-[#A2A1A81A] rounded-[10px] px-3 py-2 flex-1 h-[50px]">
-              <svg
-                className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
-                viewBox="0 0 22 22"
-                fill="#16151C"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
-                />
-              </svg>
-              <input
-                onChange={handleSearch}
-                placeholder="Search"
-                className="flex-1 bg-transparent border-none outline-none text-sm"
+  <TopHeadingProvider firstMessage="Manage Links" secondMessage="Show all managed links">
+    <div className="min-h-screen p-4 sm:p-6">
+      <div className="bg-white border border-[#A2A1A833] rounded-[10px] p-4 sm:p-7">
+        {/* Search and Button Container */}
+        <div className="flex flex-col gap-4 sm:gap-y-4 md:flex-row md:items-stretch md:space-x-4 mb-6">
+          {/* Search Input */}
+          <div className="flex items-center border border-[#A2A1A81A] rounded-[10px] px-3 py-2 flex-1 h-[50px] min-w-0">
+            <svg
+              className="w-[21.5px] h-[21.5px] flex-shrink-0 text-gray-500 mr-2"
+              viewBox="0 0 22 22"
+              fill="#16151C"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M1.75 10.5C1.75 15.3325 5.66751 19.25 10.5 19.25C15.3325 19.25 19.25 15.3325 19.25 10.5C19.25 5.66751 15.3325 1.75 10.5 1.75C5.66751 1.75 1.75 5.66751 1.75 10.5ZM10.5 20.75C4.83908 20.75 0.25 16.1609 0.25 10.5C0.25 4.83908 4.83908 0.25 10.5 0.25C16.1609 0.25 20.75 4.83908 20.75 10.5C20.75 13.0605 19.8111 15.4017 18.2589 17.1982L21.5303 20.4697C21.8232 20.7626 21.8232 21.2374 21.5303 21.5303C21.2374 21.8232 20.7626 21.8232 20.4697 21.5303L17.1982 18.2589C15.4017 19.8111 13.0605 20.75 10.5 20.75Z"
               />
-            </div>
-            <div className="w-full md:w-48">
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() =>
-                  setActive(active === "Active Links" ? "Deactivated Links" : "Active Links")
-                }
-                sx={{
-                  fontWeight: 600,
+            </svg>
+            <input
+              onChange={handleSearch}
+              placeholder="Search"
+              className="flex-1 bg-transparent border-none outline-none text-sm min-w-0"
+            />
+          </div>
+          
+          {/* Toggle Button */}
+          <div className="w-full sm:w-48">
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() =>
+                setActive(active === "Active Links" ? "Deactivated Links" : "Active Links")
+              }
+              sx={{
+                fontWeight: 600,
+                color: "#4071B6",
+                backgroundColor: "#4071B60D",
+                border: "1px solid #4071B6",
+                height: "50px",
+                borderRadius: "10px",
+                padding: 0,
+                textTransform: "none",
+                "&:hover": {
                   color: "#4071B6",
                   backgroundColor: "#4071B60D",
                   border: "1px solid #4071B6",
-                  height: "50px",
-                  borderRadius: "10px",
-                  padding: 0,
-                  textTransform: "none",
-                  "&:hover": {
-                    color: "#4071B6",
-                    backgroundColor: "#4071B60D",
-                    border: "1px solid #4071B6",
-                  },
-                }}
-              >
-                <span className="flex items-center gap-2">
-                  {active === "Active Links" ? "Active Links" : "Deactivated Links"}
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.81934 11.9997V8.76865C4.81934 7.66408 5.71477 6.76865 6.81934 6.76865H18.7689L15.2815 3.28125" stroke="#4071B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M18.7686 12.0003V15.2313C18.7686 16.3359 17.8731 17.2314 16.7686 17.2314H4.81896L8.30636 20.7188" stroke="#4071B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </Button>
-            </div>
-
+                },
+              }}
+            >
+              <span className="flex items-center justify-center gap-2 text-sm sm:text-base">
+                {active === "Active Links" ? "Active Links" : "Deactivated Links"}
+                <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4.81934 11.9997V8.76865C4.81934 7.66408 5.71477 6.76865 6.81934 6.76865H18.7689L15.2815 3.28125" stroke="#4071B6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M18.7686 12.0003V15.2313C18.7686 16.3359 17.8731 17.2314 16.7686 17.2314H4.81896L8.30636 20.7188" stroke="#4071B6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </Button>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              {displayedSessions.map((item, index) => (
-                <div
-                  key={index}
-                  className={`p-4 rounded-lg mb-4  ${link?.id === item?.id ? "bg-[#4071B60D] border-1 border-[#4071B6]" : "bg-[#A2A1A80D]"
-                    }`}
-
-                >
-                  <div className="flex items-center mb-3">
-                    <div className="h-[45px] w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center">
-                      <svg
-                        width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 6H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M6 10H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M6 14H18" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
-                        <path d="M6 18H12" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
-                      </svg>
-                    </div>
-                    <span className="font-semibold text-[#16151C] text-[16px]">{item?.subject}</span>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Left Column - Links List */}
+          <div>
+            {displayedSessions.map((item, index) => (
+              <div
+                key={index}
+                className={`p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 ${
+                  link?.id === item?.id 
+                    ? "bg-[#4071B60D] border-1 border-[#4071B6]" 
+                    : "bg-[#A2A1A80D]"
+                }`}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="h-[40px] w-[40px] sm:h-[45px] sm:w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 6H18" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
+                      <path d="M6 10H18" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
+                      <path d="M6 14H18" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
+                      <path d="M6 18H12" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
                   </div>
-                  <div className="flex justify-between items-end">
-                    <div className="flex flex-col text-sm text-[#16151C] space-y-1">
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-28">Subscription:</span>
-                        <span className="font-medium text-[14px]">#{item?.id}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-28">Student:</span>
-                        <span className="font-medium text-[14px]">{item?.studentName}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-28">Tutor:</span>
-                        <span className="font-medium text-[14px]">{item?.teacherName}</span>
-                      </div>
+                  <span className="font-semibold text-[#16151C] text-[14px] sm:text-[16px] ml-3 truncate">
+                    {item?.subject}
+                  </span>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
+                  <div className="flex flex-col text-sm text-[#16151C] space-y-1 flex-1">
+                    <div className="flex">
+                      <span className="font-light text-[12px] sm:text-[14px] w-20 sm:w-28">Subscription:</span>
+                      <span className="font-medium text-[12px] sm:text-[14px] truncate">#{item?.id}</span>
                     </div>
+                    <div className="flex">
+                      <span className="font-light text-[12px] sm:text-[14px] w-20 sm:w-28">Student:</span>
+                      <span className="font-medium text-[12px] sm:text-[14px] truncate">{item?.studentName}</span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-light text-[12px] sm:text-[14px] w-20 sm:w-28">Tutor:</span>
+                      <span className="font-medium text-[12px] sm:text-[14px] truncate">{item?.teacherName}</span>
+                    </div>
+                  </div>
 
-                    {link?.id !== item?.id && (
-                      <Button
-                        sx={{
-                          fontSize: "12px",
-                          width: "100px",
-                          height: "40px",
-                          borderRadius: "8px",
-                          padding: 0,
-                          fontWeight: "600",
+                  {link?.id !== item?.id && (
+                    <Button
+                      sx={{
+                        fontSize: "12px",
+                        width: "100%",
+                        sm: { width: "100px" },
+                        height: "40px",
+                        borderRadius: "8px",
+                        padding: 0,
+                        fontWeight: "600",
+                        color: "#4071B6",
+                        backgroundColor: "#4071B60D",
+                        border: "1px solid #4071B6",
+                        textTransform: "none",
+                        "&:hover": {
                           color: "#4071B6",
                           backgroundColor: "#4071B60D",
                           border: "1px solid #4071B6",
-                          textTransform: "none",
-                          "&:hover": {
-                            color: "#4071B6",
-                            backgroundColor: "#4071B60D",
-                            border: "1px solid #4071B6",
-                          },
-                        }}
-                        variant="outlined"
-                        onClick={() => setLink(item)}
-                        className="self-end"
-                      >
-                        View Details
-                      </Button>
-                    )}
-                  </div>
-
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => setLink(item)}
+                      className="sm:self-end"
+                    >
+                      View Details
+                    </Button>
+                  )}
                 </div>
-              ))}
+              </div>
+            ))}
 
-              {currentSearched.length === 0 && (
-                <div className="flex-1 text-center text-gray-400 text-2xl">No Students</div>
-              )}
-            </div>
+            {currentSearched.length === 0 && (
+              <div className="flex-1 text-center text-gray-400 text-lg sm:text-2xl py-8">
+                No Students
+              </div>
+            )}
+          </div>
 
-            <div>
-              {Object.values(link).length === 0 ? (
-                <div className="text-center py-20 text-gray-400">
-                  <div className="text-2xl font-light">No Details Available</div>
-                  <div className="text-sm mt-2">Select a link to show details</div>
-                </div>
-              ) : (
-                <>
-                  <div className="bg-[#A2A1A80D] rounded-lg px-6 py-4 h-[518px]">
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="h-[45px] w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z" stroke="#16151C" stroke-width="1.5" stroke-linecap="round" />
-                            <path d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z" stroke="#16151C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                          </svg>
-                        </div>
-                        <span className="font-semibold text-[#16151C] text-[16px]">{link?.subject}</span>
+          {/* Right Column - Details */}
+          <div>
+            {Object.values(link).length === 0 ? (
+              <div className="text-center py-12 sm:py-20 text-gray-400">
+                <div className="text-lg sm:text-2xl font-light">No Details Available</div>
+                <div className="text-xs sm:text-sm mt-2">Select a link to show details</div>
+              </div>
+            ) : (
+              <>
+                <div className="bg-[#A2A1A80D] rounded-lg px-4 sm:px-6 py-4 h-auto sm:h-[518px]">
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-[40px] w-[40px] sm:h-[45px] sm:w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
+                          <path d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z" stroke="#16151C" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </div>
-                      {!link?.studentDeactivated ? (
-                        <Button
-                          sx={{
-                            fontSize: "12px",
-                            width: "150px",
-                            height: "32px",
-                            borderRadius: "4px",
-                            padding: "10px",
-                            fontWeight: "600",
+                      <span className="font-semibold text-[#16151C] text-[14px] sm:text-[16px] truncate">
+                        {link?.subject}
+                      </span>
+                    </div>
+                    
+                    {!link?.studentDeactivated ? (
+                      <Button
+                        sx={{
+                          fontSize: "12px",
+                          width: "100%",
+                          sm: { width: "150px" },
+                          height: "32px",
+                          borderRadius: "4px",
+                          padding: "10px",
+                          fontWeight: "600",
+                          color: "#A81E1E",
+                          backgroundColor: "#A81E1E0D",
+                          border: "1px solid #A81E1E",
+                          minWidth: "unset",
+                          textTransform: "none",
+                          boxSizing: "border-box",
+                          "&:hover": {
                             color: "#A81E1E",
                             backgroundColor: "#A81E1E0D",
                             border: "1px solid #A81E1E",
-                            minWidth: "unset",
-                            textTransform: "none",
-                            boxSizing: "border-box",
-                            "&:hover": {
-                              color: "#A81E1E",
-                              backgroundColor: "#A81E1E0D",
-                              border: "1px solid #A81E1E",
-                            },
-                          }}
-                          variant="outlined"
-                          onClick={() => {
-                            setSelectedLink(link);
-                            setShowDeactivateModal(true);   // 👈 new modal state
-                          }}
-                        >
-                          Deactivate
-                        </Button>
-                      ) : (
-                        (
-                          <div
-                            onClick={() => {
-                              setSelectedLink(link);
-                              setShowDeleteModal(true); // 👈 still opens delete modal
-                            }}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              width: "32px",
-                              height: "32px",
-                              borderRadius: "6px",
-                              cursor: "pointer",
-                              transition: "background-color 0.2s ease",
-                            }}
-                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F3F4F6")}
-                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F9FAFB")}
-                          >
-                            <svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1" stroke="#A2A1A8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-
-                          </div>
-                        )
-
-                      )}
-                    </div>
-
-                    <div className="space-y-1 text-sm text-gray-700">
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Subscription:</span>
-                        <span className="text-[#16151C] font-medium">#{link?.id}</span>
-                      </div>
-
-                      <div className="h-5" />
-
-                      <div className="flex ">
-                        <span className="font-light text-[14px] w-40">Student:</span>
-                        <span className="text-[#16151C] font-medium">{link?.studentName}</span>
-                      </div>
-                      <div className="flex ">
-                        <span className="font-light text-[14px] w-40">Email:</span>
-                        <span className="text-[#16151C] text-[14px] font-medium">{link?.studentEmail}</span>
-                      </div>
-
-                      <div className="h-5" />
-
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Tutor:</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">{link?.teacherName}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Email:</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">{link?.teacherEmail || "N/A"}</span>
-                      </div>
-
-                      <div className="h-5" />
-
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Start Date:</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">
-                          {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Credits:</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">
-                          {fetchingCredits
-                            ? "Fetching..."
-                            : calculateHoursLeft(
-                              convertToGBP(link?.price),
-                              creditsForSelectedStudent
-                            )?.toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Hourly Rate (USD):</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">${link?.price}</span>
-                      </div>
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Tutor Hourly Rate (USD):</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">${link?.tutorHourlyRate}</span>
-                      </div>
-
-                      <div className="h-5" />
-
-                      <div className="flex">
-                        <span className="font-light text-[14px] w-40">Balance (GBP):</span>
-                        <span className="text-[#16151C] font-medium text-[14px]">
-                          {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-3 mt-6">
-                      <Button
-                        sx={{
-                          color: '#F49342',
-                          backgroundColor: '#F493420D',
-                          border: '1px solid #F49342',
-                          fontSize: '12px',
-                          fontWeight: '600',
-                          padding: 0,
-                          textTransform: "none",
-                          '&:hover': {
-                            color: '#F49342',
-                            backgroundColor: '#F493420D',
-                            border: '1px solid #F49342',
-                            fontSize: '12px',
                           },
                         }}
                         variant="outlined"
                         onClick={() => {
                           setSelectedLink(link);
-                          setRemoveBalance(true);
+                          setShowDeactivateModal(true);
                         }}
-                        className=" w-[135px] h-[40px] rounded-[8px]"
                       >
-                        Remove Credits
+                        Deactivate
                       </Button>
-                      {link?.studentDeactivated ? (
-                        <Button
-                          variant="outlined"
-                          color="success"
-                          sx={{
-                            color: '#3FC28A',
-                            backgroundColor: '#3FC28A0D',
-                            border: '1px solid #3FC28A',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            textTransform: "none",
-                            '&:hover': {
-                              color: '#3FC28A',
-                              backgroundColor: '#3FC28A0D',
-                              border: '1px solid #3FC28A',
-                              fontSize: '12px',
-                            },
-                          }}
-                          onClick={() => {
-                            setSelectedLink(link);
-                            setShowReactivateModal(true);
-                          }}
-                          className="w-[135px] h-[40px] rounded-[8px]"
-                        >
-                          Reactivate
-                        </Button>
-                      ) : (
-                        <Button
-                          sx={{
-                            color: '#3FC28A',
-                            backgroundColor: '#3FC28A0D',
-                            border: '1px solid #3FC28A',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            textTransform: "none",
-                            '&:hover': {
-                              color: '#3FC28A',
-                              backgroundColor: '#3FC28A0D',
-                              border: '1px solid #3FC28A',
-                              fontSize: '12px',
-                            },
-                          }}
-                          variant="outlined"
-                          onClick={() => handleGenerateInvoiceClick(link)}
-                          className="w-[135px] h-[40px] rounded-[8px]"
-                        >
-                          Add Credits
-                        </Button>
-                      )}
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setSelectedLink(link);
+                          setShowDeleteModal(true);
+                        }}
+                        className="flex items-center justify-center w-8 h-8 sm:w-8 sm:h-8 rounded-[6px] cursor-pointer transition-colors duration-200 hover:bg-[#F3F4F6]"
+                      >
+                        <svg width="18" height="20" className="sm:w-5 sm:h-5" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1" stroke="#A2A1A8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Details Content */}
+                  <div className="space-y-3 sm:space-y-1 text-sm text-gray-700">
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Subscription:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">#{link?.id}</span>
+                    </div>
+
+                    <div className="h-3 sm:h-5" />
+
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Student:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px] truncate">{link?.studentName}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Email:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px] truncate">{link?.studentEmail}</span>
+                    </div>
+
+                    <div className="h-3 sm:h-5" />
+
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Tutor:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px] truncate">{link?.teacherName}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Email:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px] truncate">{link?.teacherEmail || "N/A"}</span>
+                    </div>
+
+                    <div className="h-3 sm:h-5" />
+
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Start Date:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
+                        {link?.startDate && new Date(link?.startDate.toDate()).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Credits:</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
+                        {fetchingCredits
+                          ? "Fetching..."
+                          : calculateHoursLeft(
+                            convertToGBP(link?.price),
+                            creditsForSelectedStudent
+                          )?.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Hourly Rate (USD):</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">${link?.price}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Tutor Hourly Rate (USD):</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">${link?.tutorHourlyRate}</span>
+                    </div>
+
+                    <div className="h-3 sm:h-5" />
+
+                    <div className="flex flex-col sm:flex-row sm:items-center">
+                      <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Balance (GBP):</span>
+                      <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
+                        {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 mt-4 sm:mt-6">
+                    <Button
+                      sx={{
+                        color: '#F49342',
+                        backgroundColor: '#F493420D',
+                        border: '1px solid #F49342',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        padding: 0,
+                        textTransform: "none",
+                        width: '100%',
+                        height: '40px',
+                        '&:hover': {
+                          color: '#F49342',
+                          backgroundColor: '#F493420D',
+                          border: '1px solid #F49342',
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => {
+                        setSelectedLink(link);
+                        setRemoveBalance(true);
+                      }}
+                      className="rounded-[8px]"
+                    >
+                      Remove Credits
+                    </Button>
+                    
+                    {link?.studentDeactivated ? (
                       <Button
+                        variant="outlined"
+                        color="success"
                         sx={{
-                          color: '#4071B6',
-                          backgroundColor: '#4071B60D',
-                          border: '1px solid #4071B6',
+                          color: '#3FC28A',
+                          backgroundColor: '#3FC28A0D',
+                          border: '1px solid #3FC28A',
                           fontSize: '12px',
                           fontWeight: '600',
                           textTransform: "none",
+                          width: '100%',
+                          height: '40px',
                           '&:hover': {
-                            color: '#4071B6',
-                            backgroundColor: '#4071B60D',
-                            border: '1px solid #4071B6',
-                            fontSize: '12px',
+                            color: '#3FC28A',
+                            backgroundColor: '#3FC28A0D',
+                            border: '1px solid #3FC28A',
+                          },
+                        }}
+                        onClick={() => {
+                          setSelectedLink(link);
+                          setShowReactivateModal(true);
+                        }}
+                        className="rounded-[8px]"
+                      >
+                        Reactivate
+                      </Button>
+                    ) : (
+                      <Button
+                        sx={{
+                          color: '#3FC28A',
+                          backgroundColor: '#3FC28A0D',
+                          border: '1px solid #3FC28A',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          textTransform: "none",
+                          padding: 0,
+                          width: '100%',
+                          height: '40px',
+                          '&:hover': {
+                            color: '#3FC28A',
+                            backgroundColor: '#3FC28A0D',
+                            border: '1px solid #3FC28A',
                           },
                         }}
                         variant="outlined"
-                        onClick={() => handleViewInvoicesClick(link)}
-                        className="w-[135px] h-[40px] rounded-[8px]"
+                        onClick={() => handleGenerateInvoiceClick(link)}
+                        className="rounded-[8px]"
                       >
-                        View Invoice
+                        Add Credits
                       </Button>
-                    </div>
+                    )}
+                    
+                    <Button
+                      sx={{
+                        color: '#4071B6',
+                        backgroundColor: '#4071B60D',
+                        border: '1px solid #4071B6',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        textTransform: "none",
+                        padding: 0,
+                        width: '100%',
+                        height: '40px',
+                        '&:hover': {
+                          color: '#4071B6',
+                          backgroundColor: '#4071B60D',
+                          border: '1px solid #4071B6',
+                        },
+                      }}
+                      variant="outlined"
+                      onClick={() => handleViewInvoicesClick(link)}
+                      className="rounded-[8px]"
+                    >
+                      View Invoice
+                    </Button>
                   </div>
+                </div>
 
 
                   <CustomModal open={showReactivateModal} onClose={() => setShowReactivateModal(false)}>

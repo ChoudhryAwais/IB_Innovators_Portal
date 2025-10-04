@@ -38,7 +38,7 @@ const Sidebar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const location = useLocation()
   const navigate = useNavigate()
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(windowWidth >= 768)
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(windowWidth >= 1024)
   const [currentPath, setCurrentPath] = useState("")
   const { userType } = useContext(MyContext)
 
@@ -66,7 +66,7 @@ const Sidebar = () => {
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth)
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) {
         setIsSidebarExpanded(true)
       } else {
         setIsSidebarExpanded(false)
@@ -125,14 +125,14 @@ const Sidebar = () => {
 
   return (
     <>
-      {windowWidth < 768 && isSidebarExpanded && (
+      {windowWidth < 1024 && isSidebarExpanded && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={toggleSidebar} />
       )}
 
       <div
         className={`fixed top-0 bottom-0 left-0 bg-[#fafafa] text-gray-700 z-50 transition-all duration-300 ease-in-out ${isSidebarExpanded
           ? "w-[300px] max-w-[300px] translate-x-0"
-          : windowWidth < 768
+          : windowWidth < 1024
             ? "w-[80px] max-w-[80px] translate-x-0" // <- always visible on mobile, just narrow
             : "w-16"
           }`}
@@ -145,7 +145,7 @@ const Sidebar = () => {
                 <img src={logo || "/placeholder.svg"} alt="IB INNOVATORS" className="h-12 w-auto object-contain ml-2" />
               )}
             </div>
-            {windowWidth < 768 && (
+            {windowWidth < 1024 && (
               <button onClick={toggleSidebar} className="p-2 rounded-md hover:bg-gray-200 transition-colors">
                 <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
               </button>

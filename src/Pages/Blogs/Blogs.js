@@ -201,18 +201,18 @@ export default function Blogs() {
 
   return (
     <TopHeadingProvider>
-      <div className="min-h-screen p-6">
-        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
+      <div className="min-h-screen p-4 md:p-6">
+        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-4 md:p-6">
           {/* Header Section */}
-          <div className="flex justify-between items-center  mb-8">
-            <h1 className="text-[24px] font-semibold text-[#16151C]">Existing Blogs</h1>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 md:mb-8">
+            <h1 className="text-[20px] md:text-[24px] font-semibold text-[#16151C]">Existing Blogs</h1>
             <Button
               variant="contained"
               onClick={() => navigate("/blogs/new")}
               sx={{
                 backgroundColor: "#4071B6",
-                width: "250px",
-                height: "50px",
+                width: { xs: "100%", md: "250px" },
+                height: { xs: "44px", md: "50px" },
                 "&:hover": { backgroundColor: "#427ac9ff" },
                 color: "white",
                 px: 3,
@@ -220,7 +220,7 @@ export default function Blogs() {
                 borderRadius: "0.5rem",
                 fontWeight: 600,
                 textTransform: "none",
-                fontSize: "16px",
+                fontSize: { xs: "14px", md: "16px" },
               }}
             >
               + Create a new Blog
@@ -228,27 +228,27 @@ export default function Blogs() {
           </div>
 
           {/* Blog Cards */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {upcomingDisplayedSessions.map((blog) => (
               <div
                 key={blog.id}
-                className="rounded-lg pb-4 flex gap-4 items-stretch relative border-b border-gray-200"
+                className="rounded-lg pb-4 flex flex-col md:flex-row gap-4 items-stretch relative border-b border-gray-200"
               >
                 {/* Left Section: Author + Blog Content */}
-                <div className="flex-1 flex items-start pb-5 pr-4">
-                  <div className="flex-1 min-w-0">
+                <div className="flex-1 flex flex-col md:flex-row items-start pb-4 md:pb-5 pr-0 md:pr-4">
+                  <div className="flex-1 min-w-0 mb-4 md:mb-0">
                     {/* Author Info */}
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs md:text-sm font-medium">
                           {blog.writtenBy ? blog.writtenBy.charAt(0).toUpperCase() : "A"}
                         </span>
                       </div>
-                      <div flex className="flex items-center gap-1">
-                        <p className="text-[14px] font-light text-[#16151C]">
+                      <div className="flex flex-col md:flex-row md:items-center gap-1">
+                        <p className="text-[12px] md:text-[14px] font-light text-[#16151C]">
                           {blog.writtenBy || "Admin"}
                         </p>
-                        <p className="text-[14px] font-light text-[#757575]">
+                        <p className="text-[12px] md:text-[14px] font-light text-[#757575]">
                           - {blog.createdOn
                             ? `${Math.floor(
                               (new Date() - blog.createdOn.toDate()) / (1000 * 60 * 60 * 24)
@@ -259,19 +259,18 @@ export default function Blogs() {
                     </div>
 
                     {/* Blog Title */}
-                    <h3 className="text-[18px] font-light text-[#16151C] mb-2">
+                    <h3 className="text-[16px] md:text-[18px] font-light text-[#16151C] mb-2">
                       {blog.header}
                     </h3>
 
                     {/* Blog Content */}
-                    <p className="text-[#16151C] text-[16px] font-light leading-relaxed">
-                      {blog.description ||
-                        "N/A"}
+                    <p className="text-[#16151C] text-[14px] md:text-[16px] font-light leading-relaxed line-clamp-2 md:line-clamp-3">
+                      {blog.description || "N/A"}
                     </p>
                   </div>
 
                   {/* Blog Image */}
-                  <div className="w-[140px] h-[139px] bg-black rounded-lg overflow-hidden ml-4">
+                  <div className="w-full md:w-[140px] h-32 md:h-[139px] bg-black rounded-lg overflow-hidden md:ml-4">
                     {blog.image ? (
                       <img
                         src={blog.image || "/placeholder.svg"}
@@ -279,10 +278,10 @@ export default function Blogs() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-[140px] h-[139px] bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                      <div className="w-full h-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                         <div className="text-green-200">
                           <svg
-                            className="w-8 h-8"
+                            className="w-6 h-6 md:w-8 md:h-8"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -298,9 +297,9 @@ export default function Blogs() {
                   </div>
                 </div>
 
-                {/* Right Section: Buttons (bottom aligned) */}
+                {/* Right Section: Buttons */}
                 <div className="flex flex-col justify-end">
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 md:gap-3 justify-start md:justify-end">
                     <Button
                       variant="outlined"
                       color="error"
@@ -310,12 +309,12 @@ export default function Blogs() {
                       }}
                       sx={{
                         borderRadius: "8px",
-                        width: "118px",
-                        height: "36px",
+                        width: { xs: "100px", md: "118px" },
+                        height: { xs: "32px", md: "36px" },
                         color: "#A81E1E",
                         backgroundColor: "#A81E1E0D",
                         borderColor: "#A81E1E",
-                        fontSize: "11.36px",
+                        fontSize: { xs: "10px", md: "11.36px" },
                       }}
                     >
                       Delete
@@ -326,12 +325,12 @@ export default function Blogs() {
                       onClick={() => navigate(`/blogs/edit/${blog.id}`, { state: { blog } })}
                       sx={{
                         borderRadius: "8px",
-                        width: "118px",
-                        height: "36px",
+                        width: { xs: "100px", md: "118px" },
+                        height: { xs: "32px", md: "36px" },
                         color: "#4071B6",
                         backgroundColor: "#4071B60D",
                         borderColor: "#4071B6",
-                        fontSize: "11.36px",
+                        fontSize: { xs: "10px", md: "11.36px" },
                       }}
                     >
                       Edit
@@ -342,18 +341,16 @@ export default function Blogs() {
             ))}
           </div>
 
-
-
           {/* No Blogs Message */}
-          {blogs?.length === 0 && <div className="text-center text-gray-400 text-xl py-20">No Blogs</div>}
+          {blogs?.length === 0 && <div className="text-center text-gray-400 text-lg md:text-xl py-16 md:py-20">No Blogs</div>}
 
           {/* Pagination */}
           {blogs?.length > upcomingItemsPerPage && (
-            <div className="flex items-center justify-between mt-6 px-4 py-3 bg-white ">
-              <div className="text-sm text-gray-700">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-6 px-4 py-3 bg-white">
+              <div className="text-sm text-gray-700 text-center md:text-left">
                 Showing {upcomingStartIndex + 1} to {Math.min(upcomingEndIndex, blogs.length)} out of {blogs.length} records
               </div>
-              <Stack spacing={2}>
+              <Stack spacing={2} className="items-center">
                 <Pagination
                   count={Math.ceil(blogs?.length / upcomingItemsPerPage)}
                   page={upcomingCurrentPage}
@@ -365,7 +362,6 @@ export default function Blogs() {
             </div>
           )}
         </div>
-
         {/* Delete Dialog */}
         <CustomModal open={showModal} onClose={() => setShowModal(false)}>
           {/* Title */}

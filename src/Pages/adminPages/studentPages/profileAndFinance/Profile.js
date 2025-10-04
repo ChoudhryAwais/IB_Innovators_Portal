@@ -16,11 +16,12 @@ export function Profile({ userDetails, userId }) {
     setCurr(newValue)
   }
 
-  // Tab config with active/inactive SVGs (copied from code1 for consistency)
+  // Tab config with active/inactive SVGs
   const tabConfig = [
     {
       value: "Contact Information",
       label: "Contact Information",
+      shortLabel: "Contact", // Short label for small screens
       inactiveIcon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <ellipse cx="12" cy="17.5" rx="7" ry="3.5" stroke="#16151C" strokeWidth="1.5" strokeLinejoin="round" />
@@ -45,6 +46,7 @@ export function Profile({ userDetails, userId }) {
     {
       value: "Guardian Information",
       label: "Parent/Guardian Information",
+      shortLabel: "Guardian", // Short label for small screens
       inactiveIcon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -84,6 +86,7 @@ export function Profile({ userDetails, userId }) {
     {
       value: "Education",
       label: "Education",
+      shortLabel: "Education", // Same for small screens
       inactiveIcon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M11 2.125H13C14.7949 2.125 16.25 3.58007 16.25 5.375V6.375C16.25 6.51307 16.1381 6.625 16 6.625C15.8619 6.625 15.75 6.51307 15.75 6.375V5.375C15.75 3.85622 14.5188 2.625 13 2.625H11C9.48122 2.625 8.25 3.85622 8.25 5.375V6.375C8.25 6.51307 8.13807 6.625 8 6.625C7.86193 6.625 7.75 6.51307 7.75 6.375V5.375C7.75 3.58007 9.20507 2.125 11 2.125Z" stroke="#16151C" stroke-linecap="round" />
@@ -111,12 +114,16 @@ export function Profile({ userDetails, userId }) {
         <Tabs
           value={curr}
           onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
           sx={{
             "& .MuiTab-root": {
-              fontSize: "16px",
+              fontSize: { xs: "14px", sm: "15px", md: "16px" },
               fontWeight: 300,
               textTransform: "none",
-              padding: "12px 10px",
+              padding: { xs: "8px 6px", sm: "10px 8px", md: "12px 10px" },
+              minWidth: { xs: "auto", sm: "auto", md: "160px" },
+              minHeight: { xs: "48px", sm: "52px", md: "56px" },
               borderBottom: "2px solid transparent",
               transition: "all 0.2s",
               color: "#16151C",
@@ -131,6 +138,12 @@ export function Profile({ userDetails, userId }) {
               borderColor: "#4071B6",
               fontWeight: 600,
             },
+            "& .MuiTabs-scrollButtons": {
+              color: "#16151C",
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#4071B6",
+            },
           }}
         >
           {tabConfig.map((tab) => (
@@ -139,8 +152,13 @@ export function Profile({ userDetails, userId }) {
               value={tab.value}
               label={
                 <div className="flex items-center gap-2">
-                  {curr === tab.value ? tab.activeIcon : tab.inactiveIcon}
-                  {tab.label}
+                  <span className="hidden sm:inline">
+                    {curr === tab.value ? tab.activeIcon : tab.inactiveIcon}
+                  </span>
+                  <span className="hidden lg:inline">{tab.label}</span>
+                  <span className="lg:hidden">
+                    {tab.shortLabel || tab.label}
+                  </span>
                 </div>
               }
             />
@@ -149,7 +167,7 @@ export function Profile({ userDetails, userId }) {
       </Box>
 
       {/* Tab Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {curr === "Contact Information" && (
           <ContactInformation userDetails={userDetails} userId={userId} />
         )}

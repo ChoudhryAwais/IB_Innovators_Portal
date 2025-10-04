@@ -136,19 +136,19 @@ export default function SupportBlogs() {
 
   return (
     <TopHeadingProvider>
-      <div className="p-6">
-        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-6">
+      <div className="p-4 md:p-6">
+        <div className="max-w-6xl mx-auto border border-gray-200 rounded-lg p-4 md:p-6">
 
           {/* Header section */}
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-[24px] font-semibold text-[#16151C]">Support & Training Blogs</h1>
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 md:mb-8">
+            <h1 className="text-[20px] md:text-[24px] font-semibold text-[#16151C] text-center md:text-left">Support & Training Blogs</h1>
             <Button
               variant="contained"
               onClick={() => navigate("/supportBlogs/new")}
               sx={{
                 backgroundColor: "#4071B6",
-                width: "250px",
-                height: "50px",
+                width: { xs: "100%", md: "250px" },
+                height: { xs: "44px", md: "50px" },
                 "&:hover": { backgroundColor: "#427ac9ff" },
                 color: "white",
                 px: 0,
@@ -156,7 +156,7 @@ export default function SupportBlogs() {
                 borderRadius: "0.5rem",
                 fontWeight: 600,
                 textTransform: "none",
-                fontSize: "16px",
+                fontSize: { xs: "14px", md: "16px" },
               }}
             >
               + Create a new Training Blog
@@ -164,17 +164,17 @@ export default function SupportBlogs() {
           </div>
 
           {/* Blog entries */}
-          <div className="space-y-6 ">
+          <div className="space-y-4 md:space-y-6">
             {upcomingDisplayedSessions.map((blog, index) => (
-              <div key={index} className="bg-white pb-4 border-b border-[#A2A1A833] ">
-                <div className="flex justify-between">
+              <div key={index} className="bg-white pb-4 border-b border-[#A2A1A833]">
+                <div className="flex flex-col md:flex-row md:justify-between gap-4">
                   {/* Left: Content */}
-                  <div className="flex-1 pr-6">
-                    <h3 className="text-[18px] font-light text-[#16151C] mb-2">
+                  <div className="flex-1 md:pr-6">
+                    <h3 className="text-[16px] md:text-[18px] font-light text-[#16151C] mb-2">
                       {blog.header}
                     </h3>
                     <div
-                      className="text-[#16151C] text-[16px] font-light leading-relaxed"
+                      className="text-[#16151C] text-[14px] md:text-[16px] font-light leading-relaxed line-clamp-3"
                       dangerouslySetInnerHTML={{
                         __html: blog?.content?.slice(0, 200) + "...",
                       }}
@@ -183,7 +183,7 @@ export default function SupportBlogs() {
 
                   {/* Right: Buttons aligned bottom */}
                   <div className="flex flex-col justify-end">
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 md:gap-3 justify-start md:justify-end">
                       <Button
                         variant="outlined"
                         color="error"
@@ -193,12 +193,12 @@ export default function SupportBlogs() {
                         }}
                         sx={{
                           borderRadius: "8px",
-                          width: "118px",
-                          height: "36px",
+                          width: { xs: "100px", md: "118px" },
+                          height: { xs: "32px", md: "36px" },
                           color: "#A81E1E",
                           backgroundColor: "#A81E1E0D",
                           borderColor: "#A81E1E",
-                          fontSize: "11.36px",
+                          fontSize: { xs: "10px", md: "11.36px" },
                         }}
                       >
                         Delete
@@ -209,12 +209,12 @@ export default function SupportBlogs() {
                         onClick={() => navigate(`/supportBlogs/edit/${blog.id}`, { state: { blog } })}
                         sx={{
                           borderRadius: "8px",
-                          width: "118px",
-                          height: "36px",
+                          width: { xs: "100px", md: "118px" },
+                          height: { xs: "32px", md: "36px" },
                           color: "#4071B6",
                           backgroundColor: "#4071B60D",
                           borderColor: "#4071B6",
-                          fontSize: "11.36px",
+                          fontSize: { xs: "10px", md: "11.36px" },
                         }}
                       >
                         Edit
@@ -226,27 +226,26 @@ export default function SupportBlogs() {
             ))}
 
             {blogs?.length === 0 && (
-              <div className="text-center text-gray-400 text-xl py-12">No Blogs</div>
+              <div className="text-center text-gray-400 text-lg md:text-xl py-8 md:py-12">No Blogs</div>
             )}
           </div>
 
-
           {/* Pagination */}
           {blogs?.length > upcomingItemsPerPage && (
-            <div className="flex justify-center items-center mt-8">
-              <div className="bg-white rounded-lg shadow-xl p-6 w-96 max-w-md mx-4">
-                <h2 className="text-xl font-semibold text-center text-gray-900 mb-6">Pagination</h2>
+            <div className="flex justify-center items-center mt-6 md:mt-8">
+              <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 w-full md:w-96 max-w-md mx-2 md:mx-4">
+                <h2 className="text-lg md:text-xl font-semibold text-center text-gray-900 mb-4 md:mb-6">Pagination</h2>
                 <div className="flex gap-3 justify-end">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                    className="px-4 md:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm md:text-base"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => deleteBlog(selectedBlog?.id)}
                     disabled={loading}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
+                    className="px-4 md:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 text-sm md:text-base"
                   >
                     {loading ? "Deleting..." : "Yes"}
                   </button>
@@ -254,7 +253,7 @@ export default function SupportBlogs() {
               </div>
             </div>
           )}
-
+   
           {/* Delete Confirmation Modal */}
           <CustomModal open={showModal} onClose={() => setShowModal(false)}>
             <h2 className="text-xl font-semibold text-center text-[#16151C] mb-7">

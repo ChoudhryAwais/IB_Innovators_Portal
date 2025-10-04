@@ -36,7 +36,7 @@ export default function Layout() {
       if (width < 768) {
         setSidebarWidth(80) // collapsed width on mobile
       } else if (width < 1024) {
-        setSidebarWidth(100) // medium screens
+        setSidebarWidth(80) // medium screens
       } else {
         setSidebarWidth(300) // full sidebar
       }
