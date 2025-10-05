@@ -5,7 +5,6 @@ import { db } from "../../../../firebase"
 import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 
 export function ContactInformation({ userDetails, userId }) {
-  console.log("UserDetails (Student):", userDetails)
   const [editing, setEditing] = useState(false)
 
   // Fetch data properly

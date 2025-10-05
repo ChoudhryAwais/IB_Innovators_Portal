@@ -33,6 +33,8 @@ export const ContextProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState([]);
   const [studentForm, setStudentForm] = useState({});
   const [subjectsArray, setSubjectArray] = useState([]);
+  const [subjectsWithCategory, setSubjectsWithCategory] = useState([]);
+
 
   const [sideBarShowing, setSideBarShowing] = useState(false);
   const [navBarShowing, setNavBarShowing] = useState(false);
@@ -170,25 +172,36 @@ const timeZoneConverter = (dateString, timeString, receivedTimeZone) => {
     }
   }, [isUserLoggedIn]);
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchSubjects = () => {
       try {
         const userListRef = collection(db, "subjectsAvailable");
 
-        // Subscribe to real-time updates
         const unsubscribe = onSnapshot(userListRef, (querySnapshot) => {
           const subjectsData = [];
+          const categorizedSubjectsData = [];
+
           querySnapshot.forEach((doc) => {
-            // Assuming your data structure has a 'subjects' field
-            subjectsData.push(doc.data().subjects);
+            const data = doc.data();
+
+            // ✅ Old format (array of strings)
+            if (Array.isArray(data.subjects)) {
+              subjectsData.push(...data.subjects);
+            }
+
+            // ✅ New format (array of objects)
+            if (Array.isArray(data.subjectsWithCategory)) {
+              categorizedSubjectsData.push(...data.subjectsWithCategory);
+            }
           });
-          // Flatten the array and sort it alphabetically
+
+          // Flatten and sort old subjects
           const flattenedAndSortedSubjects = subjectsData.flat().sort();
 
           setSubjectArray(flattenedAndSortedSubjects);
+          setSubjectsWithCategory(categorizedSubjectsData);
         });
 
-        // Return the unsubscribe function to stop listening when the component unmounts
         return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching subjects: ", error);
@@ -197,6 +210,7 @@ const timeZoneConverter = (dateString, timeString, receivedTimeZone) => {
 
     fetchSubjects();
   }, []);
+
 
   async function addNotification(message, userId) {
     const detail = {
@@ -277,6 +291,7 @@ const timeZoneConverter = (dateString, timeString, receivedTimeZone) => {
         studentForm,
         setStudentForm,
         subjectsArray,
+        subjectsWithCategory,          // new categorized subjects
         addNotification,
         adminAddNotification,
         notificationLength,

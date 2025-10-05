@@ -1,124 +1,185 @@
-import React, { useState, useEffect } from "react";
-import {
-  collection,
-  onSnapshot,
-  updateDoc,
-  getDocs,
-} from "firebase/firestore";
+import React, { useState, useEffect, useContext } from "react";
+import { collection, updateDoc, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase";
 import {
-  Dialog,
-  DialogTitle,
-  DialogActions,
   Button,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  IconButton,
-  Modal,
   TextField,
+  Divider,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { toast } from "react-hot-toast";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import Slide from "@mui/material/Slide";
-import { TopHeadingProvider, useTopHeading } from "../../../Components/Layout"
+import { toast } from "react-hot-toast";
+import { TopHeadingProvider, useTopHeading } from "../../../Components/Layout";
 import CustomModal from "../../../Components/CustomModal/CustomModal";
-import Divider from "@mui/material/Divider"
-
-
+import { MyContext } from "../../../Context/MyContext";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { InputAdornment } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export function ManageSubjects() {
-  const [subjects, setSubjects] = useState([]);
-  const [deleteSubject, setDeleteSubject] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState(false);
+  const { setFirstMessage, setSecondMessage } = useTopHeading();
+  const { subjectsWithCategory } = useContext(MyContext);
+
   const [newSubject, setNewSubject] = useState("");
-
-  const { setFirstMessage, setSecondMessage } = useTopHeading()
-  useEffect(() => {
-    setFirstMessage("Subjects")
-    setSecondMessage("Show all Subjects")
-  }, [setFirstMessage, setSecondMessage])
-
+  const [newCategory, setNewCategory] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const userListRef = collection(db, "subjectsAvailable");
-        const unsubscribe = onSnapshot(userListRef, (querySnapshot) => {
-          const subjectsData = [];
-          querySnapshot.forEach((doc) => {
-            subjectsData.push(...doc.data().subjects);
-          });
-          const uniqueSortedSubjects = Array.from(new Set(subjectsData)).sort();
-          setSubjects(uniqueSortedSubjects);
-        });
-        return unsubscribe;
-      } catch (error) {
-        console.error("Error fetching subjects: ", error);
-      }
-    };
-    fetchSubjects();
-  }, []);
+    setFirstMessage("Subjects");
+    setSecondMessage("Show all Subjects");
+  }, [setFirstMessage, setSecondMessage]);
+
+  const scienceSubjects =
+    subjectsWithCategory?.filter((s) => s.category === "Science") || [];
+  const humanitiesSubjects =
+    subjectsWithCategory?.filter(
+      (s) => s.category === "Humanities & Social Sciences"
+    ) || [];
+  const languageSubjects =
+    subjectsWithCategory?.filter((s) => s.category === "Languages") || [];
 
   const handleAddSubject = async () => {
+    if (!newSubject.trim()) {
+      toast.error("Please enter a subject name");
+      return;
+    }
+
     try {
       const userListRef = collection(db, "subjectsAvailable");
       const querySnapshot = await getDocs(userListRef);
-      querySnapshot.forEach((doc) => {
-        const existingSubjects = doc.data().subjects || [];
+
+      for (const docSnap of querySnapshot.docs) {
+        const data = docSnap.data();
+        const existingSubjects = data.subjects || [];
+        const existingWithCategories = data.subjectsWithCategory || [];
+
         const updatedSubjects = [...existingSubjects, newSubject];
-        updateDoc(doc.ref, { subjects: updatedSubjects });
-      });
+        const updatedWithCategories = [
+          ...existingWithCategories,
+          { name: newSubject, category: newCategory },
+        ];
 
-      const updatedSubjects = [...subjects, newSubject];
-      const flattenedAndSortedSubjects = updatedSubjects.flat().sort();
-      setSubjects(flattenedAndSortedSubjects);
+        await updateDoc(docSnap.ref, {
+          subjects: updatedSubjects,
+          subjectsWithCategory: updatedWithCategories,
+        });
+      }
 
+      toast.success(`Subject "${newSubject}" added to ${newCategory}`);
       setNewSubject("");
       setOpenDialog(false);
-      toast.success("Subject Added");
     } catch (error) {
-      toast.error("Error adding subject: ", error);
+      console.error(error);
+      toast.error("Error adding subject");
     }
   };
 
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const renderSubjectsWithHL_SL = (subjectsArray) => {
+    // Separate HL and SL subjects
+    const hlSubjects = subjectsArray.filter((s) => s.name.includes("(HL)"));
+    const slSubjects = subjectsArray.filter((s) => s.name.includes("(SL)"));
 
-  const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage);
+    // Subjects without HL/SL
+    const otherSubjects = subjectsArray.filter(
+      (s) => !s.name.includes("(HL)") && !s.name.includes("(SL)")
+    );
+
+    // Map SL for easy matching
+    const slMap = new Map();
+    slSubjects.forEach((sl) => {
+      const baseName = sl.name.replace("(SL)", "").trim();
+      slMap.set(baseName, sl.name);
+    });
+
+    const pairedSubjects = [];
+
+    // Pair HL with SL
+    hlSubjects.forEach((hl) => {
+      const baseName = hl.name.replace("(HL)", "").trim();
+      const slMatch = slMap.get(baseName) || "";
+      if (slMatch) slMap.delete(baseName);
+      pairedSubjects.push({ hl: hl.name, sl: slMatch });
+    });
+
+    // Add remaining unmatched SL subjects
+    slMap.forEach((slName) => {
+      pairedSubjects.push({ hl: "", sl: slName });
+    });
+
+    // Pair "other" subjects two by two
+    for (let i = 0; i < otherSubjects.length; i += 2) {
+      const first = otherSubjects[i]?.name || "";
+      const second = otherSubjects[i + 1]?.name || "";
+      pairedSubjects.push({ hl: first, sl: second });
+    }
+
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {pairedSubjects.map((pair, idx) => (
+          <React.Fragment key={idx}>
+            <div className="p-1 font-light text-[12px] sm:text-[14px] rounded-md break-words">{pair.hl}</div>
+            <div className="p-1 font-light text-[12px] sm:text-[14px] rounded-md break-words">{pair.sl}</div>
+          </React.Fragment>
+        ))}
+      </div>
+    );
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedSessions = subjects?.slice(startIndex, endIndex);
+  const renderSubjectsSingleCol = (subjectsArray) => {
+    // Create a map where key = language (first word of subject), value = array of subjects
+    const languageMap = {};
+
+    subjectsArray.forEach((subject) => {
+      const firstWord = subject.name.split(" ")[0]; // Assuming the first word is the language
+      if (!languageMap[firstWord]) languageMap[firstWord] = [];
+      languageMap[firstWord].push(subject.name);
+    });
+
+    // Convert map to JSX
+    return (
+      <div className="flex flex-col gap-3 sm:gap-4 ">
+        {Object.keys(languageMap).map((language) => (
+          <div key={language} className="flex flex-col gap-1 sm:gap-2">
+            <h4 className="text-[12px] sm:text-[14px] font-semibold">{language}</h4>
+            {languageMap[language].map((subj, idx) => (
+              <div
+                key={idx}
+                className="font-light text-[12px] sm:text-[14px] rounded-md p-1 "
+              >
+                {subj}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="flex-1 mt-0 mb-2 p-4 sm:p-6 rounded-lg border border-[#A2A1A833] bg-white/50">
-
-        {/* Header Row */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-6">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
-            Subjects ({subjects?.length || 0})
+    <div className="p-3 sm:p-4 md:p-6">
+      <div className="flex-1 mt-0 mb-2 p-3 sm:p-4 md:p-6 rounded-lg border border-[#A2A1A833] bg-white/50">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 md:gap-0 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-2 sm:mb-0">
+            Subjects ({subjectsWithCategory?.length || 0})
           </h2>
-
           <Button
             variant="contained"
             onClick={() => setOpenDialog(true)}
             sx={{
               backgroundColor: "#4071B6",
-              width: { xs: "100%", sm: "250px" },
-              height: { xs: "44px", sm: "50px" },
+              width: { xs: "100%", sm: "100%", md: "250px" },
+              height: { xs: "40px", sm: "44px", md: "50px" },
               "&:hover": { backgroundColor: "#427ac9ff" },
               color: "white",
               px: 3,
@@ -126,101 +187,137 @@ export function ManageSubjects() {
               borderRadius: "0.5rem",
               fontWeight: 500,
               textTransform: "none",
-              fontSize: { xs: "14px", sm: "16px" },
+              fontSize: { xs: "14px", sm: "14px", md: "16px" },
             }}
           >
             + Add a new subject
           </Button>
         </div>
 
-        {/* Subjects List */}
-        <List sx={{ padding: { xs: 0, sm: 1 } }}>
-          {displayedSessions.map((subject) => (
-            <ListItem 
-              key={subject}
-              sx={{
-                padding: { xs: '12px 8px', sm: '16px' }
-              }}
-            >
-              <ListItemText 
-                primary={subject} 
-                sx={{
-                  '& .MuiListItemText-primary': {
-                    fontSize: { xs: '14px', sm: '16px' }
-                  }
-                }}
-              />
-              <ListItemSecondaryAction>
-                {/* Action buttons can go here later if needed */}
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
+        {/* Categories responsive layout */}
+        <div className="flex flex-col sm:flex-col md:grid md:grid-cols-5 gap-4">
+          {/* Left column: Science + Humanities */}
+          <div className="flex flex-col gap-4 sm:gap-4 md:gap-6 md:col-span-3">
+            <div className="border border-[#A2A1A833] rounded-[10px] p-3 sm:p-3 md:p-4">
+              <h3 className="text-[16px] sm:text-[18px] md:text-xl font-semibold mb-2">
+                Science ({scienceSubjects.length})
+              </h3>
+              {renderSubjectsWithHL_SL(scienceSubjects)}
+            </div>
 
-        {/* Pagination */}
-        {subjects?.length > itemsPerPage && (
-          <div className="flex items-center justify-center mt-4">
-            <Stack spacing={2}>
-              <Pagination
-                count={Math.ceil(subjects?.length / itemsPerPage)}
-                page={currentPage}
-                onChange={handleChangePage}
-                sx={{
-                  '& .MuiPaginationItem-root': {
-                    fontSize: { xs: '12px', sm: '14px' },
-                    minWidth: { xs: '32px', sm: '36px' },
-                    height: { xs: '32px', sm: '36px' },
-                  }
-                }}
-              />
-            </Stack>
+            <div className="border border-[#A2A1A833] rounded-[10px] p-3 sm:p-3 md:p-4">
+              <h3 className="text-[16px] sm:text-[18px] md:text-xl font-semibold mb-2">
+                Humanities & Social Sciences ({humanitiesSubjects.length})
+              </h3>
+              {renderSubjectsWithHL_SL(humanitiesSubjects)}
+            </div>
           </div>
-        )}
 
-        {/* Create Subject Modal */}
-        <CustomModal 
-          open={openDialog} 
+          {/* Right column: Languages */}
+          <div className="border border-[#A2A1A833] rounded-[10px] p-3 sm:p-3 md:p-4 md:col-span-2">
+            <h3 className="text-[16px] sm:text-[18px] md:text-xl font-semibold mb-3">
+              Languages ({languageSubjects.length})
+            </h3>
+            {renderSubjectsSingleCol(languageSubjects)}
+          </div>
+        </div>
+
+        {/* Add Subject Modal */}
+        <CustomModal
+          open={openDialog}
           onClose={() => setOpenDialog(false)}
           PaperProps={{
             sx: {
-              width: { xs: "90%", sm: "500px" },
-              maxWidth: { xs: "400px", sm: "500px" },
+              height: "auto",
+              overflow: "hidden",
+              borderRadius: "20px",
+              width: { xs: "90%", sm: "350px", md: "383px" },
+              maxWidth: "383px",
               margin: { xs: "20px", sm: "auto" }
             },
           }}
         >
-          {/* Title */}
-          <h2 className="text-lg sm:text-xl font-semibold text-start text-[#16151C] mb-4 sm:mb-7">
+          <h2 className="text-[16px] sm:text-lg md:text-xl font-semibold text-start text-[#16151C] mb-3 sm:mb-4 md:mb-7">
             Add New Subject
           </h2>
+          <Divider sx={{ borderColor: "#E5E7EB", mb: 2, sm: 2, md: 3 }} />
 
-          <Divider sx={{ borderColor: "#E5E7EB", mb: 3, sm: 5 }} />
+          <FormControl size="small" fullWidth sx={{ mb: 3, sm: 3, md: 4 }}>
+            <Select
+              value={newCategory || ""}
+              required
+              onChange={(e) => setNewCategory(e.target.value)}
+              displayEmpty
+              className="bg-white"
+              sx={{
+                height: { xs: 48, sm: 52, md: 56 },
+                borderRadius: "10px",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#A2A1A833",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#16151C",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#16151C",
+                },
+              }}
+              IconComponent={KeyboardArrowDownIcon}
+            >
+              <MenuItem value="" disabled>
+                <span className="text-[#A2A1A8CC]">Select Category</span>
+              </MenuItem>
+              <MenuItem value="Science">Science</MenuItem>
+              <MenuItem value="Humanities & Social Sciences">
+                Humanities & Social Sciences
+              </MenuItem>
+              <MenuItem value="Languages">Languages</MenuItem>
+            </Select>
+          </FormControl>
 
-          {/* Input Field */}
           <TextField
             type="text"
+            placeholder="Enter Subject Name"
             value={newSubject}
             onChange={(e) => setNewSubject(e.target.value)}
-            label="Enter Subject Name"
-            fullWidth
-            sx={{ mb: 4, sm: 7 }}
+            required
             size="small"
+            className="h-14"
+            InputProps={{
+              sx: {
+                height: { xs: 48, sm: 52, md: 56 },
+                borderRadius: "10px",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#A2A1A833",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#16151C",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#16151C",
+                },
+                "& input::placeholder": {
+                  color: "#A2A1A8CC",
+                  opacity: 1,
+                },
+              },
+            }}
+            sx={{ mb: 2, sm: 2, md: 3 }}
           />
 
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-end">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end">
             <Button
               onClick={() => {
-                setNewSubject("")
-                setOpenDialog(false)
+                setNewSubject("");
+                setOpenDialog(false);
               }}
               variant="outlined"
               sx={{
-                width: { xs: "100%", sm: 166 },
-                height: { xs: 44, sm: 50 },
+                width: { xs: "100%", sm: "48%", md: 166 },
+                height: { xs: 40, sm: 44, md: 50 },
                 borderRadius: "10px",
                 borderColor: "#A2A1A833",
-                fontSize: { xs: "14px", sm: "16px" },
+                fontSize: { xs: "14px", sm: "14px", md: "16px" },
                 fontWeight: 300,
                 color: "#16151C",
                 textTransform: "none",
@@ -232,11 +329,11 @@ export function ManageSubjects() {
               variant="contained"
               onClick={handleAddSubject}
               sx={{
-                width: { xs: "100%", sm: 166 },
-                height: { xs: 44, sm: 50 },
+                width: { xs: "100%", sm: "48%", md: 166 },
+                height: { xs: 40, sm: 44, md: 50 },
                 borderRadius: "10px",
                 backgroundColor: "#4071B6",
-                fontSize: { xs: "16px", sm: "20px" },
+                fontSize: { xs: "14px", sm: "16px", md: "16px" },
                 fontWeight: 300,
                 color: "#FFFFFF",
                 textTransform: "none",
@@ -247,9 +344,7 @@ export function ManageSubjects() {
             </Button>
           </div>
         </CustomModal>
-
       </div>
     </div>
   );
-
 }

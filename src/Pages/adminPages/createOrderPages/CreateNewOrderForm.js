@@ -13,7 +13,7 @@ import toast from "react-hot-toast"
 import { Autocomplete, Box, MenuItem, Select, TextField, FormControl, Button } from "@mui/material"
 import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
 import { useEffect } from "react"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"; // optional (if you want MUI icon)
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { InputAdornment } from "@mui/material";
 
 
@@ -183,56 +183,56 @@ export function CreateNewOrderForm({ item, handleClose }) {
   }, [tutorHourlyRate, requestedHours])
 
   return (
-    <div className="w-4xl mx-auto h-full overflow-auto p-6"
+    <div className="w-full md:w-4xl mx-auto h-full overflow-auto p-4 md:p-6"
       style={{
         boxSizing: "border-box",
       }}
     >
       <div className="">
-        <h1 className="text-[20px] font-semibold text-[#16151C] mb-4">Create Job</h1>
+        <h1 className="text-[18px] md:text-[20px] font-semibold text-[#16151C] mb-4">Create Job</h1>
 
         {/* Student Info Section */}
-        <div className="flex items-start gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
           {/* Image */}
-          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-            <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2 sm:mb-0">
+            <FontAwesomeIcon className="text-gray-600 text-base sm:text-lg" icon={faGraduationCap} />
           </div>
 
           {/* Info */}
-          <div className="grid grid-cols-2 gap-y-1 gap-x-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 w-full sm:w-auto">
             <div className="font-light text-[14px] text-[#16151C]">Student Name:</div>
-            <div className="font-medium text-text-[14px] text-[#16151C]">{item?.userName}</div>
-            
+            <div className="font-medium text-[14px] text-[#16151C] mb-2 sm:mb-0">{item?.userName}</div>
+
             <div className="font-light text-[14px] text-[#16151C]">Email:</div>
-            <div className="font-medium text-text-[14px] text-[#16151C]">{item?.email}</div>
+            <div className="font-medium text-[14px] text-[#16151C]">{item?.email}</div>
           </div>
         </div>
       </div>
 
       <div className="mb-8">
-        {/* Heading + Legends in one row */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[20px] font-semibold text-[#16151C]">Select your Timing Slots</h2>
-          <div className="flex items-center gap-6 text-sm">
+        {/* Heading + Legends */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 gap-4">
+          <h2 className="text-[18px] md:text-[20px] font-semibold text-[#16151C]">Select your Timing Slots</h2>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-[#57AD85] rounded-full"></div>
-              <span className="text-[16px] font-light text-[#16151C]">Selected by Tutor</span>
+              <span className="text-[14px] sm:text-[16px] font-light text-[#16151C]">Selected by Tutor</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-[#F49342] rounded-full"></div>
-              <span className="text-[16px] font-light text-[#16151C]">Selected by Student</span>
+              <span className="text-[14px] sm:text-[16px] font-light text-[#16151C]">Selected by Student</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-[#00C8FF] rounded-full"></div>
-              <span className="text-[16px] font-light text-[#16151C]">Tutor and student selected same slot</span>
+              <span className="text-[14px] sm:text-[16px] font-light text-[#16151C]">Both selected same slot</span>
             </div>
           </div>
         </div>
 
-
         {/* Time Slots Grid */}
         <div className="rounded-[10px] overflow-hidden bg-[#A2A1A80D]">
-          <div className="grid grid-cols-8 ">
+          {/* Header */}
+          <div className="hidden md:grid grid-cols-8">
             <div className="p-3 font-semibold text-[14px] text-[#16151C]">Time & Day</div>
             {days.map((day) => (
               <div
@@ -244,54 +244,111 @@ export function CreateNewOrderForm({ item, handleClose }) {
             ))}
           </div>
 
-          {timePeriods.map((time, timeIndex) => (
-            <div key={time} className="grid grid-cols-8">
-              <div className="p-3 text-[#16151C] font-light text-[14px] text-left">
-                {time.replace("PM", " pm").replace("AM", " am")}
-              </div>
-              {days.map((day) => (
-                <div
-                  key={day}
-                  className="p-2 flex justify-center items-center"
-                >
-                  <div
-                    onClick={() => handleSlotClick(day, time)}
-                    className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                      ? "bg-[#57AD85]"
-                      : "bg-white hover:border-gray-400"
-                      }`}
-                  >
-                    {isSelected(day, time) && (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <svg
-                          className="w-6 h-6"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+          {/* Mobile header (scrollable) */}
+          <div className="md:hidden overflow-x-auto">
+            <table className="min-w-full text-left">
+              <thead>
+                <tr>
+                  <th className="p-3 font-semibold text-[14px] text-[#16151C]">Time & Day</th>
+                  {days.map((day) => (
+                    <th
+                      key={day}
+                      className="p-3 font-semibold text-[14px] text-[#16151C] text-center"
+                    >
+                      {day}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {timePeriods.map((time) => (
+                  <tr key={time}>
+                    <td className="p-3 text-[#16151C] font-light text-[14px] text-left whitespace-nowrap">
+                      {time.replace("PM", " pm").replace("AM", " am")}
+                    </td>
+                    {days.map((day) => (
+                      <td key={day} className="p-2 text-center">
+                        <div
+                          onClick={() => handleSlotClick(day, time)}
+                          className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
+                              ? "bg-[#57AD85]"
+                              : "bg-white hover:border-gray-400"
+                            }`}
                         >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
+                          {isSelected(day, time) && (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <svg
+                                className="w-6 h-6"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
+                                  fill="white"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Desktop grid */}
+          <div className="hidden md:block">
+            {timePeriods.map((time) => (
+              <div key={time} className="grid grid-cols-8">
+                <div className="p-3 text-[#16151C] font-light text-[14px] text-left">
+                  {time.replace("PM", " pm").replace("AM", " am")}
                 </div>
-              ))}
-            </div>
-          ))}
+                {days.map((day) => (
+                  <div key={day} className="p-2 flex justify-center items-center">
+                    <div
+                      onClick={() => handleSlotClick(day, time)}
+                      className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
+                          ? "bg-[#57AD85]"
+                          : "bg-white hover:border-gray-400"
+                        }`}
+                    >
+                      {isSelected(day, time) && (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <svg
+                            className="w-6 h-6"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M14.592 7.46049C14.8463 7.13353 14.7874 6.66232 14.4605 6.40802C14.1335 6.15372 13.6623 6.21262 13.408 6.53958L9.40099 11.6914C9.31189 11.806 9.14429 11.8209 9.03641 11.7238L6.50173 9.44256C6.19385 9.16547 5.71963 9.19043 5.44254 9.49831C5.16544 9.80619 5.1904 10.2804 5.49828 10.5575L8.03296 12.8387C8.78809 13.5183 9.9613 13.4143 10.585 12.6123L14.592 7.46049Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-[20px] font-semibold text-[#16151C] mb-6">Additional Information</h2>
+        <h2 className="text-[18px] md:text-[20px] font-semibold text-[#16151C] mb-6">Additional Information</h2>
 
         {/* Row 1: Subject & Tutor Tier */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Subject</label>
             <FormControl fullWidth size="small">
               <Select
@@ -304,13 +361,13 @@ export function CreateNewOrderForm({ item, handleClose }) {
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -327,7 +384,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </FormControl>
           </div>
 
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Tutor Tier</label>
             <FormControl fullWidth size="small">
               <Select
@@ -339,13 +396,13 @@ export function CreateNewOrderForm({ item, handleClose }) {
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -362,27 +419,26 @@ export function CreateNewOrderForm({ item, handleClose }) {
         </div>
 
         {/* Row 2: Requested Hours, Session, Year of Graduation, Country */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          {/** All selects have fixed width 245px **/}
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Requested Hours</label>
-            <FormControl size="small" className="h-14 w-[245px]">
+            <FormControl size="small" className="h-14 w-full">
               <Select
                 value={requestedHours}
                 onChange={(e) => setRequestedHours(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 "
+                className="bg-white h-14 w-full"
                 sx={{
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -402,26 +458,26 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </FormControl>
           </div>
 
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Session</label>
-            <FormControl size="small" className="h-14 w-[245px]">
+            <FormControl size="small" className="h-14 w-full">
               <Select
                 value={session}
                 required
                 onChange={(e) => setSession(e.target.value)}
                 displayEmpty
-                className="bg-white h-14  w-[245px]"
+                className="bg-white h-14 w-full"
                 sx={{
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -435,26 +491,26 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </FormControl>
           </div>
 
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Year of Graduation</label>
-            <FormControl size="small" className="h-14 w-[245px]">
+            <FormControl size="small" className="h-14 w-full">
               <Select
                 value={yearOfGraduation}
                 required
                 onChange={(e) => setYearOfGraduation(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 w-[245px]"
+                className="bg-white h-14 w-full"
                 sx={{
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -471,7 +527,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </FormControl>
           </div>
 
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Country</label>
             <Autocomplete
               id="country-select-demo"
@@ -502,20 +558,20 @@ export function CreateNewOrderForm({ item, handleClose }) {
                   placeholder="Country"
                   required
                   size="small"
-                  className="h-14  w-[245px]"
+                  className="h-14 w-full"
                   InputProps={{
                     ...params.InputProps,
                     sx: {
                       height: 56,
                       borderRadius: "10px",
                       "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#A2A1A833", // custom border color
+                        borderColor: "#A2A1A833",
                       },
                       "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#16151C", // border on hover
+                        borderColor: "#16151C",
                       },
                       "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#16151C", // border on focus
+                        borderColor: "#16151C",
                       },
                     },
                     endAdornment: (
@@ -531,27 +587,27 @@ export function CreateNewOrderForm({ item, handleClose }) {
         </div>
 
         {/* Row 3: Time Zone, Start Date, Other (conditionally), Tutor Hourly Rate */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
           {/* Time Zone */}
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Time Zone</label>
-            <FormControl size="small" className="h-14 w-[245px]">
+            <FormControl size="small" className="h-14 w-full">
               <Select
                 value={gmt}
                 onChange={(e) => setGmt(e.target.value)}
                 displayEmpty
-                className="bg-white h-14 w-[245px]"
+                className="bg-white h-14 w-full"
                 sx={{
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -569,26 +625,26 @@ export function CreateNewOrderForm({ item, handleClose }) {
           </div>
 
           {/* Start Date */}
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Start Date</label>
-            <FormControl size="small" className="h-14 w-[245px]">
+            <FormControl size="small" className="h-14 w-full">
               <Select
                 required
                 value={startDateType}
                 onChange={handleStartDateTypeChange}
                 displayEmpty
-                className="bg-white h-14  w-[245px]"
+                className="bg-white h-14 w-full"
                 sx={{
                   height: 56,
                   borderRadius: "10px",
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833", // custom border color
+                    borderColor: "#A2A1A833",
                   },
                   "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on hover
+                    borderColor: "#16151C",
                   },
                   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C", // border on focus
+                    borderColor: "#16151C",
                   },
                 }}
                 IconComponent={KeyboardArrowDownIcon}
@@ -604,7 +660,7 @@ export function CreateNewOrderForm({ item, handleClose }) {
 
           {/* Other Date (conditionally rendered as its own column) */}
           {startDateType === "Other" && (
-            <div>
+            <div className="w-full">
               <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Start Date</label>
               <TextField
                 type="date"
@@ -612,20 +668,19 @@ export function CreateNewOrderForm({ item, handleClose }) {
                 value={customStartDate}
                 onChange={handleCustomStartDateChange}
                 size="small"
-                className="h-14 w-[245px]"
+                className="h-14 w-full"
                 InputProps={{
                   sx: {
                     height: 56,
                     borderRadius: "10px",
                     "& .MuiOutlinedInput-notchedOutline": {
-
-                      borderColor: "#A2A1A833", // custom border color
+                      borderColor: "#A2A1A833",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#16151C", // border on hover
+                      borderColor: "#16151C",
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#16151C", // border on focus
+                      borderColor: "#16151C",
                     },
                   }
                 }}
@@ -634,9 +689,9 @@ export function CreateNewOrderForm({ item, handleClose }) {
           )}
 
           {/* Tutor Hourly Rate */}
-          <div>
+          <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Tutor Hourly Rate (USD)*</label>
-            <div className="relative w-[245px]">
+            <div className="relative w-full">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
               <TextField
                 type="number"
@@ -645,20 +700,20 @@ export function CreateNewOrderForm({ item, handleClose }) {
                 onChange={(e) => setTutorHourlyRate(e.target.value)}
                 required
                 size="small"
-                className="pl-8 h-14  w-[245px]"
+                className="pl-8 h-14 w-full"
                 InputProps={{
                   sx: {
-                    paddingLeft: "2rem", height: 56,
+                    paddingLeft: "2rem",
+                    height: 56,
                     borderRadius: "10px",
-
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#A2A1A833", // custom border color
+                      borderColor: "#A2A1A833",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#16151C", // border on hover
+                      borderColor: "#16151C",
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#16151C", // border on focus
+                      borderColor: "#16151C",
                     },
                   }
                 }}
@@ -666,7 +721,6 @@ export function CreateNewOrderForm({ item, handleClose }) {
             </div>
           </div>
         </div>
-
       </div>
 
 

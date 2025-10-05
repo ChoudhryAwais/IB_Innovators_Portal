@@ -138,13 +138,15 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
         onClose={onClose}
         PaperProps={{
           sx: {
-            width: "90vw",
-            maxWidth: "1000px",
-            height: "auto",
-            maxHeight: "90vh",
-            overflow: "hidden",
-            borderRadius: "10px",
-            padding: 0,
+            sx: {
+              width: "1000px",    // override only here
+              height: "auto",
+              maxWidth: "95vw",  // responsive
+              maxHeight: "90vh", // scroll if needed
+              overflow: "hidden",
+              borderRadius: "10px",
+              padding: 0,
+            },
           },
         }}
       >

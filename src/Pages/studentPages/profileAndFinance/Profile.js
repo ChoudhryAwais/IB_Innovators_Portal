@@ -17,9 +17,6 @@ export function Profile() {
 
   const [show2FAModal, setShow2FAModal] = useState(false);
 
-  console.log("userDetails", userDetails)
-
-
   return (
     <div
     className="shadowAndBorder"

@@ -1,12 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate,useLocation } from "react-router-dom"
 import { useContext } from "react"
 import { MyContext } from "../../Context/MyContext"
-import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { db } from "../../firebase"
 
+
+import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBell, faArrowRightFromBracket, faChevronDown, faBars, faTimes } from "@fortawesome/free-solid-svg-icons"
 
@@ -18,6 +19,17 @@ import Slide from "@mui/material/Slide"
 import { getAuth } from "firebase/auth"
 import CustomModal from "../CustomModal/CustomModal";
 import Divider from "@mui/material/Divider"
+import {
+  collection,
+  doc,
+  updateDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  onSnapshot,
+} from "firebase/firestore";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -26,10 +38,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const NavBar = () => {
   const navigtePages = useNavigate()
   const [showModal, setShowModal] = useState(false)
-  const { userType, userDetails, setIsUserLoggedIn } = useContext(MyContext)
+  const { userType, userDetails, setIsUserLoggedIn, setUserDetails } = useContext(MyContext)
   const [notifications, setNotifications] = useState([])
   const [isMobile, setIsMobile] = useState(false)
   const [isNavBarOpen, setIsNavBarOpen] = useState(false)
+  const unreadNotifications = notifications?.filter(n => !n.read) || []
+  const [hasUnread, setHasUnread] = useState(false);
+  const [isOnNotificationsPage, setIsOnNotificationsPage] = useState(false);
+  const location = useLocation();
+
+  
+
+  useEffect(() => {
+  if (!isOnNotificationsPage) {
+    setHasUnread(unreadNotifications.length > 0);
+  }
+}, [unreadNotifications, isOnNotificationsPage]);
 
   useEffect(() => {
     let unsubscribe
@@ -69,6 +93,7 @@ const NavBar = () => {
       }
     } else if (userType === "admin") {
       if (userDetails.userId) {
+        console.log("User Details", userDetails);
         // Fetch admin details from userList (same as student/teacher)
         const userListRef = collection(db, "userList")
         const q = query(userListRef, where("userId", "==", userDetails.userId))
@@ -77,7 +102,7 @@ const NavBar = () => {
           q,
           (querySnapshot) => {
             querySnapshot.forEach((doc) => {
-              const adminDetails = doc.data()
+              const adminDetails = doc.data();
             })
           }
         )
@@ -99,14 +124,30 @@ const NavBar = () => {
 
   const handleChange = (e, navValue) => {
     e.preventDefault()
+    if (navValue === "notifications") {
+      setIsOnNotificationsPage(true);
+    } else {
+      setIsOnNotificationsPage(false);
+    }
     const pageNavigate = navValue === "home" ? "/" : navValue
     navigtePages(pageNavigate)
     window.scrollTo({ top: 0, behavior: "smooth" })
+    setHasUnread(false);
     // Close mobile navbar when navigating
     if (isMobile) {
       setIsNavBarOpen(false)
     }
   }
+
+  const handleNotificationClick = (e) => {
+    e.preventDefault();
+
+    setHasUnread(false);
+    // Go to notifications page
+    handleChange(e, "notifications");
+
+    //Clear red dot immediately when bell is clicked
+  };
 
   const checkIsMobile = () => {
     const mobile = window.innerWidth <= 769
@@ -163,14 +204,14 @@ const NavBar = () => {
         }}
       >
         {/* Avatar with emoji */}
-        <div className="w-8 h-8 sm:w-7 sm:h-7 bg-purple-200 rounded-lg flex items-center justify-center text-lg">
-          🤗
+        <div className="w-8 h-8 sm:w-7 sm:h-7 bg-[#4071B6] rounded-lg flex items-center justify-center text-lg">
+          <FontAwesomeIcon icon={faUser} className="text-[#ffff] text-sm sm:text-base" />
         </div>
 
         {/* User info */}
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-900">
-            {userDetails?.name || "Shahrukh"}
+            {userDetails?.userName || "N/A"}
           </span>
 
           {/* Hide role text on sm screens, show from md+ */}
@@ -178,8 +219,8 @@ const NavBar = () => {
             {userType === "admin"
               ? "Admin Manager"
               : userType === "teacher"
-              ? "Teacher"
-              : "Student"}
+                ? "Teacher"
+                : "Student"}
           </span>
         </div>
 
@@ -193,7 +234,7 @@ const NavBar = () => {
       {/* Notification bell */}
       <div
         className="relative h-[50px] w-[50px] sm:h-[40px] sm:w-[40px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center"
-        onClick={(e) => handleChange(e, "notifications")}
+        onClick={handleNotificationClick}
       >
         {/* Bell SVG */}
         <svg
@@ -219,9 +260,9 @@ const NavBar = () => {
         </svg>
 
         {/* Notification badge */}
-        {notifications?.length > 0 && (
-          <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex justify-center items-center text-xs font-medium">
-            {notifications?.length}
+        {hasUnread > 0 && (
+          <div className="absolute -top-1 -right-1 bg-[#E94234] text-white rounded-full w-5 h-5 flex justify-center items-center text-xs font-medium">
+            {unreadNotifications.length}
           </div>
         )}
       </div>
@@ -266,8 +307,8 @@ const NavBar = () => {
 
       {/* Toggle button for mobile - inside the navbar content */}
       {isMobile && (
-        <button 
-          onClick={toggleNavBar} 
+        <button
+          onClick={toggleNavBar}
           className="h-[40px] w-[40px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center navbar-toggle"
         >
           <FontAwesomeIcon
@@ -278,13 +319,17 @@ const NavBar = () => {
       )}
     </div>
   )
+  useEffect(() => {
+  // Check if user is currently viewing the notifications page
+  setIsOnNotificationsPage(location.pathname.includes("notifications"));
+}, [location]);
 
   return (
     <>
       {/* Mobile toggle button - outside navbar content */}
       {isMobile && (
-        <button 
-          onClick={toggleNavBar} 
+        <button
+          onClick={toggleNavBar}
           className="fixed top-4 right-4 z-50 h-[50px] w-[50px] bg-[#A2A1A81A] rounded-lg cursor-pointer transition-colors flex items-center justify-center navbar-toggle"
         >
           <FontAwesomeIcon
@@ -296,7 +341,7 @@ const NavBar = () => {
 
       {/* Backdrop for mobile */}
       {isMobile && isNavBarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm"
           onClick={() => setIsNavBarOpen(false)}
         />
@@ -304,10 +349,9 @@ const NavBar = () => {
 
       {/* Navbar content */}
       <div className={`
-        ${isMobile 
-          ? `fixed p-1 top-0 right-0 h-auto bg-white z-50 transition-transform duration-300 ease-in-out ${
-              isNavBarOpen ? 'translate-x-0' : 'translate-x-full'
-            }` 
+        ${isMobile
+          ? `fixed p-1 top-0 right-0 h-auto bg-white z-50 transition-transform duration-300 ease-in-out ${isNavBarOpen ? 'translate-x-0' : 'translate-x-full'
+          }`
           : 'relative'
         }
       `}>

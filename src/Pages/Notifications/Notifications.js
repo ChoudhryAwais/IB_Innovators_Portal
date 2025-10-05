@@ -169,6 +169,45 @@ export const Notifications = () => {
     }
   }
 
+  async function markAllAsRead() {
+    if (userType === "admin") {
+      const notificationsRef = collection(db, "adminNotifications");
+      const querySnapshot = await getDocs(notificationsRef);
+
+      querySnapshot.forEach(async (docSnap) => {
+        if (docSnap.data().read === false) {
+          await updateDoc(docSnap.ref, { read: true });
+        }
+      });
+
+      // Update local state
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, read: true }))
+      );
+    } else if (userType === "teacher" || userType === "student") {
+      const userListRef = collection(db, "userList");
+      const q = query(userListRef, where("userId", "==", userDetails.userId));
+      const snapshot = await getDocs(q);
+
+      if (!snapshot.empty) {
+        const userDoc = snapshot.docs[0];
+        const userData = userDoc.data();
+
+        const updatedNotifications = userData.notifications.map((n) => ({
+          ...n,
+          read: true,
+        }));
+
+        await updateDoc(doc(db, "userList", userDoc.id), {
+          notifications: updatedNotifications,
+        });
+
+        setNotifications(updatedNotifications);
+      }
+    }
+  }
+
+
   const notificationItemsPerPage = 10; // Update the number of items per page
   const [notificationCurrentPage, setNotificationCurrentPage] = useState(1);
 
@@ -201,8 +240,14 @@ export const Notifications = () => {
     return pages;
   };
 
-
   const visiblePages = getVisiblePages();
+
+  useEffect(() => {
+    return () => {
+      markAllAsRead();
+    };
+  }, []);
+
 
   return (
     <TopHeadingProvider>
@@ -270,8 +315,8 @@ export const Notifications = () => {
                 <Button
                   disabled={notificationCurrentPage === 1}
                   onClick={() => setNotificationCurrentPage(notificationCurrentPage - 1)}
-                  sx={{ 
-                    minWidth: { xs: '28px', sm: '32px' }, 
+                  sx={{
+                    minWidth: { xs: '28px', sm: '32px' },
                     padding: { xs: '2px', sm: '4px' },
                     height: { xs: '32px', sm: '36px' }
                   }}
@@ -330,8 +375,8 @@ export const Notifications = () => {
                     Math.ceil(notifications.length / notificationItemsPerPage)
                   }
                   onClick={() => setNotificationCurrentPage(notificationCurrentPage + 1)}
-                  sx={{ 
-                    minWidth: { xs: '28px', sm: '32px' }, 
+                  sx={{
+                    minWidth: { xs: '28px', sm: '32px' },
                     padding: { xs: '2px', sm: '4px' },
                     height: { xs: '32px', sm: '36px' }
                   }}
@@ -358,8 +403,8 @@ export const Notifications = () => {
           )}
 
           {/* Delete confirmation modal */}
-          <CustomModal 
-            open={showModal} 
+          <CustomModal
+            open={showModal}
             onClose={() => setShowModal(false)}
             PaperProps={{
               sx: {

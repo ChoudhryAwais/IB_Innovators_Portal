@@ -96,8 +96,6 @@ export default function TeacherInvoices() {
       (total, invoice) => total + parseFloat(invoice?.tutorHourlyRate),
       0
     );
-
-  console.log("totalAmount", filteredInvoices)
   
     return totalAmount;
   };

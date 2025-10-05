@@ -5,7 +5,6 @@ import { db } from "../../../../../firebase"
 import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 
 export function EditGuardianInformation({ userDetails, userId }) {
-  console.log("UserDetails (Guardian):", userDetails)
 
   // Initial values from Firestore
   const [relation, setRelation] = useState(userDetails?.otherInformation?.userDetails?.relation || "")

@@ -5,7 +5,6 @@ import { db } from "../../../../firebase"
 import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 
 export function GuardianInformation({ userDetails, userId }) {
-  console.log("UserDetails (Guardian):", userDetails)
 
   const [editing, setEditing] = useState(false)
 

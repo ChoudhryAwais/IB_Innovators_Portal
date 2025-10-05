@@ -289,15 +289,13 @@ const visiblePages = getVisiblePages(
       onClose={closingModal}
       PaperProps={{
         sx: {
-          width: "95vw",    // responsive width for mobile
-          sm: { width: "720px" }, // tablet
-          md: { width: "1080px" }, // desktop
-          height: "auto",
-          maxWidth: "95vw",
-          maxHeight: "90vh",
-          overflow: "hidden",
-          borderRadius: "10px",
-          padding: 0,
+         width: "1080px",    // override only here
+            height: "auto",
+            maxWidth: "95vw",  // responsive
+            maxHeight: "90vh", // scroll if needed
+            overflow: "hidden",
+            borderRadius: "10px",
+            padding: 0,
         },
       }}
     >

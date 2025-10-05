@@ -44,7 +44,7 @@ const AdminDashboard = () => {
   const { setFirstMessage, setSecondMessage } = useTopHeading()
 
   useEffect(() => {
-    setFirstMessage("Welcome User")
+    setFirstMessage(`Welcome ${userDetails?.userName || "User"}`)
     setSecondMessage("Good Morning")
   }, [setFirstMessage, setSecondMessage])
 
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
   ]
 
   return (
-    <TopHeadingProvider firstMessage={`Welcome ${userDetails?.name || "User"}`} secondMessage="Good Morning">
+    <TopHeadingProvider>
       {/* outer wrapper prevents horizontal overflow */}
       <div className="flex flex-col p-4 sm:p-6 gap-6 w-full overflow-x-hidden">
 

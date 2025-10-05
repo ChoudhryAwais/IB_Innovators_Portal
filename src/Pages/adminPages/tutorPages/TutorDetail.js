@@ -41,7 +41,6 @@ const TutorDetail = () => {
         unsubscribe = onSnapshot(q, (querySnapshot) => {
           if (!querySnapshot.empty) {
             const tutorDoc = querySnapshot.docs[0]
-            console.log("Tutor Data:", tutorData);
             setTutorData(tutorDoc.data())
           }
           setLoading(false)
