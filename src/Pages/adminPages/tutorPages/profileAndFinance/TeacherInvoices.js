@@ -50,7 +50,7 @@ export default function TeacherInvoices({ userDetails, userId }) {
 
   const provideMonthlyInvoice = (invoices, month, year) => {
     const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = invoice.createdAt.toDate()
+      const invoiceDate = new Date(invoice.sessionInfo.date)
       return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
     })
 
@@ -89,8 +89,8 @@ export default function TeacherInvoices({ userDetails, userId }) {
   }
 
   function extractMonthYearFromInvoice(invoice) {
-    const invoiceDate = invoice.createdAt.toDate()
-    return { month: invoiceDate.getMonth() + 1, year: invoiceDate.getFullYear() }
+    const date = new Date(invoice.sessionInfo.date)
+    return { month: date.getMonth() + 1, year: date.getFullYear() }
   }
 
   function getUniqueMonthsAndYears(invoices) {
@@ -277,7 +277,7 @@ export default function TeacherInvoices({ userDetails, userId }) {
                         {inv?.status === "Pending" ? (
                           <Button
                             variant="contained"
-                            
+
                             sx={{
                               backgroundColor: "#4071B6",
                               width: "116px",
