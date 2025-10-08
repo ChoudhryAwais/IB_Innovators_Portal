@@ -86,22 +86,22 @@ export const TutorPages = () => {
   }
 
   const getVisiblePages = (currentPage, totalPages, maxVisible = 4) => {
-  let startPage = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
-  let endPage = startPage + maxVisible - 1;
+    let startPage = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
+    let endPage = startPage + maxVisible - 1;
 
-  if (endPage > totalPages) {
-    endPage = totalPages;
-    startPage = Math.max(endPage - maxVisible + 1, 1);
-  }
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(endPage - maxVisible + 1, 1);
+    }
 
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-  return pages;
-};
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
-const visiblePages = getVisiblePages(currentPage, Math.ceil(searchedStudents.length / itemsPerPage));
+  const visiblePages = getVisiblePages(currentPage, Math.ceil(searchedStudents.length / itemsPerPage));
   return (
     <TopHeadingProvider>
       <div className="p-4 md:p-6 min-h-screen">
@@ -146,8 +146,19 @@ const visiblePages = getVisiblePages(currentPage, Math.ceil(searchedStudents.len
                     {/* Avatar + Name */}
                     <div className="flex items-center">
                       {/* Avatar */}
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-300 rounded-full flex items-center justify-center mr-3 md:mr-4 flex-shrink-0">
-                        <FontAwesomeIcon icon={faUser} className="text-gray-600 text-sm md:text-base" />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-[#4071B6] rounded-[4px] flex items-center justify-center mr-3 md:mr-4 flex-shrink-0 overflow-hidden">
+                        {student?.image ? (
+                          <img
+                            src={student.image}
+                            alt={student?.userName || "User"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faUser} // always faUser
+                            className="text-white text-sm md:text-base"
+                          />
+                        )}
                       </div>
                       {/* Tutor Name aligned with avatar bottom */}
                       <h3 className="font-semibold text-[#16151C] text-[16px] md:text-[18px] truncate">
@@ -184,7 +195,7 @@ const visiblePages = getVisiblePages(currentPage, Math.ceil(searchedStudents.len
                         backgroundColor: "#4071B6",
                         fontSize: "12px",
                         fontWeight: 600,
-                        textTransform: "none", 
+                        textTransform: "none",
                       }}
                     >
                       View Details
@@ -196,82 +207,82 @@ const visiblePages = getVisiblePages(currentPage, Math.ceil(searchedStudents.len
           </div>
 
           {searchedStudents?.length > itemsPerPage && (
-  <div className="mt-4 md:mt-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 px-4 py-3 bg-white">
-    <div className="text-xs md:text-sm text-gray-600 text-center md:text-left">
-      Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length} records
-    </div>
+            <div className="mt-4 md:mt-6 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0 px-4 py-3 bg-white">
+              <div className="text-xs md:text-sm text-gray-600 text-center md:text-left">
+                Showing {startIndex + 1} to {Math.min(endIndex, searchedStudents.length)} out of {searchedStudents.length} records
+              </div>
 
-    <Stack direction="row" spacing={1} alignItems="center">
-      {/* Previous button */}
-      <Button
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage(currentPage - 1)}
-        sx={{ minWidth: '32px', padding: '4px' }}
-      >
-        <svg
-          width="6"
-          height="12"
-          viewBox="0 0 6 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M5.46849 11.5856C5.79194 11.3269 5.84438 10.8549 5.58562 10.5315L1.96044 5.99997L5.58562 1.46849C5.84438 1.14505 5.79194 0.673077 5.46849 0.41432C5.14505 0.155562 4.67308 0.208004 4.41432 0.53145L0.414321 5.53145C0.19519 5.80536 0.19519 6.19458 0.414321 6.46849L4.41432 11.4685C4.67308 11.7919 5.14505 11.8444 5.46849 11.5856Z"
-            fill="#16151C"
-          />
-        </svg>
-      </Button>
+              <Stack direction="row" spacing={1} alignItems="center">
+                {/* Previous button */}
+                <Button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  sx={{ minWidth: '32px', padding: '4px' }}
+                >
+                  <svg
+                    width="6"
+                    height="12"
+                    viewBox="0 0 6 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M5.46849 11.5856C5.79194 11.3269 5.84438 10.8549 5.58562 10.5315L1.96044 5.99997L5.58562 1.46849C5.84438 1.14505 5.79194 0.673077 5.46849 0.41432C5.14505 0.155562 4.67308 0.208004 4.41432 0.53145L0.414321 5.53145C0.19519 5.80536 0.19519 6.19458 0.414321 6.46849L4.41432 11.4685C4.67308 11.7919 5.14505 11.8444 5.46849 11.5856Z"
+                      fill="#16151C"
+                    />
+                  </svg>
+                </Button>
 
-      {/* Page numbers */}
-      {getVisiblePages(currentPage, Math.ceil(searchedStudents.length / itemsPerPage), 4).map((page) => (
-        <Button
-          key={page}
-          onClick={() => setCurrentPage(page)}
-          sx={{
-            width: page === currentPage ? 35 : 32,
-            minWidth: 'unset',
-            height: 36,
-            borderRadius: page === currentPage ? '8px' : '50px',
-            padding: '7px 12px',
-            gap: '10px',
-            borderWidth: page === currentPage ? 1 : 0,
-            border: page === currentPage ? '1px solid #4071B6' : 'none',
-            background: '#FFFFFF',
-            color: page === currentPage ? '#4071B6' : '#16151C',
-            fontWeight: page === currentPage ? 600 : 300,
-            fontSize: '14px',
-          }}
-        >
-          {page}
-        </Button>
-      ))}
+                {/* Page numbers */}
+                {getVisiblePages(currentPage, Math.ceil(searchedStudents.length / itemsPerPage), 4).map((page) => (
+                  <Button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    sx={{
+                      width: page === currentPage ? 35 : 32,
+                      minWidth: 'unset',
+                      height: 36,
+                      borderRadius: page === currentPage ? '8px' : '50px',
+                      padding: '7px 12px',
+                      gap: '10px',
+                      borderWidth: page === currentPage ? 1 : 0,
+                      border: page === currentPage ? '1px solid #4071B6' : 'none',
+                      background: '#FFFFFF',
+                      color: page === currentPage ? '#4071B6' : '#16151C',
+                      fontWeight: page === currentPage ? 600 : 300,
+                      fontSize: '14px',
+                    }}
+                  >
+                    {page}
+                  </Button>
+                ))}
 
-      {/* Next button */}
-      <Button
-        disabled={currentPage === Math.ceil(searchedStudents.length / itemsPerPage)}
-        onClick={() => setCurrentPage(currentPage + 1)}
-        sx={{ minWidth: '32px', padding: '4px' }}
-      >
-        <svg
-          width="6"
-          height="12"
-          viewBox="0 0 6 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M0.531506 11.5856C0.20806 11.3269 0.155619 10.8549 0.414376 10.5315L4.03956 5.99997L0.414376 1.46849C0.155618 1.14505 0.208059 0.673077 0.531506 0.41432C0.854952 0.155562 1.32692 0.208004 1.58568 0.53145L5.58568 5.53145C5.80481 5.80536 5.80481 6.19458 5.58568 6.46849L1.58568 11.4685C1.32692 11.7919 0.854953 11.8444 0.531506 11.5856Z"
-            fill="#16151C"
-          />
-        </svg>
-      </Button>
-    </Stack>
-  </div>
-)}
+                {/* Next button */}
+                <Button
+                  disabled={currentPage === Math.ceil(searchedStudents.length / itemsPerPage)}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  sx={{ minWidth: '32px', padding: '4px' }}
+                >
+                  <svg
+                    width="6"
+                    height="12"
+                    viewBox="0 0 6 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M0.531506 11.5856C0.20806 11.3269 0.155619 10.8549 0.414376 10.5315L4.03956 5.99997L0.414376 1.46849C0.155618 1.14505 0.208059 0.673077 0.531506 0.41432C0.854952 0.155562 1.32692 0.208004 1.58568 0.53145L5.58568 5.53145C5.80481 5.80536 5.80481 6.19458 5.58568 6.46849L1.58568 11.4685C1.32692 11.7919 0.854953 11.8444 0.531506 11.5856Z"
+                      fill="#16151C"
+                    />
+                  </svg>
+                </Button>
+              </Stack>
+            </div>
+          )}
 
           {searchedStudents.length === 0 && (
             <div className="bg-white rounded-lg shadow-sm p-6 md:p-12 text-center">

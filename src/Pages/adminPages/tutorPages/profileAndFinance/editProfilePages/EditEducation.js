@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { db } from "../../../../../firebase"
-import { collection, getDocs, query, where, updateDoc} from "firebase/firestore"
+import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
+import Button from "@mui/material/Button"
 
 
 import { EditEducationHistory } from "./editEducationPages/EditEducationHistory"
@@ -17,16 +18,16 @@ export function EditEducation({ userDetails, userId }) {
   const [ibdpSubjects, setIbdpSubjects] = useState(userDetails?.ibdpSubjects || [])
   const [ibForm, setIbForm] = useState(userDetails?.ibForm || [])
   const [profileAdditionalIBInfo, setProfileAdditionalIBInfo] = useState(
-   userDetails?.profileAdditionalIBInfo || {
-     tokGrade: "",
-     totalIbScore: "",
-     eeSubjectArea: "",
-     secondEeSubjectArea: "",
-     yourIbSchool: "",
-     additionalInfo: "",
-   }
- )
-  
+    userDetails?.profileAdditionalIBInfo || {
+      tokGrade: "",
+      totalIbScore: "",
+      eeSubjectArea: "",
+      secondEeSubjectArea: "",
+      yourIbSchool: "",
+      additionalInfo: "",
+    }
+  )
+
   // ✅ use professionalTeachingExperience consistently
   const [professionalTeachingExperience, setProfessionalTeachingExperience] = useState(
     userDetails?.professionalTeachingExperience || {
@@ -85,13 +86,24 @@ export function EditEducation({ userDetails, userId }) {
 
       {/* Global Save Button */}
       <div className="flex justify-end mt-8">
-        <button
+        <Button
+          variant="contained"
+          className="ml-4 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+          style={{
+            borderRadius: "8px",
+            width: "140px",
+            height: "50px",
+            color: "#FFFFFF",
+            backgroundColor: "#4071B6",
+            fontSize: "12px",
+            fontWeight: 600,
+            textTransform: "none",
+          }}
           onClick={handleSave}
-          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
           disabled={saving}
         >
           {saving ? "Saving..." : "Save Changes"}
-        </button>
+        </Button>
       </div>
     </div>
   )

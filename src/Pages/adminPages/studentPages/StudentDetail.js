@@ -169,8 +169,8 @@ const StudentDetail = () => {
       <TopHeadingProvider>
         <div className="flex flex-col items-center justify-center h-screen p-4">
           <div className="text-base sm:text-lg text-gray-600 mb-4 text-center">Student not found</div>
-          <Button 
-            onClick={handleBackToList} 
+          <Button
+            onClick={handleBackToList}
             variant="outlined"
             sx={{
               width: { xs: '100%', sm: 'auto' },
@@ -192,8 +192,19 @@ const StudentDetail = () => {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-3 sm:mb-4 md:mb-6 gap-3 sm:gap-0">
               {/* Left Section: Avatar + Info */}
               <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-gray-200 rounded-full flex items-center justify-center border-2 border-gray-300 flex-shrink-0">
-                  <FontAwesomeIcon icon={faUser} className="text-base sm:text-lg md:text-2xl text-gray-500" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-[#4071B6] rounded-[4px] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {studentData?.image ? (
+                    <img
+                      src={studentData.image}
+                      alt={studentData?.userName || "User"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faUser} 
+                      className="text-white text-base sm:text-lg md:text-2xl"
+                    />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <h1 className="text-[16px] sm:text-[18px] md:text-[24px] font-semibold text-[#16151C] mb-1 truncate">

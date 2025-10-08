@@ -3,7 +3,8 @@
 import React, { useState } from "react"
 import { db } from "../../../../firebase"
 import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
-
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 export function GuardianInformation({ userDetails, userId }) {
 
   const [editing, setEditing] = useState(false)
@@ -78,30 +79,31 @@ export function GuardianInformation({ userDetails, userId }) {
     }
   }
 
-    return (
+  return (
     <div>
       {/* Profile Image */}
       <div className="flex flex-col items-start gap-6">
         <div className="flex-shrink-0">
-          <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300">
-            <svg
-              className="w-12 h-12 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
+          <div className="w-24 h-24 bg-[#4071B6] rounded-[4px] flex items-center justify-center overflow-hidden">
+            {userDetails?.otherInformation?.userDetails?.parentimage ? (
+              <img
+                src={userDetails.otherInformation.userDetails.parentimage}
+                alt={firstName || "User"}
+                className="w-full h-full object-cover"
               />
-            </svg>
+            ) : (
+              <FontAwesomeIcon
+                icon={faUser}
+                className="text-white text-4xl"
+              />
+            )}
           </div>
         </div>
 
         {/* Profile Details Grid */}
         <div className="w-full">
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-            
+
             {/* First Name */}
             <div>
               <label className="block text-[14px] font-light text-[#A2A1A8] mb-1">

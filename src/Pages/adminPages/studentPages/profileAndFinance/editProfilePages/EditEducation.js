@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { db } from "../../../../../firebase"
 import { collection, getDocs, query, where, updateDoc } from "firebase/firestore"
+import Button from "@mui/material/Button"
 
 import { EditEducationHistory } from "./EditEducationHistory"
 
@@ -48,17 +49,23 @@ export function EditEducation({ userDetails, userId }) {
 
       {/* Global Save Button */}
       <div className="flex justify-end mt-8">
-        <button
+        <Button
           onClick={handleSave}
-          className={`px-6 py-2 rounded-md text-white font-medium transition-colors ${
-            saving
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"
-          }`}
+          className="ml-4 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+              style={{
+                borderRadius: "8px",
+                width: "140px",
+                height: "50px",
+                color: "#FFFFFF",
+                backgroundColor: "#4071B6",
+                fontSize: "12px",
+                fontWeight: 600,
+                textTransform: "none",
+              }}
           disabled={saving}
         >
           {saving ? "Saving..." : "Save Changes"}
-        </button>
+        </Button>
       </div>
     </div>
   )

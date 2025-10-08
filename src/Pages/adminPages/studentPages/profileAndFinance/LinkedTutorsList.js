@@ -3,6 +3,9 @@ import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { db } from "../../../../firebase"
 import TutorDetails from "./TutorDetails"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
 
 export default function LinkedTutorsList({ userId }) {
   const [categorizedClasses, setCategorizedClasses] = useState({})
@@ -19,21 +22,21 @@ export default function LinkedTutorsList({ userId }) {
 
           snapshot.forEach((doc) => {
             const data = doc.data()
-            ;(data.invoices || []).forEach((invoice) => {
-              const { teacherId, teacherName } = invoice
+              ; (data.invoices || []).forEach((invoice) => {
+                const { teacherId, teacherName } = invoice
 
-              if (!classesByTutor[teacherId]) {
-                classesByTutor[teacherId] = {
-                  tutorName: teacherName,
-                  classes: [],
+                if (!classesByTutor[teacherId]) {
+                  classesByTutor[teacherId] = {
+                    tutorName: teacherName,
+                    classes: [],
+                  }
                 }
-              }
 
-              classesByTutor[teacherId].classes.push({
-                ...invoice,
-                linkId: doc.id,
+                classesByTutor[teacherId].classes.push({
+                  ...invoice,
+                  linkId: doc.id,
+                })
               })
-            })
           })
 
           setCategorizedClasses(classesByTutor)
@@ -122,11 +125,21 @@ export default function LinkedTutorsList({ userId }) {
             className="flex h-[60px] items-center justify-between py-4 px-2 bg-[#A2A1A80D] border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-600">
-                  {tutorData.tutorName?.charAt(0) || "T"}
-                </span>
+              <div className="w-10 h-10 bg-[#4071B6] rounded-full flex items-center justify-center overflow-hidden">
+                {tutorData?.image ? (
+                  <img
+                    src={tutorData.image}
+                    alt={tutorData?.tutorName || "User"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faUser}
+                    className="text-white text-sm"
+                  />
+                )}
               </div>
+
               <span className="text-[18px] font-light text-[#16151C]">
                 {tutorData.tutorName}
               </span>

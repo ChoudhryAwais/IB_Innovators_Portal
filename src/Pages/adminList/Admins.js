@@ -5,7 +5,7 @@ import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import Button from "@mui/material/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faMagnifyingGlass, faUserShield } from "@fortawesome/free-solid-svg-icons"
+import { faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons"
 import { db } from "../../firebase"
 import { collection, query, onSnapshot, where } from "firebase/firestore"
 import { TopHeadingProvider, useTopHeading } from "../../Components/Layout"
@@ -130,8 +130,19 @@ export const Admins = () => {
                   <div className="flex-1">
                     <div className="flex items-center">
                       {/* Avatar */}
-                      <div className="w-12 h-12 bg-[#4071B6] rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                        <FontAwesomeIcon icon={faUserShield} className="text-white" />
+                      <div className="w-12 h-12 bg-[#4071B6] rounded-[4px] flex items-center justify-center mr-4 flex-shrink-0 overflow-hidden">
+                        {admin?.image ? (
+                          <img
+                            src={admin.image}
+                            alt={admin?.userName || "User"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className="text-white text-lg"
+                          />
+                        )}
                       </div>
                       {/* Name */}
                       <h3 className="font-semibold text-[#16151C] text-[18px]">

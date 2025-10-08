@@ -65,11 +65,11 @@ export function EditYourSupport({ userDetails, userId }) {
           minRows={2}
           value={subjects}
           onChange={(e) => setSubjects(e.target.value)}
-          
+
           placeholder="Enter subjects separated by commas"
           sx={{
             "& .MuiOutlinedInput-root": {
-              padding: 0, 
+              padding: 0,
               "& fieldset": {
                 border: "none", // no border by default
               },
@@ -82,8 +82,8 @@ export function EditYourSupport({ userDetails, userId }) {
 
             },
             "& .MuiOutlinedInput-root.Mui-focused .MuiInputBase-inputMultiline": {
-      padding: "16.5px 14px", // default MUI padding restored on focus
-    },
+              padding: "16.5px 14px", // default MUI padding restored on focus
+            },
           }}
         />
         <p className="text-base text-md mt-4 mb-2">
@@ -134,7 +134,17 @@ export function EditYourSupport({ userDetails, userId }) {
       <div className="flex justify-end mt-8">
         <Button
           variant="contained"
-          color="primary"
+          className="ml-4 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
+          style={{
+            borderRadius: "8px",
+            width: "140px",
+            height: "50px",
+            color: "#FFFFFF",
+            backgroundColor: "#4071B6",
+            fontSize: "12px",
+            fontWeight: 600,
+            textTransform: "none",
+          }}
           onClick={saveChanges}
           disabled={saving}
         >

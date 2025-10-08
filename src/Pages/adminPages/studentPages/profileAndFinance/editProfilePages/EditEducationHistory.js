@@ -129,8 +129,23 @@ export function EditEducationHistory({ data, setData }) {
       <div className="flex justify-between items-start border-b border-gray-300 pb-6 mb-4">
         <h2 className="text-xl font-bold text-gray-800">Education History</h2>
         {!addingNewRecord && (
-          <Button variant="outlined" onClick={() => setAddingNewRecord(true)}>
-            Add New Record
+          <Button
+            variant="outlined"
+            onClick={() => setAddingNewRecord(true)}
+            sx={{
+              borderRadius: "8px",
+              width: "180px",
+              height: "40px",
+              color: "#4071B6",
+              backgroundColor: "#4071B60D",
+              borderColor: "#4071B6",
+              fontSize: "16px",
+              padding: 0,
+              fontWeight: 600,
+              textTransform: "none",
+            }}
+          >
+           + Add New Record
           </Button>
         )}
       </div>
@@ -163,7 +178,7 @@ export function EditEducationHistory({ data, setData }) {
           style={{
             boxSizing: "border-box",
           }}
-          >
+        >
           <h3 className="text-xl font-semibold text-gray-900 mb-5">
             Add Education Record
           </h3>

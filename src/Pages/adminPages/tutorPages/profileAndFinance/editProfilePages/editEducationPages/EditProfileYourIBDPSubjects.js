@@ -118,11 +118,22 @@ export function EditProfileYourIBDPSubjects({ data = [], setData }) {
         {!addingNewRecord && (
           <div className="w-80 flex justify-end">
             <Button
-              sx={{ padding: "10px" }}
+              sx={{
+                borderRadius: "8px",
+                width: "180px",
+                height: "40px",
+                color: "#4071B6",
+                backgroundColor: "#4071B60D",
+                borderColor: "#4071B6",
+                fontSize: "16px",
+                padding:0,
+                fontWeight: 600,
+                textTransform: "none",
+              }}
               variant="outlined"
               onClick={() => setAddingNewRecord(true)}
             >
-              Add New Subject
+              + Add New Subject
             </Button>
           </div>
         )}

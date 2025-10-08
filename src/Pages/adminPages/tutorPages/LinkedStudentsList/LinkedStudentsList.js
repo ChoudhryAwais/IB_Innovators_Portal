@@ -3,6 +3,8 @@ import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { db } from "../../../../firebase"
 import StudentDetails from "./StudentDetails"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export default function LinkedStudentsList({ userId }) {
   const [categorizedClasses, setCategorizedClasses] = useState({})
@@ -113,8 +115,19 @@ export default function LinkedStudentsList({ userId }) {
             className="flex h-[60px] items-center justify-between py-4 px-2 bg-[#A2A1A80D] border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-gray-600">{studentData.studentName?.charAt(0) || "S"}</span>
+              <div className="w-10 h-10 bg-[#4071B6] rounded-full flex items-center justify-center overflow-hidden">
+                {studentData?.image ? (
+                  <img
+                    src={studentData.image}
+                    alt={studentData?.studentName || "User"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faUser} // always faUser
+                    className="text-white text-sm"
+                  />
+                )}
               </div>
               <span className="text-[18px] font-light text-[#16151C]">{studentData.studentName}</span>
             </div>

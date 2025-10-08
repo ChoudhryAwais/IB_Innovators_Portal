@@ -147,8 +147,19 @@ export const StudentPages = () => {
                     {/* Avatar + Name */}
                     <div className="flex items-center">
                       {/* Avatar */}
-                      <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-gray-300 rounded-full flex items-center justify-center mr-3 sm:mr-3.5 md:mr-4 flex-shrink-0">
-                        <FontAwesomeIcon icon={faUser} className="text-gray-600 text-sm sm:text-base" />
+                      <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-[#4071B6] rounded-[4px] flex items-center justify-center mr-3 sm:mr-3.5 md:mr-4 flex-shrink-0 overflow-hidden">
+                        {student?.image ? (
+                          <img
+                            src={student.image}
+                            alt={student?.userName || "User"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faUser} 
+                            className="text-white text-sm sm:text-base"
+                          />
+                        )}
                       </div>
                       {/* Student Name */}
                       <h3 className="font-semibold text-[#16151C] text-[16px] sm:text-[17px] md:text-[18px] truncate">
