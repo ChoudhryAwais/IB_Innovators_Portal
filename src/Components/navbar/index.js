@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { useNavigate,useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useContext } from "react"
 import { MyContext } from "../../Context/MyContext"
 import { db } from "../../firebase"
@@ -47,13 +47,13 @@ const NavBar = () => {
   const [isOnNotificationsPage, setIsOnNotificationsPage] = useState(false);
   const location = useLocation();
 
-  
+
 
   useEffect(() => {
-  if (!isOnNotificationsPage) {
-    setHasUnread(unreadNotifications.length > 0);
-  }
-}, [unreadNotifications, isOnNotificationsPage]);
+    if (!isOnNotificationsPage) {
+      setHasUnread(unreadNotifications.length > 0);
+    }
+  }, [unreadNotifications, isOnNotificationsPage]);
 
   useEffect(() => {
     let unsubscribe
@@ -93,7 +93,6 @@ const NavBar = () => {
       }
     } else if (userType === "admin") {
       if (userDetails.userId) {
-        console.log("User Details", userDetails);
         // Fetch admin details from userList (same as student/teacher)
         const userListRef = collection(db, "userList")
         const q = query(userListRef, where("userId", "==", userDetails.userId))
@@ -204,9 +203,17 @@ const NavBar = () => {
         }}
       >
         {/* Avatar with emoji */}
-        <div className="w-8 h-8 sm:w-7 sm:h-7 bg-[#4071B6] rounded-lg flex items-center justify-center text-lg">
-          <FontAwesomeIcon icon={faUser} className="text-[#ffff] text-sm sm:text-base" />
-        </div>
+        {!userDetails?.image ? (
+          <div className="w-8 h-8 sm:w-7 sm:h-7 bg-[#4071B6] rounded-lg flex items-center justify-center text-lg">
+            <FontAwesomeIcon icon={faUser} className="text-[#ffff] text-sm sm:text-base" />
+          </div>
+        ) : (
+          <img
+            src={userDetails.image}
+            alt={userDetails.userName || "User"}
+            className="w-8 h-8 sm:w-7 sm:h-7 rounded-lg object-cover"
+          />
+        )}
 
         {/* User info */}
         <div className="flex flex-col">
@@ -320,9 +327,9 @@ const NavBar = () => {
     </div>
   )
   useEffect(() => {
-  // Check if user is currently viewing the notifications page
-  setIsOnNotificationsPage(location.pathname.includes("notifications"));
-}, [location]);
+    // Check if user is currently viewing the notifications page
+    setIsOnNotificationsPage(location.pathname.includes("notifications"));
+  }, [location]);
 
   return (
     <>

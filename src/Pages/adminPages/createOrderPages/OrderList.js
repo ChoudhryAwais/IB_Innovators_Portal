@@ -20,6 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import Slide from "@mui/material/Slide"
 import CustomModal from "../../../Components/CustomModal/CustomModal";
 import Divider from "@mui/material/Divider"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -189,17 +190,28 @@ export function OrderList() {
               <div className="flex-1">
                 {/* Avatar + Student Name */}
                 <div className="flex items-center">
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gray-300 rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                    <img
-                      src="/profile-picture-of-.jpg"
-                      alt={item?.studentName}
-                      className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg object-cover"
-                    />
+                  {/* Avatar */}
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#4071B6] rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0 overflow-hidden">
+                    {item?.image ? (
+                      <img
+                        src={item.image}
+                        alt={item?.studentName || "User"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faUser} // always faUser
+                        className="text-white text-xl sm:text-2xl"
+                      />
+                    )}
                   </div>
+
+                  {/* Student Name */}
                   <h3 className="font-semibold text-[#16151C] text-[16px] sm:text-[18px] truncate">
-                    {item?.studentName}
+                    {item?.studentName || "N/A"}
                   </h3>
                 </div>
+
 
                 {/* Order Details (indented under name) */}
                 <div className="text-sm text-gray-600 mt-2 pl-0 sm:pl-[4.5rem] space-y-1">

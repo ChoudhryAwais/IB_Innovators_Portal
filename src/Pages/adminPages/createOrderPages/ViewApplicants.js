@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { MyContext } from "../../../Context/MyContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGraduationCap, faTimes } from "@fortawesome/free-solid-svg-icons"
@@ -13,6 +13,8 @@ import getTutorSelectedForStudentEmailTemplate from "../../../Components/getEmai
 import getJobApprovedEmailTemplate from "../../../Components/getEmailTemplate/getJobApprovedEmailTemplate"
 import CustomModal from "../../../Components/CustomModal/CustomModal"
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, IconButton } from "@mui/material"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+
 
 export default function ViewApplicants({ tutor, order, open, onClose }) {
   const { userDetails } = useContext(MyContext)
@@ -138,15 +140,13 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
         onClose={onClose}
         PaperProps={{
           sx: {
-            sx: {
-              width: "1000px",    // override only here
-              height: "auto",
-              maxWidth: "95vw",  // responsive
-              maxHeight: "90vh", // scroll if needed
-              overflow: "hidden",
-              borderRadius: "10px",
-              padding: 0,
-            },
+            width: "1080px",    // override only here
+            height: "auto",
+            maxWidth: "95vw",  // responsive
+            maxHeight: "90vh", // scroll if needed
+            overflow: "hidden",
+            borderRadius: "10px",
+            padding: 0,
           },
         }}
       >
@@ -175,34 +175,63 @@ export default function ViewApplicants({ tutor, order, open, onClose }) {
             <div className="space-y-6">
               {/* Student Info */}
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
+                <div className="w-12 h-12 bg-[#4071B6] rounded-[4px] flex items-center justify-center overflow-hidden">
+                  {order?.studentInformation?.image ? (
+                    <img
+                      src={order.studentInformation.image}
+                      alt={order?.studentInformation?.userName || "User"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faUser} // always faUser
+                      className="text-white text-lg"
+                    />
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-y-1 gap-x-16">
-                  <div className="font-light text-[14px] text-[#16151C]">Student Name:</div>
-                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.studentInformation?.userName}</div>
-
-                  <div className="font-light text-[14px] text-[#16151C]">Year of Graduation:</div>
-                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.yearOfGraduation}</div>
-
-                  <div className="font-light text-[14px] text-[#16151C]">Time Zone:</div>
-                  <div className="font-medium text-text-[14px] text-[#16151C]">{order?.timeZone}</div>
+                <div className="space-y-2">
+                  <div className="flex items-baseline gap-8">
+                    <div className="font-light text-[14px] text-[#16151C] w-36">Student Name:</div>
+                    <div className="font-medium text-[14px] text-[#16151C]">{order?.studentInformation?.userName}</div>
+                  </div>
+                  <div className="flex items-baseline gap-8">
+                    <div className="font-light text-[14px] text-[#16151C] w-36">Year of Graduation:</div>
+                    <div className="font-medium text-[14px] text-[#16151C]">{order?.yearOfGraduation}</div>
+                  </div>
+                  <div className="flex items-baseline gap-8">
+                    <div className="font-light text-[14px] text-[#16151C] w-36">Time Zone:</div>
+                    <div className="font-medium text-[14px] text-[#16151C]">{order?.gmt}</div>
+                  </div>
                 </div>
               </div>
 
               {/* Tutor Info */}
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <FontAwesomeIcon className="text-gray-600 text-lg" icon={faGraduationCap} />
+                <div className="w-12 h-12 bg-[#4071B6] rounded-[4px] flex items-center justify-center overflow-hidden">
+                  {order?.tutorDetails?.image ? (
+                    <img
+                      src={order.tutorDetails.image}
+                      alt={order?.tutorDetails?.userName || "User"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      icon={faUser} // always faUser
+                      className="text-white text-lg"
+                    />
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-y-1 gap-x-4">
-                  <div className="font-light text-[14px] text-[#16151C]">Tutor Name:</div>
-                  <div className="font-medium text-text-[14px] text-[#16151C]">{tutor?.tutorDetails?.userName}</div>
-
-                  <div className="font-light text-[14px] text-[#16151C]">Email:</div>
-                  <div className="font-medium text-text-[14px] text-[#16151C]">{tutor?.tutorDetails?.email}</div>
+                <div className="space-y-2">
+                  <div className="flex items-baseline gap-8">
+                    <div className="font-light text-[14px] text-[#16151C] w-36">Tutor Name:</div>
+                    <div className="font-medium text-[14px] text-[#16151C]">{tutor?.tutorDetails?.userName}</div>
+                  </div>
+                  <div className="flex items-baseline gap-8">
+                    <div className="font-light text-[14px] text-[#16151C] w-36">Email:</div>
+                    <div className="font-medium text-[14px] text-[#16151C]">{tutor?.tutorDetails?.email}</div>
+                  </div>
                 </div>
               </div>
             </div>

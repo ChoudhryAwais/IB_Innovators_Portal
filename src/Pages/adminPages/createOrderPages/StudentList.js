@@ -14,6 +14,7 @@ import Stack from "@mui/material/Stack"
 import { CreateOrderForm } from "./CreateOrderForm"
 import CustomModal from "../../../Components/CustomModal/CustomModal";
 import Divider from "@mui/material/Divider"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
 
 export function StudentList() {
   const { userDetails } = useContext(MyContext)
@@ -155,17 +156,28 @@ export function StudentList() {
                 <div className="flex-1">
                   {/* Avatar + Student Name */}
                   <div className="flex items-center">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gray-300 rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                      <img
-                        src="/profile-picture-of-.jpg"
-                        alt={student?.studentInformation?.userName}
-                        className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg object-cover"
-                      />
+                    {/* Avatar */}
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#4071B6] rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0 overflow-hidden">
+                      {student?.studentInformation?.image ? (
+                        <img
+                          src={student.studentInformation.image}
+                          alt={student?.studentInformation?.userName || "User"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faUser} 
+                          className="text-white text-xl sm:text-2xl"
+                        />
+                      )}
                     </div>
+
+                    {/* Student Name */}
                     <h3 className="font-semibold text-[#16151C] text-[16px] sm:text-[18px] truncate">
-                      {student?.studentInformation?.userName}
+                      {student?.studentInformation?.userName || "N/A"}
                     </h3>
                   </div>
+
 
                   {/* Student Details (indented under name) */}
                   <div className="text-sm text-gray-600 mt-2 pl-0 sm:pl-[4.5rem] space-y-1">

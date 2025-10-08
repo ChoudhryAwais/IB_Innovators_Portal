@@ -12,6 +12,7 @@ import {
   onSnapshot,
   getDoc,
   orderBy,
+  setDoc,
 } from "firebase/firestore"
 import { db } from "../../firebase"
 import { MyContext } from "../../Context/MyContext"
@@ -148,25 +149,6 @@ export default function ManageLinks() {
     navigate(`/links/invoices/${link.id}`, { state: { link } });
   };
 
-  const handleMarkAsPaid = async (invoice) => {
-    const updatedInvoices = selectedLink.invoices.map((inv) => {
-      if (inv.createdAt === invoice.createdAt) {
-        return { ...inv, status: "Paid" };
-      }
-      return inv;
-    });
-
-    const docRef = doc(collection(db, "Linked"), selectedLink.id);
-
-    await updateDoc(docRef, {
-      invoices: updatedInvoices,
-    });
-
-    alert(`Invoice marked as paid.`);
-    setShowInvoicesModal(false);
-    handleViewInvoicesClick(selectedLink); // refresh the modal with updated data
-  };
-
   const { isUserLoggedIn, userType } = useContext(MyContext);
   const navigate = useNavigate();
 
@@ -279,56 +261,120 @@ export default function ManageLinks() {
   };
 
   const handleModalSubmit = async () => {
-    if (selectedLink && invoicePrice) {
+    if (selectedLink && Number(invoicePrice)) {
       await addCredits(selectedLink, invoicePrice);
     }
     setShowModal(false);
     setInvoicePrice("");
   };
 
-  const addCredits = async (link, price) => {
-    const accountRef = doc(db, "userList", link?.studentId);
+  const addCredits = async (link, amount) => {
+    const accountRef = doc(db, "Linked", link?.id);
 
-    // Fetch the current document
     try {
       setLoading(true);
       const docSnapshot = await getDoc(accountRef);
+      let currentCredits = 0;
 
       if (docSnapshot.exists()) {
-        // If the document exists, retrieve the current credits value
-        const currentCredits = docSnapshot.data().credits;
-        // Subtract a certain value from the current credits
-        const updatedCredits = parseFloat(currentCredits) + parseFloat(price);
+        currentCredits = docSnapshot.data().credits || 0;
+        console.log("Current credits:", currentCredits);
+      }
 
-        const balanceHistory = {
-          id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
-          amount: price,
-          createdAt: new Date(),
-        };
+      const addedAmount = parseFloat(amount || 0);
+      console.log("Added amount:", addedAmount);
+      const newCredits = currentCredits + addedAmount;
+      console.log("New credits:", newCredits);
 
-        // Update the document with the new credits value
-        await updateDoc(accountRef, {
-          credits: updatedCredits,
+      // Create balance history record
+      const balanceHistory = {
+        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
+        amount: parseFloat(addedAmount * link?.price).toFixed(2),
+        createdAt: new Date(),
+      };
+
+      // Save history if positive
+      if (addedAmount > 0) {
+        const userRef = doc(collection(db, "userList"), link?.studentId);
+        await updateDoc(userRef, {
           balanceHistory: arrayUnion(balanceHistory),
         });
-
-        addNotification(
-          `Admin added a credit of £ ${price} to you account.`,
-          link?.studentId
-        );
-      } else {
-        console.error("Document not found");
       }
+
+      // Update or set credits
+      if (docSnapshot.exists()) {
+        await updateDoc(accountRef, { credits: newCredits });
+      } else {
+        await setDoc(accountRef, { credits: newCredits });
+      }
+
+      addNotification(
+        `Admin added ${amount} credits to your account.`,
+        link?.id
+      );
+      toast.success("Credits added successfully");
     } catch (e) {
-      toast.error("Error Occured");
+      console.error("Error adding credits: ", e);
+      toast.error("Error occurred while adding credits");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeCredits = async (link, amount) => {
+    const accountRef = doc(db, "Linked", link?.id);
+
+    try {
+      setLoading(true);
+      const docSnapshot = await getDoc(accountRef);
+      let currentCredits = 0;
+
+      if (docSnapshot.exists()) {
+        currentCredits = docSnapshot.data().credits || 0;
+      }
+
+      const deductedAmount = parseFloat(amount || 0);
+      const newCredits = Math.max(currentCredits - deductedAmount, 0); // Prevent negative
+
+      // Create balance history record
+      const balanceHistory = {
+        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
+        amount: parseFloat(-deductedAmount * link?.price).toFixed(2), // Negative for removal
+        createdAt: new Date(),
+      };
+
+      // Save history
+      if (deductedAmount > 0) {
+        const userRef = doc(collection(db, "userList"), link?.studentId);
+        await updateDoc(userRef, {
+          balanceHistory: arrayUnion(balanceHistory),
+        });
+      }
+
+      // Update or set credits
+      if (docSnapshot.exists()) {
+        await updateDoc(accountRef, { credits: newCredits });
+      } else {
+        await setDoc(accountRef, { credits: newCredits });
+      }
+
+      addNotification(
+        `Admin removed ${amount} credits from your account.`,
+        link?.id
+      );
+      toast.success("Credits removed successfully");
+    } catch (e) {
+      console.error("Error removing credits: ", e);
+      toast.error("Error occurred while removing credits");
     } finally {
       setLoading(false);
     }
   };
 
   const handleRemoveBalanceModalSubmit = async () => {
-    if (selectedLink && invoicePrice) {
-      await removeBalanceFromLink(selectedLink, invoicePrice);
+    if (selectedLink && Number(invoicePrice)) {
+      // await removeBalanceFromLink(selectedLink, invoicePrice);
+      await removeCredits(selectedLink, invoicePrice);
     }
     setRemoveBalance(false);
     setInvoicePrice("");
@@ -690,10 +736,8 @@ export default function ManageLinks() {
                         <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
                           {fetchingCredits
                             ? "Fetching..."
-                            : calculateHoursLeft(
-                              convertToGBP(link?.price),
-                              creditsForSelectedStudent
-                            )?.toFixed(2)}
+                            :  link?.credits || 0 
+                          }
                         </span>
                       </div>
                       <div className="flex flex-col sm:flex-row sm:items-center">
@@ -1091,7 +1135,7 @@ export default function ManageLinks() {
                         }}
                         onClick={handleRemoveBalanceModalSubmit}
                       >
-                        {loading ? "Submitting" : "Submit"}
+                        {loading ? "Removing" : "Remove"}
                       </Button>
                     </div>
                   </CustomModal>

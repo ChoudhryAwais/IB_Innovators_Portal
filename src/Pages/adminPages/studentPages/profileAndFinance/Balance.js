@@ -108,7 +108,7 @@ export default function Balance({ userDetails, userId }) {
             (worth £ {userDetails?.credits?.toFixed(2)})
           </span>
         </h2> */}
-      <h1 className="text-left text-[24px] font-semibold mb-6">Credits Details</h1>
+      <h1 className="text-left text-[24px] font-semibold mb-6">Payments Details</h1>
       <div className="space-y-4">
         {result.map((item) => {
           const monthKey = `${item.month}-${item.year}`
@@ -170,7 +170,7 @@ export default function Balance({ userDetails, userId }) {
                     {months[item?.month - 1]} {item?.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    $ {calculateMonthlyInvoice(userDetails?.balanceHistory || [], item?.month, item?.year)}
+                     {calculateMonthlyInvoice(userDetails?.balanceHistory || [], item?.month, item?.year)}
                   </div>
                 </div>
               </AccordionSummary>
@@ -192,11 +192,11 @@ export default function Balance({ userDetails, userId }) {
                     <Grid item xs={4}>
                       Date
                     </Grid>
-                    <Grid item xs={6.2}>
+                    <Grid item xs={6.4}>
                       Time
                     </Grid>
-                    <Grid item xs={1.8}>
-                      Amount
+                    <Grid item xs={1.6}>
+                      Credits
                     </Grid>
                   </Grid>
 
@@ -232,7 +232,7 @@ export default function Balance({ userDetails, userId }) {
                           <div className="text-[14px] font-light text-[#16151C]">{time}</div>
                         </Grid>
                         <Grid item xs={1.7}>
-                          <div className="text-[14px] font-light text-[#16151C] text-end">$ {inv?.amount}</div>
+                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount}</div>
                         </Grid>
                       </Grid>
                     )

@@ -12,6 +12,8 @@ import toast from "react-hot-toast"
 
 import { Button } from "@mui/material"
 import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+
 
 export function CreateOrderForm({ item, handleClose }) {
   const { userDetails, addNotification, adminAddNotification } = useContext(MyContext)
@@ -132,8 +134,19 @@ export function CreateOrderForm({ item, handleClose }) {
         {/* Student Info Section */}
         <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
           {/* Icon */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2 sm:mb-0">
-            <FontAwesomeIcon className="text-gray-600 text-base sm:text-lg" icon={faGraduationCap} />
+          <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#4071B6] rounded-[4px] flex items-center justify-center mb-2 sm:mb-0 overflow-hidden">
+            {item?.studentInformation?.image ? (
+              <img
+                src={item.studentInformation.image}
+                alt={item?.studentInformation.userName || "Student"}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FontAwesomeIcon
+                className="text-white text-base sm:text-lg"
+                icon={faUser}
+              />
+            )}
           </div>
 
           {/* Info */}
@@ -216,7 +229,7 @@ export function CreateOrderForm({ item, handleClose }) {
                     {days.map((day) => (
                       <td key={day} className="p-2 text-center">
                         <div
-                          className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time) 
+                          className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
                             ? "bg-[#F49342]" : "bg-white hover:border-gray-400"
                             }`}
                         >
@@ -259,7 +272,7 @@ export function CreateOrderForm({ item, handleClose }) {
                     className="p-2 flex justify-center items-center"
                   >
                     <div
-                      className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time) 
+                      className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
                         ? "bg-[#F49342]" : "bg-white hover:border-gray-400"
                         }`}
                     >

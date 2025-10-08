@@ -19,7 +19,6 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 import Ellipse from "../../../assets/icons/Ellipse 1171.png"
 
-
 export function ApplicationsList() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -213,10 +212,10 @@ export function ApplicationsList() {
                                 <img
                                   src={applicant.tutorDetails.profilePicture}
                                   alt={applicant.tutorDetails?.userName || "Tutor"}
-                                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover bg-gray-200"
+                                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-gray-200 text-gray-500">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg bg-[#4071B6] text-[#ffff]">
                                   <FontAwesomeIcon icon={faUser} className="text-lg sm:text-xl" />
                                 </div>
                               )}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { MyContext } from "../../../Context/MyContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faGraduationCap } from "@fortawesome/free-solid-svg-icons"
@@ -12,12 +12,9 @@ import toast from "react-hot-toast"
 
 import { Autocomplete, Box, MenuItem, Select, TextField, FormControl, Button } from "@mui/material"
 import getCourseRequestedEmailTemplate from "../../../Components/getEmailTemplate/getCourseRequestedEmailTemplate"
-import { useEffect } from "react"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { InputAdornment } from "@mui/material";
-
-
-const graduationYears = ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"]
+import { faUser } from "@fortawesome/free-solid-svg-icons"
 
 export function CreateNewOrderForm({ item, handleClose }) {
   const { userDetails, subjectsArray } = useContext(MyContext)
@@ -43,6 +40,27 @@ export function CreateNewOrderForm({ item, handleClose }) {
   const [price, setPrice] = useState(null)
 
   const [submitting, setSubmitting] = useState(false)
+
+  const [graduationYears, setGraduationYears] = useState([]);
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth(); // 0 = Jan, 4 = May, 10 = Nov
+
+    let startYear = currentYear;
+
+    if (session === "May Session") {
+      // If current month is after May (i.e. > 4), start from next year
+      startYear = currentMonth > 4 ? currentYear + 1 : currentYear;
+    } else if (session === "November Session") {
+      // If current month is after November (i.e. > 10), start from next year
+      startYear = currentMonth > 10 ? currentYear + 1 : currentYear;
+    }
+
+    // Generate up to 10 years or however long you want
+    const years = Array.from({ length: 11 }, (_, i) => (startYear + i).toString());
+    setGraduationYears(years);
+  }, [session]);
 
   const handleStartDateTypeChange = (e) => {
     setStartDateType(e.target.value)
@@ -194,8 +212,19 @@ export function CreateNewOrderForm({ item, handleClose }) {
         {/* Student Info Section */}
         <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
           {/* Image */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full flex items-center justify-center mb-2 sm:mb-0">
-            <FontAwesomeIcon className="text-gray-600 text-base sm:text-lg" icon={faGraduationCap} />
+          <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#4071B6] rounded-[4px] flex items-center justify-center mb-2 sm:mb-0 overflow-hidden">
+            {item?.image ? (
+              <img
+                src={item.image}
+                alt={item?.userName || "Student"}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FontAwesomeIcon
+                className="text-white text-base sm:text-lg"
+                icon={faUser}
+              />
+            )}
           </div>
 
           {/* Info */}
@@ -270,8 +299,9 @@ export function CreateNewOrderForm({ item, handleClose }) {
                       <td key={day} className="p-2 text-center">
                         <div
                           onClick={() => handleSlotClick(day, time)}
-                          className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                              ? "bg-[#57AD85]"
+                          className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 
+                            ${isSelected(day, time)
+                              ? "bg-[#F49342]"
                               : "bg-white hover:border-gray-400"
                             }`}
                         >
@@ -313,8 +343,8 @@ export function CreateNewOrderForm({ item, handleClose }) {
                     <div
                       onClick={() => handleSlotClick(day, time)}
                       className={`w-[20px] h-[20px] border-1 border-[#16151C] rounded-[4px] cursor-pointer transition-all duration-200 ${isSelected(day, time)
-                          ? "bg-[#57AD85]"
-                          : "bg-white hover:border-gray-400"
+                        ? "bg-[#F49342]"
+                        : "bg-white hover:border-gray-400"
                         }`}
                     >
                       {isSelected(day, time) && (
@@ -410,9 +440,9 @@ export function CreateNewOrderForm({ item, handleClose }) {
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Tier</span>
                 </MenuItem>
-                <MenuItem value="Tier 1">Tier 1</MenuItem>
-                <MenuItem value="Tier 2">Tier 2</MenuItem>
-                <MenuItem value="Tier 3">Tier 3</MenuItem>
+                <MenuItem value="Foundation">Foundation Level</MenuItem>
+                <MenuItem value="Advanced">Advanced Level</MenuItem>
+                <MenuItem value="Expert">Expert Level</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -421,42 +451,37 @@ export function CreateNewOrderForm({ item, handleClose }) {
         {/* Row 2: Requested Hours, Session, Year of Graduation, Country */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
           <div className="w-full">
-            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Requested Hours</label>
-            <FormControl size="small" className="h-14 w-full">
-              <Select
+            <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">
+              Requested Hours
+            </label>
+            <div className="relative w-full">
+              <TextField
+                type="number"
+                placeholder="Enter hours"
                 value={requestedHours}
                 onChange={(e) => setRequestedHours(e.target.value)}
-                displayEmpty
-                className="bg-white h-14 w-full"
-                sx={{
-                  height: 56,
-                  borderRadius: "10px",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#A2A1A833",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#16151C",
+                required
+                size="small"
+                className="h-14 w-full"
+                InputProps={{
+                  sx: {
+                    height: 56,
+                    borderRadius: "10px",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#A2A1A833",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#16151C",
+                    },
                   },
                 }}
-                IconComponent={KeyboardArrowDownIcon}
-              >
-                <MenuItem value="" disabled>
-                  <span className="text-gray-400">Hours</span>
-                </MenuItem>
-                <MenuItem value="1">1 Hour</MenuItem>
-                <MenuItem value="2">2 Hours</MenuItem>
-                <MenuItem value="3">3 Hours</MenuItem>
-                <MenuItem value="4">4 Hours</MenuItem>
-                <MenuItem value="5">5 Hours</MenuItem>
-                <MenuItem value="10">10 Hours</MenuItem>
-                <MenuItem value="15">15 Hours</MenuItem>
-                <MenuItem value="20">20 Hours</MenuItem>
-              </Select>
-            </FormControl>
+              />
+            </div>
           </div>
+
 
           <div className="w-full">
             <label className="block text-[12px] font-light text-[#A2A1A8] mb-1">Session</label>
@@ -464,7 +489,10 @@ export function CreateNewOrderForm({ item, handleClose }) {
               <Select
                 value={session}
                 required
-                onChange={(e) => setSession(e.target.value)}
+                onChange={(e) => {
+                  setSession(e.target.value)
+                  setYearOfGraduation("") // reset year when session changes
+                }}
                 displayEmpty
                 className="bg-white h-14 w-full"
                 sx={{

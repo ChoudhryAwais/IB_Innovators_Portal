@@ -269,7 +269,7 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                     {months[item.month - 1]} {item.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    $ {calculateMonthlyEarnings(earningsHistory, item.month, item.year)}
+                     {calculateMonthlyEarnings(earningsHistory, item.month, item.year)}
                   </div>
                 </div>
               </AccordionSummary>
@@ -277,16 +277,16 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                 <Box sx={{ borderTop: "1px solid #e5e7eb", overflow: "hidden" }}>
                   <Grid container sx={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb", fontWeight: 300, color: "#A2A1A8", p: 1.5,fontSize: '14px' }}>
                     <Grid item xs={4}>Date</Grid>
-                    <Grid item xs={4}>Time</Grid>
-                    <Grid item xs={4}>Amount</Grid>
+                    <Grid item xs={6.4}>Time</Grid>
+                    <Grid item xs={1.6}>Credits</Grid>
                   </Grid>
                   {filterInvoicesByMonth(earningsHistory, item.month, item.year).map((inv, idx) => {
                     const dateObj = inv.createdAt.toDate()
                     return (
                     <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
                         <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(dateObj)}</div></Grid>
-                        <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
-                        <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">$ {inv.amount}</div></Grid>
+                        <Grid item xs={5.5}><div className="text-[14px] font-light text-[#16151C]">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
+                        <Grid item xs={1.7}><div className="text-[14px] font-light text-[#16151C] text-end"> {inv.amount}</div></Grid>
                       </Grid>
                     )
                   })}
