@@ -591,7 +591,7 @@ export default function ManageLinks() {
                       <Button
                         sx={{
                           fontSize: "12px",
-                          width: "100%",
+                          width: "100px",
                           sm: { width: "100px" },
                           height: "40px",
                           borderRadius: "8px",
@@ -1242,7 +1242,7 @@ export default function ManageLinks() {
           </div>
           {currentSearched?.length > itemsPerPage && (
             <div className="mt-6 flex items-center justify-between px-4 py-3 bg-white">
-              <div className="text-[14px] font-light text-[#A2A1A8]">
+              <div className="text-[14px] font-light text-[#A2A1A8] hidden sm:block">
                 Showing {startIndex + 1} to {Math.min(endIndex, currentSearched.length)} out of {currentSearched.length} records
               </div>
               <Stack direction="row" spacing={1} alignItems="center">
