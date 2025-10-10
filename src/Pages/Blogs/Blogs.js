@@ -9,6 +9,8 @@ import Pagination from "@mui/material/Pagination"
 import Stack from "@mui/material/Stack"
 import Divider from "@mui/material/Divider"
 import CustomModal from "../../Components/CustomModal/CustomModal";
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import {
   Button,
@@ -198,7 +200,7 @@ export default function Blogs() {
   const upcomingStartIndex = (upcomingCurrentPage - 1) * upcomingItemsPerPage
   const upcomingEndIndex = upcomingStartIndex + upcomingItemsPerPage
   const upcomingDisplayedSessions = blogs?.slice(upcomingStartIndex, upcomingEndIndex)
-  
+
   const getVisiblePages = (currentPage, totalPages, maxVisible = 4) => {
     let startPage = Math.max(currentPage - Math.floor(maxVisible / 2), 1);
     let endPage = startPage + maxVisible - 1;
@@ -255,11 +257,21 @@ export default function Blogs() {
                   <div className="flex-1 min-w-0 mb-4 md:mb-0">
                     {/* Author Info */}
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs md:text-sm font-medium">
-                          {blog.writtenBy ? blog.writtenBy.charAt(0).toUpperCase() : "A"}
-                        </span>
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-[#4071B6] rounded-full flex items-center justify-center overflow-hidden">
+                        {blog?.authorImage ? (
+                          <img
+                            src={blog.authorImage}
+                            alt={blog?.writtenBy || "Author"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className="text-white text-xs md:text-sm"
+                          />
+                        )}
                       </div>
+
                       <div className="flex flex-col md:flex-row md:items-center gap-1">
                         <p className="text-[12px] md:text-[14px] font-light text-[#16151C]">
                           {blog.writtenBy || "Admin"}
@@ -363,7 +375,6 @@ export default function Blogs() {
           {/* Pagination */}
           {blogs?.length > upcomingItemsPerPage && (
             <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-center gap-4 px-4 py-3 bg-white">
-              
 
               {/* Pagination buttons */}
               <Stack direction="row" spacing={1} alignItems="center" className="justify-center md:justify-end">

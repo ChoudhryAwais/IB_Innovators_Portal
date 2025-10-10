@@ -553,8 +553,8 @@ export default function ManageLinks() {
                 <div
                   key={index}
                   className={`p-3 sm:p-4 rounded-lg mb-3 sm:mb-4 ${link?.id === item?.id
-                      ? "bg-[#4071B60D] border-1 border-[#4071B6]"
-                      : "bg-[#A2A1A80D]"
+                    ? "bg-[#4071B60D] border-1 border-[#4071B6]"
+                    : "bg-[#A2A1A80D]"
                     }`}
                 >
                   <div className="flex items-center mb-3">
@@ -636,63 +636,101 @@ export default function ManageLinks() {
                 <>
                   <div className="bg-[#A2A1A80D] rounded-lg px-4 sm:px-6 py-4 h-auto sm:h-[518px]">
                     {/* Header */}
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
-                      <div className="flex items-center space-x-3">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3">
+                      {/* Left section: icon + subject */}
+                      <div className="flex items-start space-x-3 flex-1 min-w-0">
                         <div className="h-[40px] w-[40px] sm:h-[45px] sm:w-[45px] bg-[#A2A1A80D] rounded-lg flex items-center justify-center flex-shrink-0">
-                          <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z" stroke="#16151C" strokeWidth="1.5" strokeLinecap="round" />
-                            <path d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z" stroke="#16151C" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+                          <svg
+                            width="20"
+                            height="20"
+                            className="sm:w-6 sm:h-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M8 6V5C8 3.34315 9.34315 2 11 2H13C14.6569 2 16 3.34315 16 5V6M2 10.3475C2 10.3475 5.11804 12.4244 9.97767 12.9109M22 10.3475C22 10.3475 18.882 12.4244 14.0223 12.9109M6 22H18C20.2091 22 22 20.2091 22 18V10C22 7.79086 20.2091 6 18 6H6C3.79086 6 2 7.79086 2 10V18C2 20.2091 3.79086 22 6 22Z"
+                              stroke="#16151C"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M14 12.1602V13.1602C14 13.1702 14 13.1702 14 13.1802C14 14.2702 13.99 15.1602 12 15.1602C10.02 15.1602 10 14.2802 10 13.1902V12.1602C10 11.1602 10 11.1602 11 11.1602H13C14 11.1602 14 11.1602 14 12.1602Z"
+                              stroke="#16151C"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         </div>
-                        <span className="font-semibold text-[#16151C] text-[14px] sm:text-[16px] truncate">
+
+                        {/* ✅ Text now wraps properly */}
+                        <span className="font-semibold text-[#16151C] text-[14px] sm:text-[16px] whitespace-normal break-words leading-snug">
                           {link?.subject}
                         </span>
                       </div>
 
-                      {!link?.studentDeactivated ? (
-                        <Button
-                          sx={{
-                            fontSize: "12px",
-                            width: "100%",
-                            sm: { width: "150px" },
-                            height: "32px",
-                            borderRadius: "4px",
-                            padding: "10px",
-                            fontWeight: "600",
-                            color: "#A81E1E",
-                            backgroundColor: "#A81E1E0D",
-                            border: "1px solid #A81E1E",
-                            minWidth: "unset",
-                            textTransform: "none",
-                            boxSizing: "border-box",
-                            "&:hover": {
+                      {/* Right section: fixed-width button or icon */}
+                      <div className="flex-shrink-0 flex items-center justify-end">
+                        {!link?.studentDeactivated ? (
+                          <Button
+                            sx={{
+                              fontSize: "12px",
+                              width: "100px", // ✅ stays fixed
+                              height: "32px",
+                              borderRadius: "4px",
+                              padding: "10px",
+                              fontWeight: "600",
                               color: "#A81E1E",
                               backgroundColor: "#A81E1E0D",
                               border: "1px solid #A81E1E",
-                            },
-                          }}
-                          variant="outlined"
-                          onClick={() => {
-                            setSelectedLink(link);
-                            setShowDeactivateModal(true);
-                          }}
-                        >
-                          Deactivate
-                        </Button>
-                      ) : (
-                        <div
-                          onClick={() => {
-                            setSelectedLink(link);
-                            setShowDeleteModal(true);
-                          }}
-                          className="flex items-center justify-center w-8 h-8 sm:w-8 sm:h-8 rounded-[6px] cursor-pointer transition-colors duration-200 hover:bg-[#F3F4F6]"
-                        >
-                          <svg width="18" height="20" className="sm:w-5 sm:h-5" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1" stroke="#A2A1A8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-                      )}
+                              minWidth: "unset",
+                              textTransform: "none",
+                              boxSizing: "border-box",
+                              "&:hover": {
+                                color: "#A81E1E",
+                                backgroundColor: "#A81E1E0D",
+                                border: "1px solid #A81E1E",
+                              },
+                            }}
+                            variant="outlined"
+                            onClick={() => {
+                              setSelectedLink(link);
+                              setShowDeactivateModal(true);
+                            }}
+                          >
+                            Deactivate
+                          </Button>
+                        ) : (
+                          <div
+                            onClick={() => {
+                              setSelectedLink(link);
+                              setShowDeleteModal(true);
+                            }}
+                            className="flex items-center justify-center w-8 h-8 sm:w-8 sm:h-8 rounded-[6px] cursor-pointer transition-colors duration-200 hover:bg-[#F3F4F6]"
+                          >
+                            <svg
+                              width="18"
+                              height="20"
+                              className="sm:w-5 sm:h-5"
+                              viewBox="0 0 20 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3 7V17C3 19.2091 4.79086 21 7 21H13C15.2091 21 17 19.2091 17 17V7M12 10V16M8 10L8 16M14 4L12.5937 1.8906C12.2228 1.3342 11.5983 1 10.9296 1H9.07037C8.40166 1 7.7772 1.3342 7.40627 1.8906L6 4M14 4H6M14 4H19M6 4H1"
+                                stroke="#A2A1A8"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
 
                     {/* Details Content */}
                     <div className="space-y-3 sm:space-y-1 text-sm text-gray-700">
@@ -736,7 +774,7 @@ export default function ManageLinks() {
                         <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
                           {fetchingCredits
                             ? "Fetching..."
-                            :  link?.credits || 0 
+                            : link?.credits || 0
                           }
                         </span>
                       </div>

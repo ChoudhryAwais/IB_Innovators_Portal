@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MyContext } from "../../Context/MyContext";
 
 // Import the three signup forms
@@ -22,7 +22,7 @@ function SignUpOnly() {
       id: "admin",
       label: "Register Admin",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -37,7 +37,7 @@ function SignUpOnly() {
       id: "teacher",
       label: "Register Tutor",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -51,7 +51,7 @@ function SignUpOnly() {
       id: "student",
       label: "Register Student",
       icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -77,41 +77,36 @@ function SignUpOnly() {
   };
 
   return (
-        <TopHeadingProvider>
-    
-    <div className="min-h-screen p-6">
-      <div className="mr-[10px] pt-0">
-        <div className="bg-white rounded-lg border-1 border-[#A2A1A833]">
-          {/* Tabs header */}
-          <div className="flex border-b border-gray-200 mx-4">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                type="button"
-                className={`flex items-center gap-2 px-6 py-3 text-[16px] transition-colors duration-200 border-b-2 ${
-                  activeTab === tab.id
-                    ? "text-[#4071B6] font-semibold border-[#4071B6]"
-                    : "text-[#16151C] font-light border-transparent hover:border-gray-300"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+    <TopHeadingProvider>
+      <div className="min-h-screen p-4 md:p-6">
+        <div className="md:mr-[10px] pt-0">
+          <div className="bg-white rounded-lg border-1 border-[#A2A1A833]">
+            {/* Tabs header - Responsive */}
+            <div className="flex flex-col sm:flex-row border-b border-gray-200 mx-2 sm:mx-4 overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  type="button"
+                  className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-6 py-3 text-[14px] sm:text-[16px] transition-colors duration-200 border-b-2 sm:border-b-2 min-w-0 flex-1 sm:flex-none ${
+                    activeTab === tab.id
+                      ? "text-[#4071B6] font-semibold border-[#4071B6]"
+                      : "text-[#16151C] font-light border-transparent hover:border-gray-300"
+                  }`}
+                >
+                  <span className="hidden sm:block">{tab.icon}</span>
+                  <span className="text-center sm:text-left whitespace-nowrap">{tab.label}</span>
+                </button>
+              ))}
+            </div>
 
-          {/* Tab content */}
-          <div className="p-4">{renderTabContent()}</div>
+            {/* Tab content */}
+            <div className="p-3 sm:p-4">{renderTabContent()}</div>
+          </div>
         </div>
       </div>
-    </div>
-        </TopHeadingProvider>
-    
+    </TopHeadingProvider>
   );
-  
 }
 
 export default SignUpOnly;
-
-
-

@@ -25,6 +25,8 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Divider from "@mui/material/Divider"
 import CustomModal from "../../Components/CustomModal/CustomModal";
 import Stack from "@mui/material/Stack"
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export default function SupportBlogsPreview() {
   const { setFirstMessage, setSecondMessage } = useTopHeading()
@@ -114,13 +116,21 @@ export default function SupportBlogsPreview() {
                   <div className="flex-1 min-w-0 mb-4 md:mb-0">
                     {/* Author Info */}
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs md:text-sm font-medium">
-                          {blog.writtenBy
-                            ? blog.writtenBy.charAt(0).toUpperCase()
-                            : "A"}
-                        </span>
+                      <div className="w-8 h-8 md:w-10 md:h-10 bg-[#4071B6] rounded-full flex items-center justify-center overflow-hidden">
+                        {blog?.authorImage ? (
+                          <img
+                            src={blog.authorImage}
+                            alt={blog?.writtenBy || "Author"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className="text-white text-xs md:text-sm"
+                          />
+                        )}
                       </div>
+
                       <div className="flex flex-col md:flex-row md:items-center gap-1">
                         <p className="text-[12px] md:text-[14px] font-light text-[#16151C]">
                           {blog.writtenBy || "N/A"}

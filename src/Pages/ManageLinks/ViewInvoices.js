@@ -67,8 +67,8 @@ export default function ViewInvoices() {
     setTotalEarnings(calculateTotalEarnings(invoices))
     setTotalIBEarnings(calculateTotalIBInnovatorsEarnings(invoices))
     setThisMonthEarning(currentMonthInvoice)
-    setApprovedEarnings(calculateApprovedInvoices(invoices, new Date().getMonth() + 1, new Date().getFullYear()))
-    setPendingEarnings(calculatePendingInvoices(invoices, new Date().getMonth() + 1, new Date().getFullYear()))
+    setApprovedEarnings(invoices.reduce((total, inv) => inv.status === "Approved" ? total + Number.parseFloat(inv?.tutorHourlyRate || 0) : total, 0))
+    setPendingEarnings(invoices.reduce((total, inv) => inv.status === "Pending" ? total + Number.parseFloat(inv?.tutorHourlyRate || 0) : total, 0))
   }, [invoices])
 
   const [monthlyInvoiceAmount, setMonthlyInvoiceAmount] = useState(0)
@@ -91,38 +91,29 @@ export default function ViewInvoices() {
   }
 
   const calculateTotalEarnings = (invoices) => {
-    return invoices.reduce((total, invoice) => total + Number.parseInt(invoice?.tutorHourlyRate), 0)
+    return invoices.reduce((total, invoice) => total + Number.parseFloat(invoice?.tutorHourlyRate || 0), 0)
   }
 
   const calculateTotalIBInnovatorsEarnings = (invoices) => {
-    return invoices.reduce((total, invoice) => total + Number.parseInt(invoice?.amount), 0)
+    return invoices.reduce((total, invoice) => total + Number.parseFloat(invoice?.amount || 0), 0)
   }
 
-  const calculateApprovedInvoices = (invoices, month, year) => {
-    const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = new Date(invoice.sessionInfo.date)
-      return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
-    })
-    return filteredInvoices.reduce((total, invoice) => {
+
+  const calculateApprovedInvoices = (invoices) => {
+    return invoices.reduce((total, invoice) => {
       if (invoice.status === "Approved") {
-        return total + Number.parseInt(invoice?.tutorHourlyRate)
-      } else {
-        return total
+        return total + Number.parseFloat(invoice?.tutorHourlyRate || 0)
       }
+      return total
     }, 0)
   }
 
-  const calculatePendingInvoices = (invoices, month, year) => {
-    const filteredInvoices = invoices.filter((invoice) => {
-      const invoiceDate = new Date(invoice.sessionInfo.date)
-      return invoiceDate.getMonth() === month - 1 && invoiceDate.getFullYear() === year
-    })
-    return filteredInvoices.reduce((total, invoice) => {
+  const calculatePendingInvoices = (invoices) => {
+    return invoices.reduce((total, invoice) => {
       if (invoice.status === "Pending") {
-        return total + Number.parseInt(invoice?.tutorHourlyRate)
-      } else {
-        return total
+        return total + Number.parseFloat(invoice?.tutorHourlyRate || 0)
       }
+      return total
     }, 0)
   }
 
