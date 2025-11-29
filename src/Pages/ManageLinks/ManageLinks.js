@@ -997,7 +997,7 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter amount in GBP"
+                      label="Enter Credits"
                       fullWidth
                       sx={{
                         borderColor: "#A2A1A833",
@@ -1011,34 +1011,6 @@ export default function ManageLinks() {
                         "& .MuiInputLabel-root.Mui-focused": {
                           color: "#4071B6", // 👈 label color when focused
                         },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 12H17"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </InputAdornment>
-                        ),
                       }}
                     />
 
@@ -1095,7 +1067,7 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter amount in GBP"
+                      label="Enter Credits"
                       fullWidth
                       sx={{
                         borderColor: "#A2A1A833",
@@ -1109,34 +1081,6 @@ export default function ManageLinks() {
                         "& .MuiInputLabel-root.Mui-focused": {
                           color: "#4071B6", // 👈 label color when focused
                         },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 12H17"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </InputAdornment>
-                        ),
                       }}
                     />
 
