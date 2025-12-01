@@ -107,16 +107,8 @@ export default function StudentInvoices({ userDetails, userId }) {
         const d = invoice.createdAt.toDate();
         return d.getMonth() === month - 1 && d.getFullYear() === year;
       })
-      .reduce((total, invoice) => {
-        const parentDoc = linkedDocs.find(doc =>
-          (doc.invoices || []).includes(invoice)
-        );
-        const price = Number(parentDoc?.price || 1);
-
-        return total + Number(invoice.amount) / price;
-      }, 0);
+      .reduce((total, invoice) => total + parseInt(invoice.amount), 0);
   };
-
 
   const provideMonthlyInvoice = (invoices, month, year) => {
     return invoices
@@ -203,7 +195,7 @@ export default function StudentInvoices({ userDetails, userId }) {
                     {months[item?.month - 1]} {item?.year} Detail View
                   </div>
                   <div className="text-2xl font-semibold">
-                    {calculateMonthlyInvoice(allInvoices, item?.month, item?.year)}
+                     {calculateMonthlyInvoice(allInvoices, item?.month, item?.year)}
                   </div>
                 </div>
               </AccordionSummary>
@@ -240,11 +232,6 @@ export default function StudentInvoices({ userDetails, userId }) {
 
                   {/* Data Rows */}
                   {monthlyInvoices.map((inv, idx) => {
-                    const parentDoc = linkedDocs.find(doc =>
-                      (doc.invoices || []).includes(inv)
-                    );
-
-                    const price = parentDoc?.price ? Number(parentDoc.price) : 1;
                     const dateObj =
                       inv?.createdAt?.toDate?.() || new Date(inv?.createdAt);
                     const date = new Intl.DateTimeFormat("en-GB", {
@@ -280,7 +267,7 @@ export default function StudentInvoices({ userDetails, userId }) {
                           <div className="text-[14px] font-light text-[#16151C] ">{inv?.subject}</div>
                         </Grid>
                         <Grid item xs={1.6}>
-                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount / price}</div>
+                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount}</div>
                         </Grid>
                       </Grid>
                     );

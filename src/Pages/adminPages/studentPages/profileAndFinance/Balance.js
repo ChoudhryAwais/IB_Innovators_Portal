@@ -14,7 +14,6 @@ export default function Balance({ userDetails, userId }) {
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedMonths, setExpandedMonths] = useState({})
-  const [price, setPrice] = useState(1)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,9 +32,8 @@ export default function Balance({ userDetails, userId }) {
               updatedStudents.push({ ...data })
             }
           })
-          const fetchedPrice = updatedStudents.length > 0 ? updatedStudents[0].price : 1;
+
           setStudents(updatedStudents)
-          setPrice(fetchedPrice)
         } catch (error) {
           console.error("Error fetching data: ", error)
         } finally {
@@ -68,13 +66,13 @@ export default function Balance({ userDetails, userId }) {
   }
 
   const calculateMonthlyInvoice = (invoices, month, year) => {
-  return invoices
-    .filter((invoice) => {
-      const d = invoice.createdAt.toDate()
-      return d.getMonth() === month - 1 && d.getFullYear() === year
-    })
-    .reduce((total, invoice) => total + (price ? invoice.amount / price : invoice.amount), 0)
-}
+    return invoices
+      .filter((invoice) => {
+        const d = invoice.createdAt.toDate()
+        return d.getMonth() === month - 1 && d.getFullYear() === year
+      })
+      .reduce((total, invoice) => total + parseInt(invoice.amount), 0)
+  }
 
   const provideMonthlyInvoice = (invoices, month, year) => {
     return invoices
@@ -110,7 +108,7 @@ export default function Balance({ userDetails, userId }) {
             (worth £ {userDetails?.credits?.toFixed(2)})
           </span>
         </h2> */}
-      <h1 className="text-left text-[24px] font-semibold mb-6">Credit Purchase Details</h1>
+      <h1 className="text-left text-[24px] font-semibold mb-6">Payments Details</h1>
       <div className="space-y-4">
         {result.map((item) => {
           const monthKey = `${item.month}-${item.year}`
@@ -234,9 +232,7 @@ export default function Balance({ userDetails, userId }) {
                           <div className="text-[14px] font-light text-[#16151C]">{time}</div>
                         </Grid>
                         <Grid item xs={1.7}>
-                          <div className="text-[14px] font-light text-[#16151C] text-end">     
-                            {price ? (inv?.amount / price) : inv?.amount}
-                          </div>
+                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount}</div>
                         </Grid>
                       </Grid>
                     )
