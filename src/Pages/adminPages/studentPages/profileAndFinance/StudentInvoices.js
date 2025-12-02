@@ -107,7 +107,14 @@ export default function StudentInvoices({ userDetails, userId }) {
         const d = invoice.createdAt.toDate();
         return d.getMonth() === month - 1 && d.getFullYear() === year;
       })
-      .reduce((total, invoice) => total + parseInt(invoice.amount), 0);
+      .reduce((total, invoice) => {
+        const parentDoc = linkedDocs.find(doc =>
+          (doc.invoices || []).includes(invoice)
+        );
+        const price = Number(parentDoc?.price || 1);
+
+        return total + Number(invoice.amount) / price;
+      }, 0);
   };
 
 
@@ -273,7 +280,7 @@ export default function StudentInvoices({ userDetails, userId }) {
                           <div className="text-[14px] font-light text-[#16151C] ">{inv?.subject}</div>
                         </Grid>
                         <Grid item xs={1.6}>
-                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount}</div>
+                          <div className="text-[14px] font-light text-[#16151C] text-end"> {inv?.amount / price}</div>
                         </Grid>
                       </Grid>
                     );

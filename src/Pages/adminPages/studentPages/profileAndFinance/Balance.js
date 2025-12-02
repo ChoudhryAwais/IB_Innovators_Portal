@@ -33,7 +33,6 @@ export default function Balance({ userDetails, userId }) {
               updatedStudents.push({ ...data })
             }
           })
-          console.log("✅ Linked Docs in Balance:", updatedStudents);
           const fetchedPrice = updatedStudents.length > 0 ? updatedStudents[0].price : 1;
           setStudents(updatedStudents)
           setPrice(fetchedPrice)
@@ -68,23 +67,27 @@ export default function Balance({ userDetails, userId }) {
     return uniqueMonthsAndYears.sort((a, b) => (a.year !== b.year ? b.year - a.year : b.month - a.month))
   }
 
-  const calculateMonthlyInvoice = (invoices, month, year) => {
+ const calculateMonthlyInvoice = (invoices, month, year) => {
   return invoices
     .filter((invoice) => {
       const d = invoice.createdAt.toDate()
       return d.getMonth() === month - 1 && d.getFullYear() === year
     })
-    .reduce((total, invoice) => total + (price ? invoice.amount / price : invoice.amount), 0)
+    .reduce((total, invoice) => total + Number(invoice.amount || 0), 0)
 }
 
+
+
+
+
   const provideMonthlyInvoice = (invoices, month, year) => {
-     return invoices
-    .filter((invoice) => {
-      const d = invoice.createdAt.toDate()
-      return d.getMonth() === month - 1 && d.getFullYear() === year
-    })
-    .reduce((total, invoice) => total +  invoice.amount, 0)
-}
+    return invoices
+      .filter((invoice) => {
+        const d = invoice.createdAt.toDate()
+        return d.getMonth() === month - 1 && d.getFullYear() === year
+      })
+      .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate())
+  }
 
   const result = getUniqueMonthsAndYears(userDetails?.balanceHistory || [])
 
@@ -236,7 +239,7 @@ export default function Balance({ userDetails, userId }) {
                         </Grid>
                         <Grid item xs={1.7}>
                           <div className="text-[14px] font-light text-[#16151C] text-end">     
-                            {price ? (inv?.amount) : inv?.amount}
+                            {inv?.amount}
                           </div>
                         </Grid>
                       </Grid>
