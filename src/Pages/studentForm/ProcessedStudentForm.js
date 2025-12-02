@@ -131,6 +131,8 @@ const ProcessedStudentForm = () => {
             onClick={() => {
               setSelectedLink(student);
               setShowModal(true);
+              console.log("Selected Student Details:", student);
+
             }}
             sx={{
               borderRadius: "8px",

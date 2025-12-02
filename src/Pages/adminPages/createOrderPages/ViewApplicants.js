@@ -17,6 +17,9 @@ import { faUser } from "@fortawesome/free-solid-svg-icons"
 
 
 export default function ViewApplicants({ tutor, order, open, onClose }) {
+  console.log("Tutor details:", tutor?.tutorDetails);
+  console.log("Order details:", order);
+
   const { userDetails } = useContext(MyContext)
   const [loading, setLoading] = useState(false)
   // const [showConfirmDialog, setShowConfirmDialog] = useState(false)

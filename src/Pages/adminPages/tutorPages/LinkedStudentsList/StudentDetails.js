@@ -130,6 +130,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
         const userDocRef = doc(db, "userList", studentId)
         const userData = await getDoc(userDocRef)
         setBalanceHistory(userData.data()?.balanceHistory || [])
+        console.log("Fetched balance history:", userData.data()?.balanceHistory || [])
       } catch (e) {
         toast.error("Error fetching balance")
       }
@@ -241,7 +242,7 @@ export default function StudentDetails({ studentData, studentId, viewType }) {
       <div className="space-y-4">
         {balanceMonths.length === 0 ? (
         <div className="text-center text-gray-500 py-6">
-          No balance record
+          No Credit record
         </div>
       ) : (
         balanceMonths.map((item, index) => (

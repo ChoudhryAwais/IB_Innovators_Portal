@@ -77,7 +77,7 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
   const calculateMonthlyEarnings = (invoices, month, year) => {
     const total = filterInvoicesByMonth(invoices, month, year).reduce(
       (sum, inv) => {
-        const amount = parseFloat(inv.amount)
+        const amount = parseFloat(inv.tutorHourlyRate)
         return sum + (isNaN(amount) ? 0 : amount)
       },
       0
@@ -110,9 +110,11 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
         const linkedRef = collection(db, "Linked")
         const q = query(linkedRef, where("teacherId", "==", tutorId))
         const linkedSnap = await getDocs(q)
+        
 
         const invoices = []
         linkedSnap.forEach((doc) => {
+            console.log("🔥 RAW FIRESTORE INVOICE DATA:", doc.data().invoices);
           if (doc.data().invoices) {
             invoices.push(...doc.data().invoices)
           }
@@ -286,7 +288,8 @@ export default function TutorDetails({ tutorData, tutorId, viewType }) {
                     <Grid container key={idx} alignItems="center" sx={{ borderBottom: "1px solid #A2A1A81A", p: 1.5 }}>
                         <Grid item xs={4}><div className="text-[14px] font-light text-[#16151C]">{formatDate(dateObj)}</div></Grid>
                         <Grid item xs={5.5}><div className="text-[14px] font-light text-[#16151C]">{dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</div></Grid>
-                        <Grid item xs={1.7}><div className="text-[14px] font-light text-[#16151C] text-end"> {inv.amount}</div></Grid>
+                        <Grid item xs={1.7}><div className="text-[14px] font-light text-[#16151C] text-end"> {inv.tutorHourlyRate
+}</div></Grid>
                       </Grid>
                     )
                   })}

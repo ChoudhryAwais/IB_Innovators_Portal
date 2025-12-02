@@ -289,10 +289,10 @@ export default function ManageLinks() {
       // Create balance history record
       const balanceHistory = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
-        amount: parseFloat(addedAmount * link?.price).toFixed(2),
+        amount: addedAmount,
         createdAt: new Date(),
-      };
-
+      };  
+      console.log('Balance history right now',balanceHistory)
       // Save history if positive
       if (addedAmount > 0) {
         const userRef = doc(collection(db, "userList"), link?.studentId);
@@ -335,12 +335,13 @@ export default function ManageLinks() {
 
       const deductedAmount = parseFloat(amount || 0);
       const newCredits = Math.max(currentCredits - deductedAmount, 0); // Prevent negative
-
+       console.log('Deducted Amount:', -deductedAmount);
       // Create balance history record
       const balanceHistory = {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
-        amount: parseFloat(-deductedAmount * link?.price).toFixed(2), // Negative for removal
+        amount: -deductedAmount, // Negative for removal
         createdAt: new Date(),
+        
       };
 
       // Save history
@@ -665,7 +666,7 @@ export default function ManageLinks() {
                           </svg>
                         </div>
 
-                        {/* ✅ Text now wraps properly */}
+                        {/*  Text now wraps properly */}
                         <span className="font-semibold text-[#16151C] text-[14px] sm:text-[16px] whitespace-normal break-words leading-snug">
                           {link?.subject}
                         </span>
@@ -677,7 +678,7 @@ export default function ManageLinks() {
                           <Button
                             sx={{
                               fontSize: "12px",
-                              width: "100px", // ✅ stays fixed
+                              width: "100px", //  stays fixed
                               height: "32px",
                               borderRadius: "4px",
                               padding: "10px",
@@ -789,12 +790,12 @@ export default function ManageLinks() {
 
                       <div className="h-3 sm:h-5" />
 
-                      <div className="flex flex-col sm:flex-row sm:items-center">
+                      {/* <div className="flex flex-col sm:flex-row sm:items-center">
                         <span className="font-light text-[12px] sm:text-[14px] w-full sm:w-40 mb-1 sm:mb-0">Balance (GBP):</span>
                         <span className="text-[#16151C] font-medium text-[12px] sm:text-[14px]">
                           {fetchingCredits ? "Fetching..." : `£ ${creditsForSelectedStudent?.toFixed(2)}`}
                         </span>
-                      </div>
+                      </div> */}
                     </div>
 
                     {/* Action Buttons */}
@@ -997,48 +998,20 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter amount in GBP"
+                      label="Enter Credits"
                       fullWidth
                       sx={{
                         borderColor: "#A2A1A833",
                         mb: 7,
                         "& .MuiOutlinedInput-root": {
-                          borderRadius: "10px", // 👈 custom radius
+                          borderRadius: "10px", //  custom radius
                         },
                         "& .MuiInputLabel-root": {
-                          color: "#A2A1A8CC", // 👈 default label color
+                          color: "#A2A1A8CC", //  default label color
                         },
                         "& .MuiInputLabel-root.Mui-focused": {
-                          color: "#4071B6", // 👈 label color when focused
+                          color: "#4071B6", //  label color when focused
                         },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 12H17"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </InputAdornment>
-                        ),
                       }}
                     />
 
@@ -1095,7 +1068,7 @@ export default function ManageLinks() {
                       type="number"
                       value={invoicePrice}
                       onChange={(e) => setInvoicePrice(e.target.value)}
-                      label="Enter amount in GBP"
+                      label="Enter Credits"
                       fullWidth
                       sx={{
                         borderColor: "#A2A1A833",
@@ -1109,34 +1082,6 @@ export default function ManageLinks() {
                         "& .MuiInputLabel-root.Mui-focused": {
                           color: "#4071B6", // 👈 label color when focused
                         },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M7 12H17"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M19 8V6.5C19 4.567 17.433 3 15.5 3C13.567 3 12 4.567 12 6.5V8.56892C12 10.7927 11.2588 12.953 9.89352 14.7083L7.51057 17.7721C6.48879 19.0858 7.42498 21 9.08928 21H19"
-                                stroke="#16151C"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </InputAdornment>
-                        ),
                       }}
                     />
 

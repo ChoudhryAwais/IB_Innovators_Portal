@@ -440,7 +440,6 @@ export function CreateNewOrderForm({ item, handleClose }) {
                 <MenuItem value="" disabled>
                   <span className="text-gray-400">Tier</span>
                 </MenuItem>
-                <MenuItem value="Foundation">Foundation Level</MenuItem>
                 <MenuItem value="Advanced">Advanced Level</MenuItem>
                 <MenuItem value="Expert">Expert Level</MenuItem>
               </Select>

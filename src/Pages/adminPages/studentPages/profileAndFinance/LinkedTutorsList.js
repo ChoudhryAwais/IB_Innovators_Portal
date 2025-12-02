@@ -159,7 +159,7 @@ export default function LinkedTutorsList({ userId }) {
                 onClick={() => handleViewBalance(tutorId)}
                 className="bg-[#4071B60D] h-[36px] border-1 border-[#4071B6] font-semibold text-[#4071B6] px-2 py-2 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
               >
-                Credit History
+                Balance History
                 <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.26685 15L13.2668 10L8.26685 5" stroke="#4071B6" stroke-width="1.69163" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
