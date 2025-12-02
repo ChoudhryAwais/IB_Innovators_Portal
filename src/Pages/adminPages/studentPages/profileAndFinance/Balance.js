@@ -78,13 +78,13 @@ export default function Balance({ userDetails, userId }) {
 }
 
   const provideMonthlyInvoice = (invoices, month, year) => {
-    return invoices
-      .filter((invoice) => {
-        const d = invoice.createdAt.toDate()
-        return d.getMonth() === month - 1 && d.getFullYear() === year
-      })
-      .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate())
-  }
+     return invoices
+    .filter((invoice) => {
+      const d = invoice.createdAt.toDate()
+      return d.getMonth() === month - 1 && d.getFullYear() === year
+    })
+    .reduce((total, invoice) => total +  invoice.amount, 0)
+}
 
   const result = getUniqueMonthsAndYears(userDetails?.balanceHistory || [])
 
