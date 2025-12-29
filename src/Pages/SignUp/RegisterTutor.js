@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { doc,setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase";
 import { MyContext } from "../../Context/MyContext";
 import { toast } from "react-hot-toast";
@@ -53,10 +53,10 @@ function RegisterTutor() {
         type: "teacher",
         subjectsToTeach: "", //optiona;
         userName,
+        createdAt: serverTimestamp(),
       };
 
-      const userListRef = collection(db, "userList");
-      await addDoc(userListRef, details);
+      await setDoc(doc(db, "userList", userId), details);
 
       toast.success("Tutor registered successfully");
       setIsUserLoggedIn(true);
