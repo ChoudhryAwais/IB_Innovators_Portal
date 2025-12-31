@@ -433,7 +433,7 @@ const AdminDashboard = () => {
                 >
                   {monthsThisYear.map((month, idx) => (
                     <option key={idx} value={idx}>
-                      {month} {currentYear}
+                      {month}
                     </option>
                   ))}
                 </select>
