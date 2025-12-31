@@ -22,6 +22,101 @@ import {
   Bar
 } from "recharts"
 
+const parseAdminNotification = (notification) => {
+  const { message, time } = notification;
+
+  let name = "System";
+  let activity = message;
+
+  // 1️⃣ Submitted form by email
+  if (message.includes("submitted by")) {
+    const parts = message.split("submitted by");
+    activity = parts[0].trim();
+    name = parts[1].replace(".", "").trim();
+  }
+
+  // 2️⃣ Job application
+  else if (message.includes("submitted job application")) {
+    name = message.split(" submitted job application")[0];
+    activity = "Submitted job application";
+  }
+
+  // 3️⃣ Subject application
+  else if (message.includes("submitted application to add")) {
+    name = message.split(" submitted application")[0];
+    activity = "Requested to add subjects";
+  }
+
+  // 4️⃣ Course request
+  else if (message.includes("requested a course")) {
+    name = "Course Request";
+    activity = "Requested a course";
+  }
+
+  // 5️⃣ Admin action
+  else if (message.startsWith("Admin")) {
+    name = "Admin";
+    activity = message.replace("Admin", "").trim();
+  }
+
+  return {
+    name,
+    activity,
+    time,
+  };
+};
+
+const isSameDay = (a, b) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+const formatClockTime = (date) =>
+  date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+/**
+ * LEFT SIDE TIME (2 hours ago / 9:30 PM)
+ */
+export const formatActivityTime = (timestamp) => {
+  const date = timestamp?.toDate ? timestamp.toDate() : new Date(timestamp);
+  const now = new Date();
+
+  if (isSameDay(date, now)) {
+    const diffMs = now - date;
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    if (diffHours < 12) {
+      const hours = Math.floor(diffHours);
+      return hours <= 0 ? "Just now" : `${hours} hours ago`;
+    }
+  }
+
+  return formatClockTime(date);
+};
+
+/**
+ * SECTION HEADING (Today / Yesterday / 3 days ago / 2 months ago)
+ */
+export const getActivityHeading = (date) => {
+  const now = new Date();
+  const diffDays = Math.floor(
+    (now.setHours(0, 0, 0, 0) - date.setHours(0, 0, 0, 0)) /
+    (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 30) return `${diffDays} days ago`;
+
+  const months = Math.floor(diffDays / 30);
+  return `${months} month${months > 1 ? "s" : ""} ago`;
+};
+
+
 const AdminDashboard = () => {
   const { userDetails } = useContext(MyContext)
 
@@ -42,6 +137,8 @@ const AdminDashboard = () => {
   const [links, setLinks] = useState(0)
   const [joiningsData, setJoiningsData] = useState([])
   const [creditsData, setCreditsData] = useState([])
+  const [recentActivities, setRecentActivities] = useState([]);
+
   const { setFirstMessage, setSecondMessage } = useTopHeading()
 
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -116,6 +213,7 @@ const AdminDashboard = () => {
     fetchTutorsDataCount("teacher", setTutorsCount)
     fetchTutorsDataCount("student", setStudentsCount)
     fetchUserJoiningsByMonth()
+    fetchRecentAdminActivity();
   }, [])
 
   const CHART_COLORS = {
@@ -220,6 +318,44 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchRecentAdminActivity = async () => {
+    try {
+      const ref = collection(db, "adminNotifications");
+      const snapshot = await getDocs(ref);
+
+      const items = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => b.time - a.time) // newest first
+        .slice(0, 3); // 👈 only last 3
+
+      setRecentActivities(items.map(parseAdminNotification));
+    } catch (err) {
+      console.error("Failed to load recent activity", err);
+    }
+  };
+
+  const groupActivitiesByDate = (activities) => {
+    const groups = {};
+
+    activities.forEach((item) => {
+      const date = item.time?.toDate
+        ? item.time.toDate()
+        : new Date(item.time);
+
+      const heading = getActivityHeading(new Date(date));
+
+      if (!groups[heading]) {
+        groups[heading] = [];
+      }
+
+      groups[heading].push({
+        ...item,
+        _date: date,
+      });
+    });
+
+    return groups;
+  };
 
 
   return (
@@ -314,11 +450,7 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[16px] font-light mb-1 text-[#16151C] lg:w-44">Active Student/Tutors</span>
                       </div>
-                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">
-                        {tutorsCount
-                          ? (studentsCount / tutorsCount).toFixed(2)
-                          : "N/A"}
-                      </div>
+                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">{studentsCount}/{tutorsCount}</div>
                     </div>
                     <div className="text-right flex flex-col items-end">
                       <div className="bg-[#FECACA0D] rounded-[5px] w-[54px] h-[26px] flex justify-center items-center gap-2 text-red-500 text-sm font-medium">
@@ -421,9 +553,9 @@ const AdminDashboard = () => {
         </div>
 
         {/* === Row: Line Chart + Recent Activity === */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-5 lg:gap-y-0 lg:gap-x-0 items-start">
-          <div className="lg:col-span-2 min-w-0 h-[358px] min-h-[358px] lg:pr-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col h-full w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-5 lg:gap-y-0 lg:gap-x-0 items-stretch">
+          <div className="lg:col-span-2 min-w-0 min-h-[358px] lg:pr-6 flex">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col w-full min-h-[358px] h-full">
               <div className="flex justify-between items-center mb-4 gap-2">
                 <h3 className="font-semibold text-gray-900 truncate">Credits Sold</h3>
                 <select
@@ -479,40 +611,43 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-1 min-w-0 h-full">
-            <div className="bg-white rounded-lg border border-gray-200 p-4 h-full">
+          <div className="lg:col-span-1 min-w-0 flex">
+            <div className="bg-white rounded-lg border border-gray-200 p-4 w-full h-full">
               <h3 className="text-[20px] font-semibold mb-4">Recent Activity</h3>
               <div className="space-y-4">
-                <div className="text-[16px] font-light text-[#A2A1A8]">Today</div>
+                {Object.entries(groupActivitiesByDate(recentActivities)).map(
+                  ([heading, items], headingIndex) => (
+                    <div key={heading}>
+                      {/* Heading (Today / Yesterday / X days ago) */}
+                      <div
+                        className={`text-[16px] font-light text-[#A2A1A8] ${headingIndex !== 0 ? "mt-6" : ""
+                          }`}
+                      >
+                        {heading}
+                      </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="w-[100px] text-[16px] font-light text-left">2 hours ago</div>
-                  <div className="w-[2px] self-stretch bg-[#3867AA]"></div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[14px] ">John Deo</div>
-                    <div className="text-[14px] font-light text-[#4071B6]">Submitted a Form</div>
-                  </div>
-                </div>
+                      {/* Activity Rows */}
+                      {items.map((item, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                          <div className="w-[100px] text-[16px] font-light text-left">
+                            {formatActivityTime(item.time)}
+                          </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="w-[100px] text-[16px] font-light text-left">12:30 am</div>
-                  <div className="w-[2px] self-stretch bg-[#3867AA]"></div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[14px] ">Will Smith</div>
-                    <div className="text-[14px] font-light text-[#4071B6]">Requested Course</div>
-                  </div>
-                </div>
+                          <div className="w-[2px] self-stretch bg-[#3867AA]"></div>
 
-                <div className="text-[16px] font-light text-[#A2A1A8] mt-6">Yesterday</div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-[100px] text-[16px] font-light text-left">09:30 pm</div>
-                  <div className="w-[2px] self-stretch bg-[#3867AA]"></div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[14px] ">Kara Knight</div>
-                    <div className="text-[14px] font-light text-[#4071B6]">Submitted a Form</div>
-                  </div>
-                </div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-[14px] ">
+                              {item.name}
+                            </div>
+                            <div className="text-[14px] font-light text-[#4071B6]">
+                              {item.activity}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </div>
