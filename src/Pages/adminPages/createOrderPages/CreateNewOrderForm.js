@@ -139,11 +139,17 @@ export function CreateNewOrderForm({ item, handleClose }) {
       handleClose(false)
 
       const checkTeacherEligibility = (teacher) => {
+        if (!teacher?.subjects || typeof teacher.subjects !== "object") {
+          return false
+        }
+
         const filteredSubjects = Object.entries(teacher.subjects)
           .filter(([_, value]) => value === true)
           .map(([subject]) => subject)
+
         return filteredSubjects.includes(subject)
       }
+
 
       const userListRefSecond = collection(db, "userList")
       const q = query(userListRefSecond, where("type", "==", "teacher"))

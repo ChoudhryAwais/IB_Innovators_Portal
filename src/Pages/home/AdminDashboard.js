@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react"
 import { db } from "../../firebase"
-import { collection, doc, query, where, getCountFromServer } from "firebase/firestore"
+import { collection, doc, query, where, getCountFromServer, getDocs, getDoc } from "firebase/firestore"
 import { toast } from "react-hot-toast"
 import { MyContext } from "../../Context/MyContext"
 import { TopHeadingProvider } from "../../Components/Layout"
@@ -40,13 +40,28 @@ const AdminDashboard = () => {
   const [tutorsCount, setTutorsCount] = useState(0)
   const [studentsCount, setStudentsCount] = useState(0)
   const [links, setLinks] = useState(0)
-
+  const [joiningsData, setJoiningsData] = useState([])
+  const [creditsData, setCreditsData] = useState([])
   const { setFirstMessage, setSecondMessage } = useTopHeading()
+
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+  const currentMonthIndex = new Date().getMonth(); // 0-based index
+  const currentYear = new Date().getFullYear();
+
+  // Filter MONTHS array up to current month
+  const monthsThisYear = MONTHS.slice(0, currentMonthIndex + 1);
+
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthIndex);
 
   useEffect(() => {
     setFirstMessage(`Welcome ${userDetails?.userName || "User"}`)
     setSecondMessage("Good Morning")
   }, [setFirstMessage, setSecondMessage])
+
+  useEffect(() => {
+    fetchCreditsSoldForMonth(selectedMonth);
+  }, [selectedMonth]);
 
   const fetchCollectionCount = async (collectionName, setStateFunc) => {
     try {
@@ -100,33 +115,8 @@ const AdminDashboard = () => {
     fetchLinksCount("Linked", setLinks)
     fetchTutorsDataCount("teacher", setTutorsCount)
     fetchTutorsDataCount("student", setStudentsCount)
+    fetchUserJoiningsByMonth()
   }, [])
-
-  const creditsData = [
-    { date: "Aug 01", credits: 8 },
-    { date: "Aug 05", credits: 12 },
-    { date: "Aug 10", credits: 9 },
-    { date: "Aug 15", credits: 17 },
-    { date: "Aug 20", credits: 13 },
-    { date: "Aug 25", credits: 21 },
-    { date: "Aug 30", credits: 16 },
-  ]
-
-  const joiningsData = [
-    { month: "Jan", tutors: 8, students: 22 },
-    { month: "Feb", tutors: 10, students: 18 },
-    { month: "Mar", tutors: 12, students: 25 },
-    { month: "Apr", tutors: 9, students: 21 },
-    { month: "May", tutors: 11, students: 27 },
-    { month: "Jun", tutors: 14, students: 24 },
-    { month: "Jul", tutors: 13, students: 26 },
-    { month: "Aug", tutors: 16, students: 28 },
-    { month: "Sep", tutors: 0, students: 0 },
-    { month: "Oct", tutors: 0, students: 0 },
-    { month: "Nov", tutors: 0, students: 0 },
-    { month: "Dec", tutors: 0, students: 0 },
-  ]
-
 
   const CHART_COLORS = {
     students: "#F49342",
@@ -161,6 +151,76 @@ const AdminDashboard = () => {
     { name: "Tutor Forms", value: (totalTutorForms / totalForms) * 100, key: "tutors" },
     { name: "Contact Us Forms", value: (totalContactUsForms / totalForms) * 100, key: "contact" },
   ]
+
+  const fetchUserJoiningsByMonth = async () => {
+    try {
+      const currentYear = new Date().getFullYear()
+
+      // init all months with 0
+      const monthlyStats = MONTHS.map((m) => ({
+        month: m,
+        tutors: 0,
+        students: 0,
+      }))
+
+      const userRef = collection(db, "userList")
+      const snapshot = await getDocs(userRef)
+
+      snapshot.forEach((doc) => {
+        const data = doc.data()
+        if (!data.createdAt || !data.type) return
+
+        const createdDate = data.createdAt.toDate()
+        if (createdDate.getFullYear() !== currentYear) return
+
+        const monthIndex = createdDate.getMonth()
+
+        if (data.type === "teacher") {
+          monthlyStats[monthIndex].tutors += 1
+        }
+
+        if (data.type === "student") {
+          monthlyStats[monthIndex].students += 1
+        }
+      })
+
+      setJoiningsData(monthlyStats)
+    } catch (error) {
+      console.error("Error fetching joinings data:", error)
+      toast.error("Error loading joinings chart")
+    }
+  }
+
+  const fetchCreditsSoldForMonth = async (monthIndex) => {
+    try {
+      const year = currentYear.toString();
+      const month = String(monthIndex + 1).padStart(2, "0"); // Firestore stores months 01-12
+
+      const yearRef = doc(db, "adminPanel", "creditsSold", "years", year);
+      const snap = await getDoc(yearRef);
+      if (!snap.exists()) {
+        setCreditsData([]);
+        return;
+      }
+
+      const data = snap.data();
+      const daysMap = data?.months?.[month]?.days || {};
+
+      const chartData = Object.entries(daysMap)
+        .map(([day, credits]) => ({
+          date: `${MONTHS[monthIndex]} ${day}`,
+          credits,
+        }))
+        .sort((a, b) => parseInt(a.date.split(" ")[1]) - parseInt(b.date.split(" ")[1]));
+
+      setCreditsData(chartData);
+    } catch (error) {
+      console.error("Error fetching credits sold:", error);
+      toast.error("Failed to load credits sold");
+    }
+  };
+
+
 
   return (
     <TopHeadingProvider>
@@ -206,7 +266,6 @@ const AdminDashboard = () => {
                     Update: Aug 16, 2025
                   </div>
                 </div>
-
 
                 {/* Total Tutors Card */}
                 <div className="bg-white rounded-[10px] border-1 border-[#A2A1A833] min-w-0 lg:w-[313px] h-[154px]">
@@ -255,7 +314,11 @@ const AdminDashboard = () => {
                         </div>
                         <span className="text-[16px] font-light mb-1 text-[#16151C] lg:w-44">Active Student/Tutors</span>
                       </div>
-                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">{"N/A"}</div>
+                      <div className="pl-12 text-[30px] font-semibold text-[#16151C] mb-2">
+                        {tutorsCount
+                          ? (studentsCount / tutorsCount).toFixed(2)
+                          : "N/A"}
+                      </div>
                     </div>
                     <div className="text-right flex flex-col items-end">
                       <div className="bg-[#FECACA0D] rounded-[5px] w-[54px] h-[26px] flex justify-center items-center gap-2 text-red-500 text-sm font-medium">
@@ -363,9 +426,18 @@ const AdminDashboard = () => {
             <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col h-full w-full">
               <div className="flex justify-between items-center mb-4 gap-2">
                 <h3 className="font-semibold text-gray-900 truncate">Credits Sold</h3>
-                <select className="border rounded px-2 py-1 text-sm w-full sm:w-auto">
-                  <option>This month</option>
+                <select
+                  className="border rounded px-2 py-1 text-sm w-full sm:w-auto"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                >
+                  {monthsThisYear.map((month, idx) => (
+                    <option key={idx} value={idx}>
+                      {month} {currentYear}
+                    </option>
+                  ))}
                 </select>
+
               </div>
 
               <div className="flex-1 min-h-[220px]">
@@ -381,7 +453,6 @@ const AdminDashboard = () => {
                     <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fill: "#A2A1A8", fontSize: 10, fontWeight: 300, dy: -15 }} />
                     <YAxis tickLine={false} axisLine={false} tick={{ fill: "#A2A1A8", fontSize: 10, fontWeight: 300, dx: -25, dy: -5 }} />
                     <Tooltip />
-
 
                     {/* Gradient-filled area under the line */}
                     <Area

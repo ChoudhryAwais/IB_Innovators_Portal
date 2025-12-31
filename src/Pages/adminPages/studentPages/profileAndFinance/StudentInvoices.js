@@ -33,7 +33,7 @@ export default function StudentInvoices({ userDetails, userId }) {
           ...doc.data(),
         }));
 
-        console.log("✅ Linked Docs with invoices:", docsData); // 👈 Add here
+        console.log(" Linked Docs with invoices:", docsData); //  Add here
         setLinkedDocs(
           linkedSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
         );

@@ -13,6 +13,9 @@ import {
   getDoc,
   orderBy,
   setDoc,
+  where,
+  getDocs,
+  increment, serverTimestamp
 } from "firebase/firestore"
 import { db } from "../../firebase"
 import { MyContext } from "../../Context/MyContext"
@@ -33,6 +36,39 @@ import toast from "react-hot-toast"
 import CustomModal from "../../Components/CustomModal/CustomModal";
 import manage_links from "../../assets/icons/manage_links.png";
 import Divider from "@mui/material/Divider"
+
+
+const updateCreditsSoldAnalytics = async (amount) => {
+  const now = new Date()
+
+  const year = now.getFullYear().toString()
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const day = String(now.getDate()).padStart(2, "0")
+
+  const yearRef = doc(
+    db,
+    "adminPanel",
+    "creditsSold",
+    "years",
+    year
+  )
+
+  await setDoc(
+    yearRef,
+    {
+      totalCredits: increment(amount),
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  )
+
+  await updateDoc(yearRef, {
+    [`months.${month}.totalCredits`]: increment(amount),
+    [`months.${month}.days.${day}`]: increment(amount),
+  })
+}
+
+
 
 export default function ManageLinks() {
   const [links, setLinks] = useState([])
@@ -268,105 +304,149 @@ export default function ManageLinks() {
     setInvoicePrice("");
   };
 
+  const updateUserTotalCredits = async (studentId) => {
+    const linkedRef = collection(db, "Linked");
+    const q = query(linkedRef, where("studentId", "==", studentId));
+
+    const snapshot = await getDocs(q);
+
+    let totalCredits = 0;
+
+    snapshot.forEach((doc) => {
+      totalCredits += Number(doc.data().credits || 0);
+    });
+
+    const userRef = doc(db, "userList", studentId);
+    await updateDoc(userRef, {
+      credits: totalCredits,
+    });
+
+    return totalCredits;
+  };
+
   const addCredits = async (link, amount) => {
-    const accountRef = doc(db, "Linked", link?.id);
+    if (!link?.id || !link?.studentId) {
+      toast.error("Invalid link or student");
+      return;
+    }
+
+    const linkedRef = doc(db, "Linked", link.id);
+    const userRef = doc(db, "userList", link.studentId);
 
     try {
       setLoading(true);
-      const docSnapshot = await getDoc(accountRef);
-      let currentCredits = 0;
 
-      if (docSnapshot.exists()) {
-        currentCredits = docSnapshot.data().credits || 0;
-        console.log("Current credits:", currentCredits);
+      const addedAmount = Number(amount);
+      if (addedAmount <= 0) {
+        toast.error("Amount must be greater than 0");
+        return;
       }
 
-      const addedAmount = parseFloat(amount || 0);
-      console.log("Added amount:", addedAmount);
-      const newCredits = currentCredits + addedAmount;
-      console.log("New credits:", newCredits);
+      // 1️⃣ Update LINKED credits
+      const linkedSnap = await getDoc(linkedRef);
+      const currentCredits = linkedSnap.exists()
+        ? Number(linkedSnap.data().credits || 0)
+        : 0;
 
-      // Create balance history record
+      const newLinkedCredits = currentCredits + addedAmount;
+
+      await updateDoc(linkedRef, {
+        credits: newLinkedCredits,
+      });
+
+      // 2️⃣ Recalculate TOTAL user credits (🔥 key fix)
+      const totalCredits = await updateUserTotalCredits(link.studentId);
+
+      // 3️⃣ Add balance history
       const balanceHistory = {
-        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
+        id: crypto.randomUUID(),
+        type: "ADD",
         amount: addedAmount,
+        linkId: link.id,
         createdAt: new Date(),
-      };  
-      console.log('Balance history right now',balanceHistory)
-      // Save history if positive
-      if (addedAmount > 0) {
-        const userRef = doc(collection(db, "userList"), link?.studentId);
-        await updateDoc(userRef, {
-          balanceHistory: arrayUnion(balanceHistory),
-        });
-      }
+        balanceAfter: totalCredits,
+      };
 
-      // Update or set credits
-      if (docSnapshot.exists()) {
-        await updateDoc(accountRef, { credits: newCredits });
-      } else {
-        await setDoc(accountRef, { credits: newCredits });
-      }
+      await updateDoc(userRef, {
+        balanceHistory: arrayUnion(balanceHistory),
+      });
 
       addNotification(
-        `Admin added ${amount} credits to your account.`,
-        link?.id
+        `Admin added ${addedAmount} credits to your account.`,
+        link.id
       );
+
+      await updateCreditsSoldAnalytics(addedAmount)
       toast.success("Credits added successfully");
-    } catch (e) {
-      console.error("Error adding credits: ", e);
-      toast.error("Error occurred while adding credits");
+    } catch (error) {
+      console.error("Add credits error:", error);
+      toast.error("Failed to add credits");
     } finally {
       setLoading(false);
     }
   };
 
   const removeCredits = async (link, amount) => {
-    const accountRef = doc(db, "Linked", link?.id);
+    if (!link?.id || !link?.studentId) {
+      toast.error("Invalid link or student");
+      return;
+    }
+
+    const linkedRef = doc(db, "Linked", link.id);
+    const userRef = doc(db, "userList", link.studentId);
 
     try {
       setLoading(true);
-      const docSnapshot = await getDoc(accountRef);
-      let currentCredits = 0;
 
-      if (docSnapshot.exists()) {
-        currentCredits = docSnapshot.data().credits || 0;
+      const deductedAmount = Number(amount);
+      if (deductedAmount <= 0) {
+        toast.error("Amount must be greater than 0");
+        return;
       }
 
-      const deductedAmount = parseFloat(amount || 0);
-      const newCredits = Math.max(currentCredits - deductedAmount, 0); // Prevent negative
-       console.log('Deducted Amount:', -deductedAmount);
-      // Create balance history record
+      // 1️⃣ Update LINKED credits
+      const linkedSnap = await getDoc(linkedRef);
+      const currentCredits = linkedSnap.exists()
+        ? Number(linkedSnap.data().credits || 0)
+        : 0;
+
+      if (currentCredits < deductedAmount) {
+        toast.error("Cannot remove more credits than available");
+        return;
+      }
+
+      const newLinkedCredits = currentCredits - deductedAmount;
+
+      await updateDoc(linkedRef, {
+        credits: newLinkedCredits,
+      });
+
+      // 2️⃣ Recalculate TOTAL user credits (🔥 key fix)
+      const totalCredits = await updateUserTotalCredits(link.studentId);
+
+      // 3️⃣ Add balance history
       const balanceHistory = {
-        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
-        amount: -deductedAmount, // Negative for removal
+        id: crypto.randomUUID(),
+        type: "REMOVE",
+        amount: deductedAmount,
+        linkId: link.id,
         createdAt: new Date(),
-        
+        balanceAfter: totalCredits,
       };
 
-      // Save history
-      if (deductedAmount > 0) {
-        const userRef = doc(collection(db, "userList"), link?.studentId);
-        await updateDoc(userRef, {
-          balanceHistory: arrayUnion(balanceHistory),
-        });
-      }
-
-      // Update or set credits
-      if (docSnapshot.exists()) {
-        await updateDoc(accountRef, { credits: newCredits });
-      } else {
-        await setDoc(accountRef, { credits: newCredits });
-      }
+      await updateDoc(userRef, {
+        balanceHistory: arrayUnion(balanceHistory),
+      });
 
       addNotification(
-        `Admin removed ${amount} credits from your account.`,
-        link?.id
+        `Admin removed ${deductedAmount} credits from your account.`,
+        link.id
       );
+
       toast.success("Credits removed successfully");
-    } catch (e) {
-      console.error("Error removing credits: ", e);
-      toast.error("Error occurred while removing credits");
+    } catch (error) {
+      console.error("Remove credits error:", error);
+      toast.error("Failed to remove credits");
     } finally {
       setLoading(false);
     }
